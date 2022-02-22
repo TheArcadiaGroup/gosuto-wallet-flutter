@@ -1,4 +1,4 @@
-# gosuto_wallet
+# gosuto_wallet_flutter
 
 A new Flutter project.
 

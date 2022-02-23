@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.gosuto.gosuto_wallet_flutter">
    <application
-        android:label="gosuto_wallet_flutter"
+        android:label="Gosuto Wallet"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

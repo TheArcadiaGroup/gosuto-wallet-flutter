@@ -12,36 +12,84 @@ class OnBoardingPage extends StatefulWidget {
 class _OnBoardingPage extends State<OnBoardingPage> {
   final introKey = GlobalKey<IntroductionScreenState>();
 
-  void _onIntroEnd(context) {}
-
   @override
   Widget build(BuildContext context) {
+    const textStyle = TextStyle(
+      fontSize: 18.0,
+      color: Colors.white,
+      height: 1.56,
+    );
+    const pageDecoration = PageDecoration(
+      titleTextStyle: TextStyle(
+        fontSize: 24.0,
+        fontWeight: FontWeight.w700,
+        color: Colors.white,
+        height: 1.2,
+      ),
+      titlePadding: EdgeInsets.only(top: 250, bottom: 10),
+      bodyAlignment: Alignment.center,
+      bodyTextStyle: TextStyle(
+        fontSize: 18.0,
+        color: Colors.white,
+        height: 1.56,
+      ),
+      bodyPadding: EdgeInsets.only(
+        left: 16,
+        right: 16,
+        top: 0,
+      ),
+    );
+
     return IntroductionScreen(
       key: introKey,
-      globalBackgroundColor: GotusoColors.darkblue,
-      done: const Text('Done', style: TextStyle(fontWeight: FontWeight.w600)),
-      onDone: () => _onIntroEnd(context),
-      next: const Icon(Icons.arrow_forward),
+      globalBackgroundColor: GotusoColors.background,
+      globalHeader: Align(
+        alignment: Alignment.topCenter,
+        child: SafeArea(
+            child: Padding(
+          padding: const EdgeInsets.only(top: 60),
+          child: Image.asset('assets/images/logo.png'),
+        )),
+      ),
+      globalFooter: Column(
+        children: const <Widget>[
+          ElevatedButton(
+            onPressed: null,
+            child: Text('Next'),
+          )
+        ],
+      ),
+      showDoneButton: false,
+      showNextButton: false,
       pages: [
         PageViewModel(
           title: 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
           body:
               'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
-          image: Image.asset('assets/images/onboarding1.png'),
+          decoration: pageDecoration,
         ),
         PageViewModel(
           title: 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
           body:
               'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
-          image: Image.asset('assets/images/onboarding2.png'),
+          decoration: pageDecoration,
         ),
         PageViewModel(
           title: 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
           body:
               'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
-          image: Image.asset('assets/images/onboarding3.png'),
+          decoration: pageDecoration,
         ),
       ],
+      dotsDecorator: const DotsDecorator(
+        size: Size(10.0, 10.0),
+        color: Color(0xffdbdbdb),
+        activeSize: Size(22.0, 10.0),
+        activeColor: GotusoColors.orange,
+        activeShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(25.0)),
+        ),
+      ),
     );
   }
 }

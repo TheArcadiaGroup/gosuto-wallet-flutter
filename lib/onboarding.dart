@@ -43,14 +43,6 @@ class _OnBoardingPage extends State<OnBoardingPage> {
     return IntroductionScreen(
       key: introKey,
       globalBackgroundColor: GotusoColors.background,
-      globalHeader: Align(
-        alignment: Alignment.topCenter,
-        child: SafeArea(
-            child: Padding(
-          padding: const EdgeInsets.only(top: 60),
-          child: Image.asset('assets/images/logo.png'),
-        )),
-      ),
       globalFooter: Column(
         children: const <Widget>[
           ElevatedButton(

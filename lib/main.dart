@@ -17,7 +17,7 @@ class GosutoWalletApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Gotuso Wallet',
-      theme: ThemeData(primarySwatch: Colors.blue),
+      theme: ThemeData(fontFamily: 'Manrope'),
       home: const OnBoardingPage(),
     );
   }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gosuto_wallet_flutter/onboarding.dart';
+// import 'package:gosuto_wallet_flutter/onboarding.dart';
+import 'package:gosuto_wallet_flutter/routes.dart';
+import 'package:gosuto_wallet_flutter/screens/onboarding/onboarding_screen.dart';
+import 'package:gosuto_wallet_flutter/theme.dart';
 
 void main() {
   runApp(const GosutoWalletApp());
@@ -17,8 +20,9 @@ class GosutoWalletApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Gotuso Wallet',
-      theme: ThemeData(fontFamily: 'Manrope'),
-      home: const OnBoardingPage(),
+      theme: theme(),
+      initialRoute: OnboardingScreen.routeName,
+      routes: routes,
     );
   }
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gosuto_wallet_flutter/theme/colors.dart';
+import 'package:gosuto_wallet_flutter/constants.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 
 class OnBoardingPage extends StatefulWidget {
@@ -42,13 +42,13 @@ class _OnBoardingPage extends State<OnBoardingPage> {
 
     return IntroductionScreen(
       key: introKey,
-      globalBackgroundColor: GotusoColors.background,
+      globalBackgroundColor: darkBackgroundClor,
       globalFooter: Column(
         children: const <Widget>[
           ElevatedButton(
             onPressed: null,
             child: Text('Next'),
-          )
+          ),
         ],
       ),
       showDoneButton: false,
@@ -77,7 +77,7 @@ class _OnBoardingPage extends State<OnBoardingPage> {
         size: Size(10.0, 10.0),
         color: Color(0xffdbdbdb),
         activeSize: Size(22.0, 10.0),
-        activeColor: GotusoColors.orange,
+        activeColor: darkBackgroundClor,
         activeShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(25.0)),
         ),

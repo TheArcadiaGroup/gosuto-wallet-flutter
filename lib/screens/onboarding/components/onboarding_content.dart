@@ -16,12 +16,11 @@ class OnboardingContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(
-          left: getProportionateScreenWidth(45),
-          right: getProportionateScreenWidth(45)),
+      padding: EdgeInsets.symmetric(
+        horizontal: getProportionateScreenWidth(30),
+      ),
       child: Column(
         children: <Widget>[
-          const Spacer(),
           Text(
             title,
             textAlign: TextAlign.center,
@@ -32,9 +31,9 @@ class OnboardingContent extends StatelessWidget {
               height: 1.4,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             width: double.infinity,
-            height: getProportionateScreenHeight(16),
+            height: 16,
           ),
           Text(
             subtitle,
@@ -44,7 +43,7 @@ class OnboardingContent extends StatelessWidget {
               fontSize: 14,
               height: 1.7,
             ),
-          )
+          ),
         ],
       ),
     );

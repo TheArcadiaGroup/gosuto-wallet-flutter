@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gosuto_wallet_flutter/constants.dart';
 import 'package:gosuto_wallet_flutter/screens/onboarding/components/onboarding_content.dart';
+
+import '../../../size_config.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -36,8 +39,19 @@ class _BodyState extends State<Body> {
         width: double.infinity,
         child: Column(
           children: <Widget>[
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                pages.length,
+                (index) => buildDot(index: index),
+              ),
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(30),
+            ),
             Expanded(
-              flex: 3,
+              flex: 1,
               child: PageView.builder(
                 onPageChanged: (value) {
                   setState(() {
@@ -51,8 +65,24 @@ class _BodyState extends State<Body> {
                 ),
               ),
             ),
+            SizedBox(
+              height: getProportionateScreenHeight(50),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  AnimatedContainer buildDot({required int index}) {
+    return AnimatedContainer(
+      duration: animationDuration,
+      margin: const EdgeInsets.only(right: 4),
+      height: 7,
+      width: currentPage == index ? 14 : 7,
+      decoration: BoxDecoration(
+        color: currentPage == index ? primaryColor : const Color(0xffc4c4c4),
+        borderRadius: BorderRadius.circular(30),
       ),
     );
   }

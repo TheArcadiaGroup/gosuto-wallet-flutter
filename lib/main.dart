@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-// import 'package:gosuto_wallet_flutter/onboarding.dart';
-import 'package:gosuto_wallet_flutter/routes.dart';
-import 'package:gosuto_wallet_flutter/screens/onboarding/onboarding_screen.dart';
-import 'package:gosuto_wallet_flutter/theme.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+import 'package:gosuto/services/service.dart';
+import 'package:gosuto/themes/theme.dart';
+import 'app_binding.dart';
+import 'routes/app_pages.dart';
 
 void main() {
-  runApp(const GosutoWalletApp());
+  runApp(const MyApp());
+  configLoading();
 }
 
-class GosutoWalletApp extends StatelessWidget {
-  const GosutoWalletApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
-    );
-
-    return MaterialApp(
-      title: 'Gotuso Wallet',
-      theme: theme(),
-      initialRoute: OnboardingScreen.routeName,
-      routes: routes,
+    return GetMaterialApp(
+      initialRoute: Routes.home,
+      getPages: AppPages.routes,
+      initialBinding: AppBinding(),
+      smartManagement: SmartManagement.keepFactory,
+      builder: EasyLoading.init(),
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeService().theme,
+      locale: TranslationService().locale,
+      fallbackLocale: TranslationService.fallbackLocale,
+      translations: TranslationService(),
     );
   }
 }
+
+void configLoading() {}

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
-import 'package:gosuto/pages/home/home.dart';
+
+import 'home.dart';
 
 class HomeBinding extends Bindings {
   @override

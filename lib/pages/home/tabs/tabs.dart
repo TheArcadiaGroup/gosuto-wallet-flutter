@@ -1,12 +1,14 @@
-export 'account_setting_tab.dart';
-export 'currency_performance_tab.dart';
-export 'choose_wallet.dart';
+export 'account_setting/account_setting.dart';
+export 'currency_performance/currency_performance.dart';
+export 'choose_wallet/choose_wallet.dart';
+export 'wallet_home/wallet_home.dart';
+export 'history/history_tab.dart';
 
 enum MainTabs {
   chooseWallet,
-  tab2,
+  walletHome,
   tab3,
-  tab4,
+  history,
   tab5,
   currencyPerformance,
   accountSetting

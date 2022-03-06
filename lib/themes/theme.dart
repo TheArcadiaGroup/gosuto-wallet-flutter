@@ -29,6 +29,8 @@ class AppTheme {
       textTheme: TextTheme(
           headline1: const TextStyle(
               fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
+          headline4: const TextStyle(
+              fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
           headline2: const TextStyle(
               fontSize: 16,
               color: Color(0xFF725DFF),
@@ -36,6 +38,10 @@ class AppTheme {
           headline3: const TextStyle(
               fontSize: 12,
               color: Color(0xFF70CF98),
+              fontWeight: FontWeight.bold),
+          headline5: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFFFF6666),
               fontWeight: FontWeight.bold),
           bodyText1: const TextStyle(fontSize: 14, color: Color(0xFF4F4F4F)),
           bodyText2: TextStyle(
@@ -71,6 +77,8 @@ class AppTheme {
       textTheme: TextTheme(
           headline1: const TextStyle(
               fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+          headline4: const TextStyle(
+              fontSize: 14, color: Colors.white, fontWeight: FontWeight.bold),
           headline2: const TextStyle(
               fontSize: 16,
               color: Color(0xFF725DFF),
@@ -78,6 +86,10 @@ class AppTheme {
           headline3: const TextStyle(
               fontSize: 12,
               color: Color(0xFF70CF98),
+              fontWeight: FontWeight.bold),
+          headline5: const TextStyle(
+              fontSize: 12,
+              color: Color(0xFFFF6666),
               fontWeight: FontWeight.bold),
           bodyText1: const TextStyle(fontSize: 14, color: Colors.white),
           bodyText2:

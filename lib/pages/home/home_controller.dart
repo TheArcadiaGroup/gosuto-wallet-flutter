@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gosuto/pages/home/home.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
+
+import 'home.dart';
 
 class HomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
@@ -16,6 +17,8 @@ class HomeController extends GetxController
   late AccountSettingTab accountSettingTab;
   late CurrencyPerformanceTab currencyPerformanceTab;
   late ChooseWalletTab chooseWalletTab;
+  late WalletHomeTab walletHomeTab;
+  late HistoryTab historyTab;
 
   @override
   void onInit() {
@@ -23,6 +26,9 @@ class HomeController extends GetxController
     accountSettingTab = AccountSettingTab();
     currencyPerformanceTab = const CurrencyPerformanceTab();
     chooseWalletTab = const ChooseWalletTab();
+    walletHomeTab =  WalletHomeTab();
+    historyTab = HistoryTab();
+
     tabController = TabController(length: MainTabs.values.length, vsync: this);
   }
 
@@ -37,11 +43,11 @@ class HomeController extends GetxController
     switch (tab) {
       case MainTabs.chooseWallet:
         return 0;
-      case MainTabs.tab2:
+      case MainTabs.walletHome:
         return 1;
       case MainTabs.tab3:
         return 2;
-      case MainTabs.tab4:
+      case MainTabs.history:
         return 3;
       case MainTabs.tab5:
         return 4;
@@ -59,11 +65,11 @@ class HomeController extends GetxController
       case 0:
         return MainTabs.chooseWallet;
       case 1:
-        return MainTabs.tab2;
+        return MainTabs.walletHome;
       case 2:
         return MainTabs.tab3;
       case 3:
-        return MainTabs.tab4;
+        return MainTabs.history;
       case 4:
         return MainTabs.tab5;
       case 5:

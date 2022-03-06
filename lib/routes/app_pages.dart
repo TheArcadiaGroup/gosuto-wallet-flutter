@@ -10,6 +10,10 @@ class AppPages {
     GetPage(
         name: Routes.home,
         page: () => const HomeScreen(),
-        binding: HomeBinding())
+        binding: HomeBinding()),
+    // GetPage(
+    //     name: Routes.wallet_home,
+    //     page: () => const WalletHomeTab(),
+    //     binding: WalletHomeBinding())
   ];
 }

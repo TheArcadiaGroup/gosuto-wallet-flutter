@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/pages/home/home.dart';
 
-import '../../../themes/colors.dart';
+import '../../../../themes/colors.dart';
 
 class ChooseWalletTab extends GetView<HomeController> {
   const ChooseWalletTab({Key? key}) : super(key: key);
@@ -44,7 +44,7 @@ class ChooseWalletTab extends GetView<HomeController> {
                               .headline2
                               ?.copyWith(color: Colors.white)),
                       style: ElevatedButton.styleFrom(
-                        primary: AppDarkColors.orangeColor,
+                        primary: Theme.of(context).colorScheme.background,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),

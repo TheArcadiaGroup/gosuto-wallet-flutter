@@ -1,13 +1,23 @@
+import 'package:get/get.dart';
+
 class AppConstants {
   static final coins = ['USD', 'EUR'];
 
   static final chartFilterItems = [
-    '1 Day',
-    '1 Week',
-    '2 Weeks',
-    '3 Weeks',
-    '1 Month',
-    '6 Months',
-    '1 Year'
+    '1_day'.tr,
+    '1_week'.tr,
+    '2_weeks'.tr,
+    '3_weeks'.tr,
+    '1_month'.tr,
+    '6_months'.tr,
+    '1_year'.tr,
+  ];
+
+  static final historyFilterItems = [
+    'all'.tr,
+    'received'.tr,
+    'sent'.tr,
+    'swap'.tr,
+    'staking'.tr,
   ];
 }

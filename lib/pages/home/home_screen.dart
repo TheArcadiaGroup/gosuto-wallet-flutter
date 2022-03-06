@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gosuto/pages/home/home.dart';
+
+import 'home.dart';
 
 class HomeScreen extends GetView<HomeController> {
   const HomeScreen({Key? key}) : super(key: key);
@@ -45,12 +46,12 @@ class HomeScreen extends GetView<HomeController> {
     switch (tab) {
       case MainTabs.chooseWallet:
         return controller.chooseWalletTab;
-      case MainTabs.tab2:
-        return const Tab(icon: Icon(Icons.flight, size: 350));
+      case MainTabs.walletHome:
+        return controller.walletHomeTab;
       case MainTabs.tab3:
         return const Tab(icon: Icon(Icons.flight, size: 350));
-      case MainTabs.tab4:
-        return const Tab(icon: Icon(Icons.flight, size: 350));
+      case MainTabs.history:
+        return controller.historyTab;
       case MainTabs.tab5:
         return const Tab(icon: Icon(Icons.flight, size: 350));
       case MainTabs.currencyPerformance:

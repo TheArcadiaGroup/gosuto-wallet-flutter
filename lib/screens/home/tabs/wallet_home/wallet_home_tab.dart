@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
-import 'package:gosuto/pages/home/home.dart';
+import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/utils/utils.dart';
 
 class WalletHomeTab extends GetView<WalletHomeController> {
@@ -189,7 +189,9 @@ class WalletHomeTab extends GetView<WalletHomeController> {
                       style: Theme.of(context).textTheme.headline4),
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).colorScheme.primary,
-                    side: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
+                    side: BorderSide(
+                        width: 2.0,
+                        color: Theme.of(context).colorScheme.onPrimary),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),
@@ -370,10 +372,6 @@ class WalletHomeTab extends GetView<WalletHomeController> {
   }
 
   Widget _buildWalletSettings(BuildContext context, int index) {
-    return Container();
-  }
-
-  Widget _buildSwap(BuildContext context, int index) {
     return Container();
   }
 

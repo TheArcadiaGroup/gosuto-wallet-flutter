@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
-import 'package:gosuto/pages/home/home.dart';
+import 'package:gosuto/screens/home/home.dart';
 
 class CurrencyPerformanceTab extends GetView<HomeController> {
   const CurrencyPerformanceTab({Key? key}) : super(key: key);

@@ -1,10 +1,10 @@
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gosuto/pages/home/home.dart';
+import 'package:gosuto/screens/home/home.dart';
 
-class WalletHomeController extends GetxController with GetSingleTickerProviderStateMixin {
-
+class WalletHomeController extends GetxController
+    with GetSingleTickerProviderStateMixin {
   late TabController tabController;
   var currentTab = WalletHomeTabs.history.obs;
   var isShowBottom = false.obs;

@@ -19,7 +19,7 @@ class AppLightColors {
   static const Color orangeColor = Color(0xFFFF8266);
 
   // color for light theme
-  static const Color textColor1 = Color(0xFF6C6C6C);
+  static const Color textColor1 = Color(0xFF6C727F);
   static const Color textColor2 = Colors.black;
   static const Color textColor3 = Color(0xFF383B62);
 }

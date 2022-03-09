@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
-import 'package:gosuto/pages/home/home.dart';
+import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/themes/colors.dart';
 import 'package:gosuto/utils/utils.dart';

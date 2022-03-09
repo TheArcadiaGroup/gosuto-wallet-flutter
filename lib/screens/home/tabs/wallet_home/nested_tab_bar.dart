@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
-import 'package:gosuto/themes/colors.dart';
 
 class NestedTabBar extends StatefulWidget {
   const NestedTabBar({Key? key}) : super(key: key);
@@ -50,7 +49,7 @@ class _NestedTabBarState extends State<NestedTabBar>
           //   // borderRadius: BorderRadius.circular(12), // Creates border
           //   color: AppDarkColors.tabBarIndicatorColor,
           // ),
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           isScrollable: true,
           tabs: <Widget>[
             SizedBox(

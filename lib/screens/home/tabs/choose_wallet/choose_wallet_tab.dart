@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
-import 'package:gosuto/pages/home/home.dart';
-
-import '../../../../themes/colors.dart';
+import 'package:gosuto/screens/home/home.dart';
 
 class ChooseWalletTab extends GetView<HomeController> {
   const ChooseWalletTab({Key? key}) : super(key: key);

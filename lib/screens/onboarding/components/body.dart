@@ -1,5 +1,9 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:gosuto/components/button.dart';
 import 'package:gosuto/screens/onboarding/components/onboarding_content.dart';
+
+import '../../../utils/constants.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -9,25 +13,39 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  final PageController _pageController = PageController();
   int currentPage = 0;
 
   List<Map<String, String>> pages = [
     {
-      'title': 'Welcome to Gosuto Wallet',
-      'subtitle':
-          'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
+      'title': 'onboarding_title1'.tr,
+      'subtitle': 'onboarding_subtitle1'.tr,
     },
     {
-      'title': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
-      'subtitle':
-          'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
+      'title': 'onboarding_title2'.tr,
+      'subtitle': 'onboarding_subtitle2'.tr,
     },
     {
-      'title': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
-      'subtitle':
-          'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
+      'title': 'onboarding_title3'.tr,
+      'subtitle': 'onboarding_subtitle3'.tr,
     }
   ];
+
+  void _nextPage() {
+    if (currentPage < pages.length - 1) {
+      _pageController.animateToPage(
+        currentPage + 1,
+        duration: AppConstants.duration,
+        curve: Curves.easeIn,
+      );
+    } else {
+      Get.offAllNamed('/home');
+    }
+  }
+
+  void _skip() {
+    Get.offAllNamed('/home');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +54,9 @@ class _BodyState extends State<Body> {
         width: double.infinity,
         child: Column(
           children: <Widget>[
-            const Spacer(),
+            const Spacer(
+              flex: 2,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
@@ -45,11 +65,12 @@ class _BodyState extends State<Body> {
               ),
             ),
             const SizedBox(
-              height: 30,
+              height: 20,
             ),
             Expanded(
               flex: 1,
               child: PageView.builder(
+                controller: _pageController,
                 onPageChanged: (value) {
                   setState(() {
                     currentPage = value;
@@ -62,8 +83,34 @@ class _BodyState extends State<Body> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 50,
+            Expanded(
+              flex: 1,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: <Widget>[
+                    GosutoButton(
+                      text: currentPage < pages.length - 1
+                          ? 'next'.tr
+                          : 'done'.tr,
+                      style: GosutoButtonStyle.fill,
+                      onPress: () {
+                        _nextPage();
+                      },
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    GosutoButton(
+                      text: 'Skip'.tr,
+                      style: GosutoButtonStyle.text,
+                      onPress: () {
+                        _skip();
+                      },
+                    )
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -73,14 +120,14 @@ class _BodyState extends State<Body> {
 
   AnimatedContainer buildDot({required int index}) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
+      duration: AppConstants.duration,
       margin: const EdgeInsets.only(right: 4),
       height: 7,
       width: currentPage == index ? 14 : 7,
       decoration: BoxDecoration(
         color: currentPage == index
             ? Theme.of(context).colorScheme.background
-            : const Color(0xffc4c4c4),
+            : const Color(0xffc4c4c4).withOpacity(0.35),
         borderRadius: BorderRadius.circular(30),
       ),
     );

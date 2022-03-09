@@ -1,4 +1,16 @@
 const Map<String, String> enUs = {
+  'onboarding_title1': 'Welcome to Gosuto Wallet',
+  'onboarding_subtitle1':
+      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
+  'onboarding_title2': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
+  'onboarding_subtitle2':
+      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
+  'onboarding_title3': 'Lorem ipsum dolor sit amet, consectetuer adipiscing',
+  'onboarding_subtitle3':
+      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
+  'next': 'Next',
+  'done': 'Done',
+  'skip': 'Skip',
   'hello': 'Hello',
   'account_setting': 'Account Setting',
   'choose_file': 'Choose File',

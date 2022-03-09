@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 class AppConstants {
+  static const duration = Duration(milliseconds: 200);
   static final coins = ['USD', 'EUR'];
 
   static final chartFilterItems = [

@@ -20,6 +20,14 @@ const Map<String, String> enUs = {
   'wallet_text2': 'Import wallet from seed phrase',
   'wallet_title3': 'Import From File',
   'wallet_text3': 'Import wallet from file',
+  'okay': 'Okay',
+  // Create New Wallet Screen
+  'create_a_new_wallet': 'Create a new wallet',
+  'create_a_password': 'Create a password',
+  'create_a_password_text1':
+      '• You set the password fot this specific instance of Gosuto.',
+  'create_a_password_text2':
+      '• This password will be used to unlock the mobile wallet.',
   'hello': 'Hello',
   'account_setting': 'Account Setting',
   'choose_file': 'Choose File',

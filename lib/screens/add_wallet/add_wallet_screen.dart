@@ -3,10 +3,31 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
 import 'package:gosuto/components/radio_option.dart';
-import 'package:gosuto/screens/addwallet/addwallet_controller.dart';
+import 'add_wallet_controller.dart';
 
 class AddWalletScreen extends GetView<AddWalletController> {
   const AddWalletScreen({Key? key}) : super(key: key);
+
+  ValueChanged<int?> _onMethodChanged() {
+    return (value) => controller.updateAddWalletMethod(value);
+  }
+
+  void _onNextPressed() {
+    switch (controller.methodId.value) {
+      case 1:
+        Get.offNamed('/create_wallet');
+        break;
+      case 2:
+        Get.offNamed('/importseed');
+        break;
+      case 3:
+        Get.offNamed('/importseed');
+        break;
+      default:
+        Get.offNamed('/create_wallet');
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +114,10 @@ class AddWalletScreen extends GetView<AddWalletController> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Obx(
                 () => GosutoButton(
-                  text: 'next'.tr,
+                  text: 'okay'.tr,
                   style: GosutoButtonStyle.fill,
                   disabled: controller.methodId.value == 0,
+                  onPress: _onNextPressed,
                 ),
               ),
             ),
@@ -103,9 +125,5 @@ class AddWalletScreen extends GetView<AddWalletController> {
         ),
       ),
     );
-  }
-
-  ValueChanged<int?> _onMethodChanged() {
-    return (value) => controller.updateAddWalletMethod(value);
   }
 }

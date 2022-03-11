@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../services/theme_service.dart';
+import '../themes/colors.dart';
 
 class AppConstants {
   static const duration = Duration(milliseconds: 200);
@@ -21,4 +25,11 @@ class AppConstants {
     'swap'.tr,
     'staking'.tr,
   ];
+
+  static final TextStyle subTextStyle = TextStyle(
+      fontSize: 12,
+      height: 2,
+      color: ThemeService().isDarkMode
+          ? AppDarkColors.textColor1
+          : const Color(0xFFA1A1A1));
 }

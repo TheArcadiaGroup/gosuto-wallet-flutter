@@ -28,6 +28,10 @@ const Map<String, String> enUs = {
       '• You set the password fot this specific instance of Gosuto.',
   'create_a_password_text2':
       '• This password will be used to unlock the mobile wallet.',
+  'wallet_name': 'Wallet Name',
+  'wallet_paddword': 'New Password',
+  'wallet_paddword2': 'Confirm Password',
+  'confirm_text': 'I have read and agree to the terms of service',
   'hello': 'Hello',
   'account_setting': 'Account Setting',
   'choose_file': 'Choose File',

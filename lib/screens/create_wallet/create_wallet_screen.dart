@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
+import '../../components/checkbox.dart';
 import 'create_wallet_controller.dart';
 
 class CreateWalletScreen extends GetView<CreateWalletController> {
@@ -98,7 +99,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                         cursorColor: Theme.of(context).colorScheme.onSurface,
                         style: Theme.of(context).textTheme.bodyText1,
                         decoration: _inputDecoration.copyWith(
-                          labelText: 'Wallet Name',
+                          labelText: 'wallet_name'.tr,
                         ),
                       ),
                       const SizedBox(
@@ -110,7 +111,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                           cursorColor: Theme.of(context).colorScheme.onSurface,
                           style: Theme.of(context).textTheme.bodyText1,
                           decoration: _inputDecoration.copyWith(
-                            labelText: 'New Password',
+                            labelText: 'wallet_paddword'.tr,
                             prefixIcon: IconButton(
                               icon: ThemeService().isDarkMode
                                   ? SvgPicture.asset(
@@ -140,7 +141,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                           cursorColor: Theme.of(context).colorScheme.onSurface,
                           style: Theme.of(context).textTheme.bodyText1,
                           decoration: _inputDecoration.copyWith(
-                            labelText: 'Confirm Password',
+                            labelText: 'wallet_paddword2'.tr,
                             prefixIcon: IconButton(
                               icon: ThemeService().isDarkMode
                                   ? SvgPicture.asset(
@@ -161,6 +162,16 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                           ),
                         ),
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Obx(
+                        () => GosutoCheckbox(
+                          label: 'confirm_text'.tr,
+                          isChecked: controller.agreed.value,
+                          onChanged: (value) => controller.toggleAgreed(),
+                        ),
+                      )
                     ],
                   ),
                 ),

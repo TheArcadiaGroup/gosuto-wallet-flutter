@@ -77,7 +77,7 @@ class _RadioState<T> extends State<GosutoRadioOption<T>> {
                             color: Colors.transparent,
                           ),
                         ),
-                        color: Color(0xff4f4f4f),
+                        color: Color(0xFF4F4F4F),
                       ),
                     ),
                   ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/services/service.dart';
-import 'package:gosuto/themes/colors.dart';
 import 'package:gosuto/utils/utils.dart';
 
 import 'create_wallet_controller.dart';
@@ -12,6 +11,36 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
 
   @override
   Widget build(BuildContext context) {
+    InputDecoration _inputDecoration = InputDecoration(
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+      contentPadding: const EdgeInsets.all(20),
+      border: OutlineInputBorder(
+        borderSide:
+            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(24),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide:
+            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(24),
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide:
+            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(24),
+        ),
+      ),
+    );
+
     return Scaffold(
       body: SafeArea(
         child: SizedBox(
@@ -37,25 +66,104 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                 const SizedBox(
                   height: 25,
                 ),
-                Row(children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'create_a_password'.tr,
+                          style: AppConstants.subTextStyle,
+                        ),
+                        Text(
+                          'create_a_password_text1'.tr,
+                          style: AppConstants.subTextStyle,
+                        ),
+                        Text(
+                          'create_a_password_text2'.tr,
+                          style: AppConstants.subTextStyle,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Column(
                     children: <Widget>[
-                      Text(
-                        'create_a_password'.tr,
-                        style: AppConstants.subTextStyle,
+                      const SizedBox(
+                        height: 30,
                       ),
-                      Text(
-                        'create_a_password_text1'.tr,
-                        style: AppConstants.subTextStyle,
+                      TextField(
+                        cursorColor: Theme.of(context).colorScheme.onSurface,
+                        style: Theme.of(context).textTheme.bodyText1,
+                        decoration: _inputDecoration.copyWith(
+                          labelText: 'Wallet Name',
+                        ),
                       ),
-                      Text(
-                        'create_a_password_text2'.tr,
-                        style: AppConstants.subTextStyle,
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Obx(
+                        () => TextField(
+                          obscureText: controller.hidePassword.value,
+                          cursorColor: Theme.of(context).colorScheme.onSurface,
+                          style: Theme.of(context).textTheme.bodyText1,
+                          decoration: _inputDecoration.copyWith(
+                            labelText: 'New Password',
+                            prefixIcon: IconButton(
+                              icon: ThemeService().isDarkMode
+                                  ? SvgPicture.asset(
+                                      'assets/svgs/dark/ic-lock.svg')
+                                  : SvgPicture.asset(
+                                      'assets/svgs/light/ic-lock.svg'),
+                              onPressed: null,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(controller.hidePassword.value
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              onPressed: () => controller.togglePassword(),
+                              color: ThemeService().isDarkMode
+                                  ? Colors.white.withOpacity(0.4)
+                                  : Colors.black.withOpacity(0.4),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Obx(
+                        () => TextField(
+                          obscureText: controller.hideRePassword.value,
+                          cursorColor: Theme.of(context).colorScheme.onSurface,
+                          style: Theme.of(context).textTheme.bodyText1,
+                          decoration: _inputDecoration.copyWith(
+                            labelText: 'Confirm Password',
+                            prefixIcon: IconButton(
+                              icon: ThemeService().isDarkMode
+                                  ? SvgPicture.asset(
+                                      'assets/svgs/dark/ic-lock.svg')
+                                  : SvgPicture.asset(
+                                      'assets/svgs/light/ic-lock.svg'),
+                              onPressed: null,
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(controller.hideRePassword.value
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                              onPressed: () => controller.toggleRePassword(),
+                              color: ThemeService().isDarkMode
+                                  ? Colors.white.withOpacity(0.4)
+                                  : Colors.black.withOpacity(0.4),
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ]),
+                ),
               ],
             ),
           ),

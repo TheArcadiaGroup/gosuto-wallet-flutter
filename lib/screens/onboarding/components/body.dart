@@ -39,12 +39,12 @@ class _BodyState extends State<Body> {
         curve: Curves.easeIn,
       );
     } else {
-      Get.offAllNamed('/home');
+      Get.offAllNamed('/addwallet');
     }
   }
 
   void _skip() {
-    Get.offAllNamed('/home');
+    Get.offAllNamed('/addwallet');
   }
 
   @override

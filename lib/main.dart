@@ -21,11 +21,14 @@ class GosutoWalletApp extends StatefulWidget {
 }
 
 class GosutoWalletAppState extends State<GosutoWalletApp> {
+  var initialRoute = OnboardingService().isFirstTimeOpen
+      ? Routes.onboarding
+      : Routes.addwallet;
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute:
-          OnboardingService().isFirstTimeOpen ? Routes.onboarding : Routes.home,
+      initialRoute: initialRoute,
       getPages: AppPages.routes,
       initialBinding: AppBinding(),
       smartManagement: SmartManagement.keepFactory,

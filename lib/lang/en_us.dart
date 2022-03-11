@@ -1,4 +1,5 @@
 const Map<String, String> enUs = {
+  // Onboarding Scree
   'onboarding_title1': 'Welcome to Gosuto Wallet',
   'onboarding_subtitle1':
       'Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.',
@@ -11,6 +12,14 @@ const Map<String, String> enUs = {
   'next': 'Next',
   'done': 'Done',
   'skip': 'Skip',
+  // Add Wallet Screen
+  'add_wallet_hello': 'Hello there, connect or create wallet to continue!',
+  'wallet_title1': 'Add New Wallet',
+  'wallet_text1': 'Add new wallet to your account',
+  'wallet_title2': 'Import From Seed',
+  'wallet_text2': 'Import wallet from seed phrase',
+  'wallet_title3': 'Import From File',
+  'wallet_text3': 'Import wallet from file',
   'hello': 'Hello',
   'account_setting': 'Account Setting',
   'choose_file': 'Choose File',

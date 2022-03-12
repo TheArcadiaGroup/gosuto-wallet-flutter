@@ -75,6 +75,7 @@ class CreateWalletController extends GetxController {
 
     if (isValid && agreed.value) {
       formKey.currentState!.save();
+      Get.toNamed('/seed_phrase');
     }
   }
 }

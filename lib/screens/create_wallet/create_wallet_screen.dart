@@ -209,10 +209,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                 () => GosutoCheckbox(
                                   label: 'confirm_text'.tr,
                                   isChecked: controller.agreed.value,
-                                  onChanged: (value) => {
-                                    controller.toggleAgreed(),
-                                    controller.checkValidate()
-                                  },
+                                  onChanged: (value) =>
+                                      controller.toggleAgreed(),
                                 ),
                               ),
                             ],

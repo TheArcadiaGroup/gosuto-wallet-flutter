@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:gosuto/screens/create_wallet/create_wallet.dart';
 import 'package:gosuto/screens/home/home.dart';
-import 'package:gosuto/screens/add_wallet/add_wallet.dart';
 import 'package:gosuto/screens/onboarding/onboarding_screen.dart';
+import 'package:gosuto/screens/add_wallet/add_wallet.dart';
+import 'package:gosuto/screens/seed_phrase/seed_phrase_binding.dart';
+import 'package:gosuto/screens/seed_phrase/seed_phrase_screen.dart';
 
 part 'app_routes.dart';
 
@@ -23,6 +25,11 @@ class AppPages {
       name: Routes.addWallet,
       page: () => const AddWalletScreen(),
       binding: AddWalletBinding(),
+    ),
+    GetPage(
+      name: Routes.seedPhrase,
+      page: () => const SeedPhraseScreen(),
+      binding: SeedPhraseBinding(),
     ),
     GetPage(
       name: Routes.createWallet,

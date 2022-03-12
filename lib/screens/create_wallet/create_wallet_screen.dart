@@ -241,7 +241,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   text: 'back'.tr,
                                   style: GosutoButtonStyle.text,
                                   onPressed: () {
-                                    Get.offAllNamed('/add_wallet');
+                                    Get.back();
                                   },
                                 )
                               ],

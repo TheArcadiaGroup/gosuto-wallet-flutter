@@ -21,6 +21,8 @@ const Map<String, String> enUs = {
   'wallet_title3': 'Import From File',
   'wallet_text3': 'Import wallet from file',
   'okay': 'Okay',
+  'continue': 'Continue',
+  'back': 'Back',
   // Create New Wallet Screen
   'create_a_new_wallet': 'Create a new wallet',
   'create_a_password': 'Create a password',

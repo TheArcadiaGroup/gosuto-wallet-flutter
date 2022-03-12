@@ -102,7 +102,7 @@ class _BodyState extends State<Body> {
                       height: 10,
                     ),
                     GosutoButton(
-                      text: 'Skip'.tr,
+                      text: 'skip'.tr,
                       style: GosutoButtonStyle.text,
                       onPress: () {
                         _skip();

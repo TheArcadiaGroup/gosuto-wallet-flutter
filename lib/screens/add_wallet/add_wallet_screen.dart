@@ -117,7 +117,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
                   text: 'okay'.tr,
                   style: GosutoButtonStyle.fill,
                   disabled: controller.methodId.value == 0,
-                  onPress: _onNextPressed,
+                  onPressed: _onNextPressed,
                 ),
               ),
             ),

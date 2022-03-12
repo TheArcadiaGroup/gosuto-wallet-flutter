@@ -94,7 +94,7 @@ class _BodyState extends State<Body> {
                           ? 'next'.tr
                           : 'done'.tr,
                       style: GosutoButtonStyle.fill,
-                      onPress: () {
+                      onPressed: () {
                         _nextPage();
                       },
                     ),
@@ -104,7 +104,7 @@ class _BodyState extends State<Body> {
                     GosutoButton(
                       text: 'skip'.tr,
                       style: GosutoButtonStyle.text,
-                      onPress: () {
+                      onPressed: () {
                         _skip();
                       },
                     )

@@ -8,14 +8,14 @@ class GosutoButton extends StatefulWidget {
   final String text;
   final bool? disabled;
   final GosutoButtonStyle? style;
-  final Function? onPress;
+  final Function? onPressed;
 
   const GosutoButton({
     Key? key,
     required this.text,
     this.disabled,
     this.style,
-    this.onPress,
+    this.onPressed,
   }) : super(key: key);
 
   bool get _disabled => disabled == null ? false : disabled!;
@@ -57,7 +57,8 @@ class _ButtonState extends State<GosutoButton> {
                     ?.withOpacity(widget._disabled ? 0.5 : 1),
           ),
         ),
-        onPressed: widget.onPress as void Function()?,
+        onPressed:
+            widget._disabled ? null : widget.onPressed as void Function()?,
       ),
     );
   }

@@ -91,6 +91,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                 ),
                 Expanded(
                   child: Form(
+                    key: controller.formKey,
+                    autovalidateMode: AutovalidateMode.always,
                     child: Column(
                       children: <Widget>[
                         Expanded(
@@ -100,7 +102,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                               const SizedBox(
                                 height: 30,
                               ),
-                              TextField(
+                              TextFormField(
                                 controller: controller.walletNameController,
                                 cursorColor:
                                     Theme.of(context).colorScheme.onSurface,
@@ -108,13 +110,20 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                 decoration: _inputDecoration.copyWith(
                                   labelText: 'wallet_name'.tr,
                                 ),
+                                onSaved: (value) {
+                                  controller.walletName.value = value!;
+                                },
+                                validator: (value) {
+                                  return controller.validateWalletName(value!);
+                                },
                               ),
                               const SizedBox(
                                 height: 30,
                               ),
                               Obx(
-                                () => TextField(
+                                () => TextFormField(
                                   obscureText: controller.hidePassword.value,
+                                  controller: controller.passwordController,
                                   cursorColor:
                                       Theme.of(context).colorScheme.onSurface,
                                   style: Theme.of(context).textTheme.bodyText1,
@@ -139,14 +148,24 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                           : Colors.black.withOpacity(0.4),
                                     ),
                                   ),
+                                  onChanged: (value) {
+                                    controller.password.value = value;
+                                  },
+                                  onSaved: (value) {
+                                    controller.password.value = value!;
+                                  },
+                                  validator: (value) {
+                                    return controller.validatePassword(value!);
+                                  },
                                 ),
                               ),
                               const SizedBox(
                                 height: 30,
                               ),
                               Obx(
-                                () => TextField(
+                                () => TextFormField(
                                   obscureText: controller.hideRePassword.value,
+                                  controller: controller.password2Controller,
                                   cursorColor:
                                       Theme.of(context).colorScheme.onSurface,
                                   style: Theme.of(context).textTheme.bodyText1,
@@ -171,6 +190,16 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                           : Colors.black.withOpacity(0.4),
                                     ),
                                   ),
+                                  onChanged: (value) {
+                                    controller.password2.value = value;
+                                  },
+                                  onSaved: (value) {
+                                    controller.password2.value = value!;
+                                  },
+                                  validator: (value) {
+                                    return controller
+                                        .validateConfirmPassword(value!);
+                                  },
                                 ),
                               ),
                               const SizedBox(
@@ -180,8 +209,10 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                 () => GosutoCheckbox(
                                   label: 'confirm_text'.tr,
                                   isChecked: controller.agreed.value,
-                                  onChanged: (value) =>
-                                      controller.toggleAgreed(),
+                                  onChanged: (value) => {
+                                    controller.toggleAgreed(),
+                                    controller.checkValidate()
+                                  },
                                 ),
                               ),
                             ],
@@ -193,9 +224,15 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Column(
                               children: <Widget>[
-                                GosutoButton(
-                                  text: 'continue'.tr,
-                                  style: GosutoButtonStyle.fill,
+                                Obx(
+                                  () => GosutoButton(
+                                    text: 'continue'.tr,
+                                    style: GosutoButtonStyle.fill,
+                                    disabled: !controller.agreed.value,
+                                    onPressed: () {
+                                      controller.checkValidate();
+                                    },
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 10,
@@ -203,7 +240,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                 GosutoButton(
                                   text: 'back'.tr,
                                   style: GosutoButtonStyle.text,
-                                  onPress: () {
+                                  onPressed: () {
                                     Get.offAllNamed('/add_wallet');
                                   },
                                 )

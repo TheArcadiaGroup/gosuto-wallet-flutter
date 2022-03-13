@@ -218,32 +218,29 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Column(
-                              children: [
-                                Obx(
-                                  () => GosutoButton(
-                                    text: 'continue'.tr,
-                                    style: GosutoButtonStyle.fill,
-                                    disabled: !controller.agreed.value,
-                                    onPressed: () {
-                                      controller.checkValidate();
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                GosutoButton(
-                                  text: 'back'.tr,
-                                  style: GosutoButtonStyle.text,
+                          child: Column(
+                            children: [
+                              Obx(
+                                () => GosutoButton(
+                                  text: 'continue'.tr,
+                                  style: GosutoButtonStyle.fill,
+                                  disabled: !controller.agreed.value,
                                   onPressed: () {
-                                    Get.back();
+                                    controller.checkValidate();
                                   },
-                                )
-                              ],
-                            ),
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              GosutoButton(
+                                text: 'back'.tr,
+                                style: GosutoButtonStyle.text,
+                                onPressed: () {
+                                  Get.back();
+                                },
+                              )
+                            ],
                           ),
                         ),
                       ],

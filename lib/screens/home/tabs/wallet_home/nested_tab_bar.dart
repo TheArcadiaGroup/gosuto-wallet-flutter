@@ -34,7 +34,7 @@ class _NestedTabBarState extends State<NestedTabBar>
     double heightTab = 70;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: <Widget>[
+      children: [
         TabBar(
           controller: _nestedTabController,
           // indicatorColor: Theme.of(context).colorScheme,
@@ -51,7 +51,7 @@ class _NestedTabBarState extends State<NestedTabBar>
           // ),
           padding: const EdgeInsets.all(20),
           isScrollable: true,
-          tabs: <Widget>[
+          tabs: [
             SizedBox(
               width: widthTab,
               height: heightTab,
@@ -101,7 +101,7 @@ class _NestedTabBarState extends State<NestedTabBar>
           margin: const EdgeInsets.only(left: 16.0, right: 16.0),
           child: TabBarView(
             controller: _nestedTabController,
-            children: <Widget>[
+            children: [
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8.0),

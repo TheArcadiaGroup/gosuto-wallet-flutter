@@ -51,9 +51,9 @@ class _RadioState<T> extends State<GosutoRadioOption<T>> {
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
             Column(
-              children: <Widget>[
+              children: [
                 Container(
                   margin: const EdgeInsets.only(top: 2, right: 20),
                   width: 18,
@@ -86,7 +86,7 @@ class _RadioState<T> extends State<GosutoRadioOption<T>> {
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
+              children: [
                 Text(
                   widget.label,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(

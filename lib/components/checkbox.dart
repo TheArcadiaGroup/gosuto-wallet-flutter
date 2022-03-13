@@ -28,7 +28,7 @@ class _CheckboxState extends State<GosutoCheckbox> {
       splashColor: Colors.transparent,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
+        children: [
           AnimatedContainer(
             height: 18,
             width: 18,

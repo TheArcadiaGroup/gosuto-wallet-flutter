@@ -50,7 +50,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
-              children: <Widget>[
+              children: [
                 const SizedBox(
                   height: 20,
                 ),
@@ -69,10 +69,10 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                   height: 25,
                 ),
                 Row(
-                  children: <Widget>[
+                  children: [
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
+                      children: [
                         Text(
                           'create_a_password'.tr,
                           style: AppConstants.subTextStyle,
@@ -94,11 +94,11 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                     key: controller.formKey,
                     autovalidateMode: AutovalidateMode.always,
                     child: Column(
-                      children: <Widget>[
+                      children: [
                         Expanded(
                           flex: 4,
                           child: Column(
-                            children: <Widget>[
+                            children: [
                               const SizedBox(
                                 height: 30,
                               ),
@@ -221,7 +221,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Column(
-                              children: <Widget>[
+                              children: [
                                 Obx(
                                   () => GosutoButton(
                                     text: 'continue'.tr,

@@ -16,7 +16,7 @@ class OnboardingContent extends StatelessWidget {
         horizontal: 30,
       ),
       child: Column(
-        children: <Widget>[
+        children: [
           Text(
             title,
             textAlign: TextAlign.center,

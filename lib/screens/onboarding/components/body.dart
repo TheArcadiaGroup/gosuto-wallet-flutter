@@ -53,7 +53,7 @@ class _BodyState extends State<Body> {
       child: SizedBox(
         width: double.infinity,
         child: Column(
-          children: <Widget>[
+          children: [
             const Spacer(
               flex: 2,
             ),
@@ -88,7 +88,7 @@ class _BodyState extends State<Body> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
-                  children: <Widget>[
+                  children: [
                     GosutoButton(
                       text: currentPage < pages.length - 1
                           ? 'next'.tr

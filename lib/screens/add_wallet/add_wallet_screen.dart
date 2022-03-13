@@ -41,7 +41,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
       child: SizedBox(
         width: double.infinity,
         child: Column(
-          children: <Widget>[
+          children: [
             const SizedBox(
               height: 20,
             ),
@@ -51,7 +51,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
-                  children: <Widget>[
+                  children: [
                     const SizedBox(
                       height: 20,
                     ),

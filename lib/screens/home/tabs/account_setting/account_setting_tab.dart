@@ -67,7 +67,7 @@ class AccountSettingTab extends GetView<HomeController> {
               const SizedBox(height: 20),
               Obx(() => Stack(
                     alignment: AlignmentDirectional.center,
-                    children: <Widget>[
+                    children: [
                       controller.avatarPath.value != ""
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(25),

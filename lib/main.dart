@@ -7,28 +7,18 @@ import 'app_binding.dart';
 import 'routes/app_pages.dart';
 
 void main() {
-  runApp(const GosutoWalletApp());
+  runApp(const MyApp());
   configLoading();
 }
 
-class GosutoWalletApp extends StatefulWidget {
-  const GosutoWalletApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() {
-    return GosutoWalletAppState();
-  }
-}
-
-class GosutoWalletAppState extends State<GosutoWalletApp> {
-  var initialRoute = OnboardingService().isFirstTimeOpen
-      ? Routes.onboarding
-      : Routes.addWallet;
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: initialRoute,
+      initialRoute: Routes.home,
       getPages: AppPages.routes,
       initialBinding: AppBinding(),
       smartManagement: SmartManagement.keepFactory,

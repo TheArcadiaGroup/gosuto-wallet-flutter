@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import 'home.dart';
@@ -10,31 +11,75 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async => false,
-      child: Obx(() => _buildWidget()),
+      child: Obx(() => _buildWidget(context)),
     );
   }
 
-  Widget _buildWidget() {
+  Widget _buildWidget(BuildContext context) {
+    final selectedIdx = controller.getCurrentIndex(controller.currentTab.value);
     return DefaultTabController(
-        length: 7,
+        length: 6,
         child: Scaffold(
             appBar: AppBar(
               flexibleSpace: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TabBar(
-                    controller: controller.tabController,
-                    isScrollable: true,
-                    tabs: [
-                      Tab(icon: Image.asset('assets/images/dark/ic-tab1.png')),
-                      Tab(icon: Image.asset('assets/images/dark/ic-tab2.png')),
-                      Tab(icon: Image.asset('assets/images/dark/ic-tab3.png')),
-                      Tab(icon: Image.asset('assets/images/dark/ic-tab4.png')),
-                      Tab(icon: Image.asset('assets/images/dark/ic-tab5.png')),
-                      Tab(icon: Image.asset('assets/images/dark/ic-tab6.png')),
-                      Tab(icon: Image.asset('assets/images/dark/ic-tab7.png')),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Tab(
+                            icon: SvgPicture.asset('assets/svgs/ic-menu.svg')),
+                      ),
+                      Expanded(
+                        child: TabBar(
+                          controller: controller.tabController,
+                          isScrollable: true,
+                          indicatorColor: Colors.transparent,
+                          tabs: [
+                            Tab(
+                                icon:
+                                    Image.asset('assets/images/ic-tab-2.png')),
+                            Tab(
+                                icon:
+                                    Image.asset('assets/images/ic-tab-3.png')),
+                            Tab(
+                                icon: SvgPicture.asset(
+                                    'assets/svgs/ic-history.svg',
+                                    color: selectedIdx == 2
+                                        ? Colors.white
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onTertiary)),
+                            Tab(
+                                icon: SvgPicture.asset(
+                                    'assets/svgs/ic-stake.svg',
+                                    color: selectedIdx == 3
+                                        ? Colors.white
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onTertiary)),
+                            Tab(
+                                icon: SvgPicture.asset(
+                                    'assets/svgs/ic-performance.svg',
+                                    color: selectedIdx == 4
+                                        ? Colors.white
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onTertiary)),
+                            Tab(
+                                icon: SvgPicture.asset(
+                                    'assets/svgs/ic-setting.svg',
+                                    color: selectedIdx == 5
+                                        ? Colors.white
+                                        : Theme.of(context)
+                                            .colorScheme
+                                            .onTertiary)),
+                          ],
+                          onTap: (index) => controller.switchTab(index),
+                        ),
+                      ),
                     ],
-                    onTap: (index) => controller.switchTab(index),
                   )
                 ],
               ),
@@ -48,12 +93,12 @@ class HomeScreen extends GetView<HomeController> {
         return controller.chooseWalletTab;
       case MainTabs.walletHome:
         return controller.walletHomeTab;
-      case MainTabs.tab3:
-        return const Tab(icon: Icon(Icons.flight, size: 350));
+      // case MainTabs.tab3:
+      //   return const Tab(icon: Icon(Icons.flight, size: 350));
       case MainTabs.history:
         return controller.historyTab;
-      case MainTabs.tab5:
-        return const Tab(icon: Icon(Icons.flight, size: 350));
+      case MainTabs.stake:
+        return controller.stakeTab;
       case MainTabs.currencyPerformance:
         return controller.currencyPerformanceTab;
       case MainTabs.accountSetting:

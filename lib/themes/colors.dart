@@ -23,3 +23,10 @@ class AppLightColors {
   static const Color textColor2 = Colors.black;
   static const Color textColor3 = Color(0xFF383B62);
 }
+
+class AppColors {
+  static const Color borderWalletCard1 = Color(0xFF725DFF);
+  static const Color borderWalletCard2 = Color(0xFFFF8266);
+  static const Color borderWalletCard3 = Color(0xFF70CF98);
+  static const Color lineChart = Color(0xFF725DFF);
+}

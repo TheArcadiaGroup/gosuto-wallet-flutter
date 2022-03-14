@@ -45,8 +45,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
 
     return Scaffold(
       body: SafeArea(
-        child: SizedBox(
-          width: double.infinity,
+        child: Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(

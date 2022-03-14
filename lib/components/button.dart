@@ -29,9 +29,10 @@ class _ButtonState extends State<GosutoButton> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: widget.style == GosutoButtonStyle.fill ? 56 : 20,
       child: TextButton(
         style: TextButton.styleFrom(
+          padding: const EdgeInsets.all(0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(28),
           ),

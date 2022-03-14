@@ -55,7 +55,7 @@ class _BodyState extends State<Body> {
         child: Column(
           children: [
             const Spacer(
-              flex: 2,
+              flex: 1,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +68,7 @@ class _BodyState extends State<Body> {
               height: 20,
             ),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: PageView.builder(
                 controller: _pageController,
                 onPageChanged: (value) {

@@ -16,9 +16,18 @@ class WalletCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 24),
       // height: 214,
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          borderRadius: BorderRadius.circular(15),
-          border: Border.all(color: AppDarkColors.tabBarIndicatorColor)),
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(color: AppColors.borderWalletCard1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(12),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, -1), // changes position of shadow
+          ),
+        ],
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -40,26 +49,51 @@ class WalletCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Text('available'.tr.toUpperCase()),
+                  Text(
+                    'available'.tr.toUpperCase(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
                   RichText(
                       text: TextSpan(
                           text: '250.510 CSPR ≈ ',
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
                           children: [
                         TextSpan(
-                            text: '\$2,500 USD',
-                            style: Theme.of(context).textTheme.subtitle2)
+                          text: '\$2,500 USD',
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        )
                       ])),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                  Divider(
+                    height: 1,
+                    color: Colors.black.withOpacity(0.1),
+                  ),
+                  const SizedBox(height: 10),
                   Text('stacked'.tr.toUpperCase()),
                   RichText(
                       text: TextSpan(
                           text: '250.510 CSPR ≈ ',
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
                           children: [
                         TextSpan(
-                            text: '\$2,500 USD',
-                            style: Theme.of(context).textTheme.subtitle2)
+                          text: '\$2,500 USD',
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        )
                       ])),
                   const SizedBox(height: 10),
                   RichText(
@@ -68,8 +102,12 @@ class WalletCard extends StatelessWidget {
                           style: Theme.of(context).textTheme.subtitle2,
                           children: [
                         TextSpan(
-                            text: ' \$375 USD',
-                            style: Theme.of(context).textTheme.bodyText1)
+                          text: ' \$375 USD',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontSize: 12),
+                        )
                       ]))
                 ],
               ),

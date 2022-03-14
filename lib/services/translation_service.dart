@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gosuto/lang/lang.dart';
+import 'package:gosuto/lang/vi_vn.dart';
 
 class TranslationService extends Translations {
   final _box = GetStorage();
@@ -18,12 +19,12 @@ class TranslationService extends Translations {
   ];
 
   static final langs =
-      LinkedHashMap.from({'en': 'English', 'vi': 'Tiếng Việt'});
+  LinkedHashMap.from({'en': 'English', 'vi': 'Tiếng Việt'});
 
   static get locales => [
-        const Locale('en', 'US'),
-        const Locale('vi', 'VN'),
-      ];
+    const Locale('en', 'US'),
+    const Locale('vi', 'VN'),
+  ];
 
   static Locale _getLocaleFromLanguage({String? langCode}) {
     var lang = langCode ?? fallbackLocale;

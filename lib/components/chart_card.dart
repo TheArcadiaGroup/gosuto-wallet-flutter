@@ -21,8 +21,6 @@ class _ChatCardState extends State<ChartCard> {
     return _buildWidget(context);
   }
 
-  // final simpleCurrencyFormatter = charts.BasicNumericTickFormatterSpec.fromNumberFormat(NumberFormat.compactSimpleCurrency());
-
   Widget _buildWidget(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10),
@@ -31,6 +29,14 @@ class _ChatCardState extends State<ChartCard> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(22),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(12),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, -1), // changes position of shadow
+          ),
+        ],
       ),
       child: Column(
         children: [
@@ -45,7 +51,10 @@ class _ChatCardState extends State<ChartCard> {
                   children: [
                     Text(
                       'CSRP Price',
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(fontSize: 10, fontWeight: FontWeight.bold),
                     ),
                     RichText(
                         text: TextSpan(
@@ -53,7 +62,7 @@ class _ChatCardState extends State<ChartCard> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
-                                ?.copyWith(fontSize: 12),
+                                ?.copyWith(fontWeight: FontWeight.bold),
                             children: [
                           TextSpan(
                               text: '+2.5% USD',
@@ -67,7 +76,10 @@ class _ChatCardState extends State<ChartCard> {
                 child: DropdownButtonHideUnderline(
                   child: Obx(() => DropdownButton2(
                         value: _selectedFilter.value,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1
+                            ?.copyWith(fontSize: 10),
                         items: _buildDropDownMenuItems(),
                         onChanged: _changeFilter,
                         buttonHeight: 35,
@@ -95,15 +107,39 @@ class _ChatCardState extends State<ChartCard> {
           Container(
             height: 200,
             padding: const EdgeInsets.all(10),
-            child: charts.TimeSeriesChart(_createSampleData(),
-                animate: true,
-                primaryMeasureAxis: charts.NumericAxisSpec(
-                    // tickFormatterSpec: simpleCurrencyFormatter,
-                    renderSpec: const charts.GridlineRendererSpec(
-                        lineStyle: charts.LineStyleSpec(dashPattern: [4, 8])),
-                    tickFormatterSpec:
-                        charts.BasicNumericTickFormatterSpec.fromNumberFormat(
-                            NumberFormat.compactSimpleCurrency()))),
+            child: charts.TimeSeriesChart(
+              _createSampleData(),
+              animate: true,
+              domainAxis: charts.DateTimeAxisSpec(
+                renderSpec: charts.GridlineRendererSpec(
+                  lineStyle: charts.LineStyleSpec(
+                    color: charts.ColorUtil.fromDartColor(Colors.transparent),
+                  ),
+                  labelStyle: charts.TextStyleSpec(
+                    color: charts.ColorUtil.fromDartColor(
+                      const Color(0xFFAAB5C5),
+                    ),
+                    fontSize: 8,
+                  ),
+                ),
+              ),
+              primaryMeasureAxis: charts.NumericAxisSpec(
+                renderSpec: charts.GridlineRendererSpec(
+                  lineStyle: const charts.LineStyleSpec(dashPattern: [4, 8]),
+                  labelStyle: charts.TextStyleSpec(
+                    color: charts.ColorUtil.fromDartColor(
+                      const Color(0xFFAAB5C5),
+                    ),
+                    fontSize: 7,
+                    // fontWeight: FontWeight.bold.toString()
+                  ),
+                ),
+                tickFormatterSpec:
+                    charts.BasicNumericTickFormatterSpec.fromNumberFormat(
+                  NumberFormat.compactSimpleCurrency(),
+                ),
+              ),
+            ),
           )
         ],
       ),
@@ -143,7 +179,7 @@ class _ChatCardState extends State<ChartCard> {
       charts.Series<MyRow, DateTime>(
         id: 'Cost',
         colorFn: (_, __) =>
-            charts.ColorUtil.fromDartColor(AppDarkColors.tabBarIndicatorColor),
+            charts.ColorUtil.fromDartColor(AppColors.lineChart),
         domainFn: (MyRow row, _) => row.timeStamp,
         measureFn: (MyRow row, _) => row.cost,
         data: data,

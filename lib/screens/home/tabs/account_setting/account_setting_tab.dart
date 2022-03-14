@@ -4,9 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
+import 'package:gosuto/components/components.dart';
 import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/services/service.dart';
-import 'package:gosuto/themes/colors.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -56,7 +56,7 @@ class AccountSettingTab extends GetView<HomeController> {
   Widget _buildWidget(BuildContext context) {
     return SingleChildScrollView(
       child: Container(
-        padding: const EdgeInsets.only(top: 27, bottom: 27),
+        padding: const EdgeInsets.only(top: 27, bottom: 60),
         child: Center(
           child: Column(
             children: [
@@ -67,7 +67,7 @@ class AccountSettingTab extends GetView<HomeController> {
               const SizedBox(height: 20),
               Obx(() => Stack(
                     alignment: AlignmentDirectional.center,
-                    children: [
+                    children: <Widget>[
                       controller.avatarPath.value != ""
                           ? ClipRRect(
                               borderRadius: BorderRadius.circular(25),
@@ -99,14 +99,19 @@ class AccountSettingTab extends GetView<HomeController> {
               ElevatedButton.icon(
                   onPressed: _pickPhotoAlbum,
                   style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(Colors.transparent),
-                      shadowColor:
-                          MaterialStateProperty.all(Colors.transparent),
-                      foregroundColor:
-                          MaterialStateProperty.all(AppDarkColors.orangeColor),
-                      textStyle: MaterialStateProperty.all(const TextStyle(
-                          color: AppDarkColors.orangeColor, fontSize: 16))),
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.transparent),
+                    shadowColor: MaterialStateProperty.all(Colors.transparent),
+                    foregroundColor: MaterialStateProperty.all(
+                      Theme.of(context).colorScheme.background,
+                    ),
+                    textStyle: MaterialStateProperty.all(
+                      TextStyle(
+                        color: Theme.of(context).colorScheme.background,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
                   label: Text('choose_file'.tr),
                   icon: Image.asset(
                     'assets/images/ic-choose-file.png',
@@ -115,22 +120,38 @@ class AccountSettingTab extends GetView<HomeController> {
                 padding: const EdgeInsets.only(left: 70, right: 70, bottom: 20),
                 child: Column(
                   children: [
-                    _buildTextField(context, 'name'.tr),
+                    // _buildTextField(context, 'name'.tr),
+                    CustomWidgets.textField(context, 'name'.tr,
+                        onChanged: (text) => {}),
                     Align(
-                        alignment: Alignment.topRight,
-                        child: TextButton(
-                            onPressed: () => {},
-                            child: Text('change_name'.tr,
-                                style: const TextStyle(
-                                    color: AppDarkColors.orangeColor)))),
-                    _buildTextField(context, 'email'.tr),
+                      alignment: Alignment.topRight,
+                      child: TextButton(
+                        onPressed: () => {},
+                        child: Text(
+                          'change_name'.tr,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.background,
+                          ),
+                        ),
+                      ),
+                    ),
+                    // _buildTextField(context, 'email'.tr),
+                    CustomWidgets.textField(context, 'email'.tr,
+                        onChanged: (text) => {}),
                     Align(
-                        alignment: Alignment.topRight,
-                        child: TextButton(
-                            onPressed: () => {},
-                            child: Text('change_name'.tr,
-                                style: const TextStyle(
-                                    color: AppDarkColors.orangeColor)))),
+                      alignment: Alignment.topRight,
+                      child: TextButton(
+                        onPressed: () => {},
+                        child: Text(
+                          'change_name'.tr,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.background,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -138,6 +159,14 @@ class AccountSettingTab extends GetView<HomeController> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   color: Theme.of(context).colorScheme.secondary,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(12),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: const Offset(0, -1), // changes position of shadow
+                    ),
+                  ],
                 ),
                 width: 296,
                 height: 77,
@@ -146,7 +175,10 @@ class AccountSettingTab extends GetView<HomeController> {
                   children: [
                     Text(
                       'change_theme'.tr,
-                      style: Theme.of(context).textTheme.bodyText1,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1
+                          ?.copyWith(fontSize: 13),
                     ),
                     Obx(
                       () => FlutterSwitch(
@@ -176,7 +208,10 @@ class AccountSettingTab extends GetView<HomeController> {
                         child: DropdownButton(
                           value: controller.selectedLanguage.value,
                           dropdownColor: Theme.of(context).colorScheme.primary,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(fontSize: 12),
                           items: _buildDropDownMenuLanguageItems(),
                           onChanged: _changeLanguage,
                         ),
@@ -185,14 +220,17 @@ class AccountSettingTab extends GetView<HomeController> {
                         child: DropdownButton(
                           value: controller.selectedCoin.value,
                           dropdownColor: Theme.of(context).colorScheme.primary,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(fontSize: 12),
                           items: _buildDropDownMenuCoinItems(),
                           onChanged: _changeCoin,
                         ),
                       ))
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 67),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -201,9 +239,15 @@ class AccountSettingTab extends GetView<HomeController> {
                     width: 150,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text('save'.tr),
+                      child: Text(
+                        'save'.tr,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2
+                            ?.copyWith(color: Colors.white),
+                      ),
                       style: ElevatedButton.styleFrom(
-                        primary: AppDarkColors.orangeColor,
+                        primary: Theme.of(context).colorScheme.background,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
@@ -215,13 +259,17 @@ class AccountSettingTab extends GetView<HomeController> {
                     width: 150,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text('cancel'.tr,
-                          style: const TextStyle(
-                              color: AppDarkColors.orangeColor)),
+                      child: Text(
+                        'cancel'.tr,
+                        style: Theme.of(context).textTheme.headline2?.copyWith(
+                              color: Theme.of(context).colorScheme.background,
+                            ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         primary: Theme.of(context).colorScheme.primary,
-                        side: const BorderSide(
-                            width: 1.0, color: AppDarkColors.orangeColor),
+                        side: BorderSide(
+                            width: 1.0,
+                            color: Theme.of(context).colorScheme.background),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
                         ),
@@ -237,29 +285,29 @@ class AccountSettingTab extends GetView<HomeController> {
     );
   }
 
-  Widget _buildTextField(BuildContext context, String label) {
-    return TextField(
-      cursorColor: Theme.of(context).colorScheme.onSurface,
-      style: Theme.of(context).textTheme.bodyText1,
-      decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.onSecondary, width: 1.0),
-              borderRadius: const BorderRadius.all(Radius.circular(18.0))),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(
-                  color: Theme.of(context).colorScheme.onSecondary, width: 1.0),
-              borderRadius: const BorderRadius.all(Radius.circular(18.0))),
-          contentPadding: const EdgeInsets.only(left: 20, right: 20),
-          border: const OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(18.0))),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          labelText: label,
-          labelStyle: Theme.of(context).textTheme.bodyText1,
-          hintText: label,
-          hintStyle: Theme.of(context).textTheme.bodyText2),
-    );
-  }
+  // Widget _buildTextField(BuildContext context, String label) {
+  //   return TextField(
+  //     cursorColor: Theme.of(context).colorScheme.onSurface,
+  //     style: Theme.of(context).textTheme.bodyText1,
+  //     decoration: InputDecoration(
+  //         focusedBorder: OutlineInputBorder(
+  //             borderSide: BorderSide(
+  //                 color: Theme.of(context).colorScheme.onSecondary, width: 1.0),
+  //             borderRadius: const BorderRadius.all(Radius.circular(18.0))),
+  //         enabledBorder: OutlineInputBorder(
+  //             borderSide: BorderSide(
+  //                 color: Theme.of(context).colorScheme.onSecondary, width: 1.0),
+  //             borderRadius: const BorderRadius.all(Radius.circular(18.0))),
+  //         contentPadding: const EdgeInsets.only(left: 20, right: 20),
+  //         border: const OutlineInputBorder(
+  //             borderRadius: BorderRadius.all(Radius.circular(18.0))),
+  //         floatingLabelBehavior: FloatingLabelBehavior.always,
+  //         labelText: label,
+  //         labelStyle: Theme.of(context).textTheme.bodyText1,
+  //         hintText: label,
+  //         hintStyle: Theme.of(context).textTheme.bodyText2),
+  //   );
+  // }
 
   List<DropdownMenuItem<String>> _buildDropDownMenuLanguageItems() {
     // var list = <DropdownMenuItem<String>>[];

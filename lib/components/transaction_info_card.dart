@@ -3,17 +3,29 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 class TransactionInfoCard extends StatelessWidget {
-  const TransactionInfoCard({Key? key}) : super(key: key);
+  const TransactionInfoCard({Key? key, this.subTitle = ''}) : super(key: key);
+
+  final String subTitle;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 400,
-      height: 435,
+      // height: 435,
       padding: const EdgeInsets.all(25),
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: Theme.of(context).colorScheme.secondary)),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: Theme.of(context).colorScheme.secondary),
+        color: Theme.of(context).colorScheme.primary,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(12),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, -1), // changes position of shadow
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -26,19 +38,32 @@ class TransactionInfoCard extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
+          SizedBox(
+            width: 400,
+            child: Text(
+              subTitle,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline2,
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 25),
             child: Row(
               children: [
                 SizedBox(
-                    width: 42,
-                    child: Text(
-                      'to'.tr,
-                      style: Theme.of(context).textTheme.subtitle1,
-                    )),
+                  width: 42,
+                  child: Text(
+                    'to'.tr,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1
+                        ?.copyWith(fontSize: 14),
+                  ),
+                ),
                 Text(
                   '0x9f98e01d2...4ed7',
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
                 )
               ],
             ),
@@ -55,7 +80,8 @@ class TransactionInfoCard extends StatelessWidget {
                     )),
                 Text(
                   '0x9f98e01d2...4ed7',
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
                 )
               ],
             ),
@@ -72,7 +98,8 @@ class TransactionInfoCard extends StatelessWidget {
                 ),
                 Text(
                   'Apr 01, 2021 07:15:20 am (EST)',
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
                 )
               ],
             ),
@@ -99,7 +126,7 @@ class TransactionInfoCard extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .headline5
-                        ?.copyWith(fontSize: 14),
+                        ?.copyWith(fontSize: 13),
                   ),
                   Text(
                     '0.00 USD',
@@ -107,7 +134,11 @@ class TransactionInfoCard extends StatelessWidget {
                   )
                 ],
               ),
-              SvgPicture.asset('assets/svgs/ic-swap-3.svg'),
+              SvgPicture.asset(
+                'assets/svgs/ic-swap-3.svg',
+                color: Theme.of(context).colorScheme.tertiaryContainer,
+                width: 23,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
@@ -116,7 +147,7 @@ class TransactionInfoCard extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .headline3
-                        ?.copyWith(fontSize: 14),
+                        ?.copyWith(fontSize: 13),
                   ),
                   Text(
                     '0.00 USD',
@@ -137,13 +168,17 @@ class TransactionInfoCard extends StatelessWidget {
             children: [
               Text(
                 'transaction_fee'.tr,
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1
+                    ?.copyWith(fontWeight: FontWeight.bold),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   '2.5%',
-                  style: Theme.of(context).textTheme.headline4,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
                 ),
               )
             ],
@@ -156,7 +191,10 @@ class TransactionInfoCard extends StatelessWidget {
               children: [
                 Text(
                   'transaction_hash'.tr,
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context)
+                      .textTheme
+                      .subtitle1
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '0x9f98e01d2...4ed7 ',
@@ -178,7 +216,10 @@ class TransactionInfoCard extends StatelessWidget {
                       Theme.of(context).colorScheme.background)),
               // label: Text('choose_file'.tr),
               // icon: Image.asset('assets/images/ic-choose-file.png'),
-              child: Text('view_on_block_explorer'.tr),
+              child: Text(
+                'view_on_block_explorer'.tr,
+                style: const TextStyle(fontSize: 14),
+              ),
             ),
           ),
         ],

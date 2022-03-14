@@ -57,7 +57,10 @@ class HistoryTab extends GetView<HistoryController> {
                       child: Obx(
                         () => DropdownButton2(
                           value: _selectedFilter.value,
-                          style: Theme.of(context).textTheme.subtitle1,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              ?.copyWith(fontWeight: FontWeight.normal),
                           items: _buildDropDownMenuItems(),
                           onChanged: _changeFilter,
                           buttonHeight: 35,
@@ -86,21 +89,28 @@ class HistoryTab extends GetView<HistoryController> {
           if (index == 6) {
             return Padding(
               padding: EdgeInsets.only(
-                  top: 37,
-                  bottom: 34,
-                  left: horizontalPadding,
-                  right: horizontalPadding,
+                top: 37,
+                bottom: 34,
+                left: horizontalPadding,
+                right: horizontalPadding,
               ),
               child: SizedBox(
                 height: 40,
                 width: 97,
                 child: ElevatedButton(
                   onPressed: () {},
-                  child: Text('show_more'.tr,
-                      style: Theme.of(context).textTheme.headline4),
+                  child: Text(
+                    'show_more'.tr,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4
+                        ?.copyWith(fontSize: 12),
+                  ),
                   style: ElevatedButton.styleFrom(
                     primary: Theme.of(context).colorScheme.primary,
-                    side: BorderSide(width: 2.0, color: Theme.of(context).colorScheme.onPrimary),
+                    side: BorderSide(
+                        width: 2.0,
+                        color: Theme.of(context).colorScheme.onPrimary),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(24),
                     ),
@@ -111,7 +121,7 @@ class HistoryTab extends GetView<HistoryController> {
           }
 
           return Padding(
-            padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
+            padding: const EdgeInsets.only(top: 12.0, left: 10, right: 10),
             child: Column(
               children: [
                 Container(
@@ -119,7 +129,7 @@ class HistoryTab extends GetView<HistoryController> {
                     color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(19),
                   ),
-                  child: HistoryItem(index: index),
+                  child: HistoryItem(index: index, subTitle: 'Wallet1'),
                 ),
                 const SizedBox(height: 12),
                 Divider(
@@ -175,15 +185,12 @@ class HistoryTab extends GetView<HistoryController> {
                   padding: const EdgeInsets.only(
                       top: 70, left: 52, right: 52, bottom: 60),
                   child: _hController.isShowBottom.value
-                      ? const TransactionInfoCard()
+                      ? const TransactionInfoCard(subTitle: 'Wallet1')
                       : Text(
                           'bottom_text_note'.tr,
                           maxLines: 2,
                           textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.subtitle2?.copyWith(
-                                    fontSize: 14,
-                                  ),
+                          style: Theme.of(context).textTheme.subtitle2,
                         ),
                 ),
               ),

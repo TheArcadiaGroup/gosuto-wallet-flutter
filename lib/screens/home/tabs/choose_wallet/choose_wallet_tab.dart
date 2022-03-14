@@ -36,11 +36,13 @@ class ChooseWalletTab extends GetView<HomeController> {
                     child: ElevatedButton.icon(
                       icon: Image.asset('assets/images/ic-add-no-bg.png'),
                       onPressed: () {},
-                      label: Text('add_wallet'.tr,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline2
-                              ?.copyWith(color: Colors.white)),
+                      label: Text(
+                        'add_wallet'.tr,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline2
+                            ?.copyWith(color: Colors.white, fontSize: 12),
+                      ),
                       style: ElevatedButton.styleFrom(
                         primary: Theme.of(context).colorScheme.background,
                         shape: RoundedRectangleBorder(

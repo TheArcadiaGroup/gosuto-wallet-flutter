@@ -19,6 +19,7 @@ class HomeController extends GetxController
   late ChooseWalletTab chooseWalletTab;
   late WalletHomeTab walletHomeTab;
   late HistoryTab historyTab;
+  late StakeTab stakeTab;
 
   @override
   void onInit() {
@@ -28,6 +29,7 @@ class HomeController extends GetxController
     chooseWalletTab = const ChooseWalletTab();
     walletHomeTab =  WalletHomeTab();
     historyTab = HistoryTab();
+    stakeTab = StakeTab();
 
     tabController = TabController(length: MainTabs.values.length, vsync: this);
   }
@@ -45,16 +47,16 @@ class HomeController extends GetxController
         return 0;
       case MainTabs.walletHome:
         return 1;
-      case MainTabs.tab3:
-        return 2;
+      // case MainTabs.tab3:
+      //   return 2;
       case MainTabs.history:
+        return 2;
+      case MainTabs.stake:
         return 3;
-      case MainTabs.tab5:
-        return 4;
       case MainTabs.currencyPerformance:
-        return 5;
+        return 4;
       case MainTabs.accountSetting:
-        return 6;
+        return 5;
       default:
         return 0;
     }
@@ -66,15 +68,15 @@ class HomeController extends GetxController
         return MainTabs.chooseWallet;
       case 1:
         return MainTabs.walletHome;
+      // case 2:
+      //   return MainTabs.tab3;
       case 2:
-        return MainTabs.tab3;
-      case 3:
         return MainTabs.history;
+      case 3:
+        return MainTabs.stake;
       case 4:
-        return MainTabs.tab5;
-      case 5:
         return MainTabs.currencyPerformance;
-      case 6:
+      case 5:
         return MainTabs.accountSetting;
       default:
         return MainTabs.chooseWallet;

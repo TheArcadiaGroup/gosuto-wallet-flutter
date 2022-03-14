@@ -7,361 +7,162 @@ class SliderItem extends StatelessWidget {
       {Key? key,
       required this.width,
       required this.height,
-      this.paddingHorizontal = 22,
-      this.paddingVertical = 10})
+      this.paddingHorizontal = 10,
+      this.paddingVertical = 10,
+        this.centerPadding = 5
+      })
       : super(key: key);
 
   final double width;
   final double height;
   final double paddingHorizontal;
   final double paddingVertical;
+  final double centerPadding;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: paddingHorizontal, right: 7, bottom: paddingVertical),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                width: width,
-                height: height,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Tether (USDT)',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(fontSize: 12)),
-                          Text(
-                            '2000 USDT',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3
-                                ?.copyWith(fontSize: 14),
-                          ),
-                          Text(
-                            '\$175 USD',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3
-                                ?.copyWith(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15, right: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          RichText(
-                            textAlign: TextAlign.end,
-                            text: TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child:
-                                      SvgPicture.asset('assets/svgs/ic-up.svg'),
-                                ),
-                                TextSpan(
-                                    text: " +15%",
-                                    style:
-                                        Theme.of(context).textTheme.headline3),
-                              ],
-                            ),
-                          ),
-                          AutoSizeText(
-                            '897,000 CSPR',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3
-                                ?.copyWith(fontSize: 11),
-                          ),
-                          Text(
-                            '(24h)',
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2
-                                ?.copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: 7, right: paddingHorizontal, bottom: paddingVertical),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                width: width,
-                height: height,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Tether (USDT)',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(fontSize: 12)),
-                          Text(
-                            '2000 USDT',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(fontSize: 14),
-                          ),
-                          Text(
-                            '\$175 USD',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15, right: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          RichText(
-                            textAlign: TextAlign.end,
-                            text: TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: SvgPicture.asset(
-                                      'assets/svgs/ic-down.svg'),
-                                ),
-                                TextSpan(
-                                    text: " -15%",
-                                    style:
-                                        Theme.of(context).textTheme.headline5),
-                              ],
-                            ),
-                          ),
-                          AutoSizeText(
-                            '897,000 CSPR',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(fontSize: 11),
-                          ),
-                          Text(
-                            '(24h)',
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2
-                                ?.copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+            _buildItem(context, true, true),
+            _buildItem(context, false, false),
           ],
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  left: paddingHorizontal, right: 7, bottom: paddingVertical),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                width: width,
-                height: height,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Tether (USDT)',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline4
-                                  ?.copyWith(fontSize: 12)),
-                          Text(
-                            '2000 USDT',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3
-                                ?.copyWith(fontSize: 14),
-                          ),
-                          Text(
-                            '\$175 USD',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3
-                                ?.copyWith(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15, right: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          RichText(
-                            textAlign: TextAlign.end,
-                            text: TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child:
-                                      SvgPicture.asset('assets/svgs/ic-up.svg'),
-                                ),
-                                TextSpan(
-                                    text: " +15%",
-                                    style:
-                                        Theme.of(context).textTheme.headline3),
-                              ],
-                            ),
-                          ),
-                          AutoSizeText(
-                            '897,000 CSPR',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline3
-                                ?.copyWith(fontSize: 11),
-                          ),
-                          Text(
-                            '(24h)',
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2
-                                ?.copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                  left: 7, right: paddingHorizontal, bottom: paddingVertical),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  border: Border.all(
-                      color: Theme.of(context).colorScheme.secondary),
-                ),
-                width: width,
-                height: height,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Tether (USDT)',
-                              style: Theme.of(context).textTheme.headline4?.copyWith(fontSize: 12)),
-                          Text(
-                            '2000 USDT',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(fontSize: 14),
-                          ),
-                          Text(
-                            '\$175 USD',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(fontSize: 12),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 15, right: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          RichText(
-                            textAlign: TextAlign.end,
-                            text: TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  alignment: PlaceholderAlignment.middle,
-                                  child: SvgPicture.asset(
-                                      'assets/svgs/ic-down.svg'),
-                                ),
-                                TextSpan(
-                                    text: " -15%",
-                                    style:
-                                        Theme.of(context).textTheme.headline5),
-                              ],
-                            ),
-                          ),
-                          AutoSizeText(
-                            '897,000 CSPR',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline5
-                                ?.copyWith(fontSize: 11),
-                          ),
-                          Text(
-                            '(24h)',
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2
-                                ?.copyWith(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
+            _buildItem(context, true, true),
+            _buildItem(context, false, false),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildItem(BuildContext context, bool isGrowing, bool isLeft) {
+    return Padding(
+      padding: EdgeInsets.only(
+          left: isLeft ? paddingHorizontal : centerPadding,
+          right: isLeft ? centerPadding : paddingHorizontal,
+          bottom: paddingVertical),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: Theme.of(context).colorScheme.secondary),
+          color: Theme.of(context).colorScheme.secondaryContainer,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(12),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: const Offset(0, -1), // changes position of shadow
+            ),
+          ],
+        ),
+        width: width - 2 * (paddingHorizontal) - centerPadding,
+        height: height - paddingVertical,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Tether (USDT)',
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4
+                          ?.copyWith(fontSize: 12),
+                    ),
+                    Text(
+                      '2000 USDT',
+                      overflow: TextOverflow.ellipsis,
+                      style: isGrowing
+                          ? Theme.of(context)
+                              .textTheme
+                              .headline3
+                              ?.copyWith(fontSize: 14)
+                          : Theme.of(context)
+                              .textTheme
+                              .headline5
+                              ?.copyWith(fontSize: 14),
+                    ),
+                    Text(
+                      '\$175 USD',
+                      style: isGrowing
+                          ? Theme.of(context)
+                              .textTheme
+                              .headline3
+                              ?.copyWith(fontSize: 12)
+                          : Theme.of(context)
+                              .textTheme
+                              .headline5
+                              ?.copyWith(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15, right: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  RichText(
+                    textAlign: TextAlign.end,
+                    text: TextSpan(
+                      children: [
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: SvgPicture.asset('assets/svgs/ic-up.svg'),
+                        ),
+                        TextSpan(
+                          text: " +15%",
+                          style: isGrowing
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .headline3
+                                  ?.copyWith(fontSize: 10)
+                              : Theme.of(context)
+                                  .textTheme
+                                  .headline5
+                                  ?.copyWith(fontSize: 10),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AutoSizeText(
+                    '897,000 CSPR',
+                    style: isGrowing
+                        ? Theme.of(context)
+                            .textTheme
+                            .headline3
+                            ?.copyWith(fontSize: 11)
+                        : Theme.of(context)
+                            .textTheme
+                            .headline5
+                            ?.copyWith(fontSize: 11),
+                  ),
+                  Text(
+                    '(24h)',
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(fontSize: 11),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

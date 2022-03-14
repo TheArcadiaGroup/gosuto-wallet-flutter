@@ -42,7 +42,6 @@ class _TextChipState extends State<GosutoTextChip> {
     setState(() {
       _isFocusing = _focusNode.hasFocus;
     });
-    debugPrint("Focus: ${_focusNode.hasFocus.toString()}");
   }
 
   Widget _buildNormalState() {
@@ -114,7 +113,7 @@ class _TextChipState extends State<GosutoTextChip> {
         borderRadius: const BorderRadius.all(Radius.circular(35)),
         child: Container(
           height: 38,
-          padding: const EdgeInsets.fromLTRB(8, 8, 12, 8),
+          // padding: const EdgeInsets.fromLTRB(8, 8, 12, 8),
           decoration: BoxDecoration(
             color: ThemeService().isDarkMode
                 ? Colors.white.withOpacity(0.1)
@@ -125,21 +124,27 @@ class _TextChipState extends State<GosutoTextChip> {
             children: [
               Container(
                 constraints: const BoxConstraints(
-                  minWidth: 100,
+                  minWidth: 80,
                 ),
                 child: IntrinsicWidth(
                   child: TextField(
                     focusNode: _focusNode,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: ThemeService().isDarkMode
+                          ? Colors.white
+                          : const Color(0xFF4F4F4F),
+                    ),
                     decoration: InputDecoration(
                       border: InputBorder.none,
+                      contentPadding: const EdgeInsets.fromLTRB(8, 0, 12, 0),
                       prefixIconConstraints: const BoxConstraints(
-                        minWidth: 30,
-                        minHeight: 30,
+                        minWidth: 36,
+                        minHeight: 36,
                       ),
                       prefixIcon: Container(
-                        margin: const EdgeInsets.only(
-                          right: 6,
-                        ),
+                        margin: const EdgeInsets.only(right: 6, left: 6),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: _isFocusing
@@ -154,7 +159,7 @@ class _TextChipState extends State<GosutoTextChip> {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.bold,
-                            height: 1.5,
+                            height: ((42 - 6 - 6) / 14),
                             color: _isFocusing
                                 ? Colors.white
                                 : ThemeService().isDarkMode

@@ -34,6 +34,13 @@ const Map<String, String> enUs = {
   'wallet_paddword': 'New Password',
   'wallet_paddword2': 'Confirm Password',
   'confirm_text': 'I have read and agree to the terms of service',
+  // Seed Phrase Screen
+  'seed_phrase_text1': 'Your sercret seed phrase',
+  'seed_phrase_text2':
+      '• This list of words will store all data for this wallet.',
+  'seed_phrase_text3': '• Write it down and keep it somewhere safe.',
+  'seed_phrase_text4': '• Anyone with the phrase can acces the wallet.',
+  'seed_phrase_text5': '• You will need this list to recover tour wallet.',
   'hello': 'Hello',
   'account_setting': 'Account Setting',
   'choose_file': 'Choose File',

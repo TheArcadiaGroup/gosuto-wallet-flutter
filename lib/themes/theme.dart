@@ -46,6 +46,10 @@ class AppTheme {
       subtitle1: const TextStyle(fontSize: 14, color: Color(0xFFBDBDBE)),
       subtitle2: const TextStyle(fontSize: 12, color: Color(0xFFA9A9A9)),
     ),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: AppLightColors.textColor1,
+      selectionColor: AppLightColors.textColor1.withOpacity(0.3),
+    ),
   );
 
   static final darkTheme = ThemeData(
@@ -90,6 +94,10 @@ class AppTheme {
       bodyText2: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.5)),
       subtitle1: const TextStyle(fontSize: 14, color: Color(0xFFBDBDBE)),
       subtitle2: const TextStyle(fontSize: 12, color: Color(0xFFA9A9A9)),
+    ),
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: AppDarkColors.textColor1,
+      selectionColor: AppDarkColors.textColor1.withOpacity(0.3),,
     ),
   );
 }

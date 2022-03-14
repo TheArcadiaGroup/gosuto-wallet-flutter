@@ -97,7 +97,7 @@ class AppTheme {
     ),
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: AppDarkColors.textColor1,
-      selectionColor: AppDarkColors.textColor1.withOpacity(0.3),,
+      selectionColor: AppDarkColors.textColor1.withOpacity(0.3),
     ),
   );
 }

@@ -47,7 +47,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
             ),
             SvgPicture.asset('assets/images/logo.svg'),
             Expanded(
-              flex: 3,
+              flex: 4,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(

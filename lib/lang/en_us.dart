@@ -41,6 +41,7 @@ const Map<String, String> enUs = {
   'seed_phrase_text3': '• Write it down and keep it somewhere safe.',
   'seed_phrase_text4': '• Anyone with the phrase can acces the wallet.',
   'seed_phrase_text5': '• You will need this list to recover tour wallet.',
+  'copy_to_clipboard': 'Copy to clipboard',
   'hello': 'Hello',
   'account_setting': 'Account Setting',
   'choose_file': 'Choose File',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/text_chip.dart';
@@ -87,14 +88,33 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                   height: getProportionateScreenHeight(35),
                 ),
                 Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: Column(
                     children: [
                       Wrap(
                         alignment: WrapAlignment.center,
-                        spacing: getProportionateScreenWidth(20),
-                        runSpacing: getProportionateScreenHeight(20),
+                        spacing: getProportionateScreenWidth(16),
+                        runSpacing: getProportionateScreenHeight(16),
                         children: _generateTextChips(),
+                      ),
+                      SizedBox(
+                        height: getProportionateScreenHeight(30),
+                      ),
+                      TextButton.icon(
+                        icon: Text(
+                          'copy_to_clipboard'.tr,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFFFF7A28),
+                          ),
+                        ),
+                        label: SvgPicture.asset('assets/svgs/ic-copy-2.svg'),
+                        onPressed: () {
+                          Clipboard.setData(
+                            ClipboardData(text: controller.seedPhrase.value),
+                          );
+                        },
                       ),
                     ],
                   ),

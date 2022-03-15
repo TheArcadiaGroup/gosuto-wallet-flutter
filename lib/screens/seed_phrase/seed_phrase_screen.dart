@@ -25,6 +25,17 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
     return textChips;
   }
 
+  void _copyToClipboard() {
+    Clipboard.setData(
+      ClipboardData(text: controller.seedPhrase.value),
+    );
+    controller.copied.value = true;
+  }
+
+  void _onContinue() {
+    print(controller.copied.value);
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -124,11 +135,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                             ),
                           ),
                         ),
-                        onPressed: () {
-                          Clipboard.setData(
-                            ClipboardData(text: controller.seedPhrase.value),
-                          );
-                        },
+                        onPressed: _copyToClipboard,
                       ),
                     ],
                   ),
@@ -143,6 +150,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                       GosutoButton(
                         text: 'continue'.tr,
                         style: GosutoButtonStyle.fill,
+                        onPressed: _onContinue,
                       ),
                     ],
                   ),

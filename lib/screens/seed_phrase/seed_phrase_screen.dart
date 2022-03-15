@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/text_chip.dart';
+import 'package:gosuto/services/service.dart';
 import '../../components/button.dart';
 import '../../utils/constants.dart';
 import '../../utils/size_config.dart';
@@ -110,6 +111,19 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                           ),
                         ),
                         label: SvgPicture.asset('assets/svgs/ic-copy-2.svg'),
+                        style: ButtonStyle(
+                          overlayColor: MaterialStateProperty.resolveWith(
+                              (states) => ThemeService().isDarkMode
+                                  ? Colors.white.withOpacity(0.05)
+                                  : Colors.black.withOpacity(0.05)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide.none,
+                            ),
+                          ),
+                        ),
                         onPressed: () {
                           Clipboard.setData(
                             ClipboardData(text: controller.seedPhrase.value),

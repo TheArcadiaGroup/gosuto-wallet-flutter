@@ -4,27 +4,45 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/text_chip.dart';
 import '../../components/button.dart';
 import '../../utils/constants.dart';
+import '../../utils/size_config.dart';
 import 'seed_phrase_controller.dart';
 
 class SeedPhraseScreen extends GetView<SeedPhraseController> {
   const SeedPhraseScreen({Key? key}) : super(key: key);
 
+  List<Widget> _generateTextChips() {
+    final words = controller.seedPhrase.value.split(' ');
+    List<Widget> textChips = [];
+
+    if (words.length == 12) {
+      textChips = List.generate(12, (index) {
+        return GosutoTextChip(index: index.toString(), text: words[index]);
+      }, growable: false);
+    }
+
+    return textChips;
+  }
+
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return Scaffold(
       body: SafeArea(
         child: SizedBox(
           width: double.infinity,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(20),
+            ),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: getProportionateScreenHeight(20),
                 ),
                 SvgPicture.asset('assets/images/logo.svg'),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: getProportionateScreenHeight(20),
                 ),
                 Text(
                   'create_a_new_wallet'.tr,
@@ -33,8 +51,8 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                const SizedBox(
-                  height: 25,
+                SizedBox(
+                  height: getProportionateScreenHeight(25),
                 ),
                 Row(
                   children: [
@@ -65,8 +83,8 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 35,
+                SizedBox(
+                  height: getProportionateScreenHeight(35),
                 ),
                 Expanded(
                   flex: 3,
@@ -74,30 +92,9 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                     children: [
                       Wrap(
                         alignment: WrapAlignment.center,
-                        spacing: 20,
-                        runSpacing: 20,
-                        children: const [
-                          GosutoTextChip(index: '1', text: 'Test'),
-                          GosutoTextChip(index: '2', text: 'TestTest'),
-                          GosutoTextChip(
-                            index: '3',
-                            text: 'TestTest',
-                            isEditable: true,
-                          ),
-                          GosutoTextChip(index: '4', text: 'Test'),
-                          GosutoTextChip(index: '5', text: 'TestTest'),
-                          GosutoTextChip(
-                            index: '6',
-                            text: 'TestTest',
-                            isEditable: true,
-                          ),
-                          GosutoTextChip(index: '7', text: 'Test'),
-                          GosutoTextChip(index: '8', text: 'TestTest'),
-                          GosutoTextChip(index: '9', text: 'TestTest'),
-                          GosutoTextChip(index: '10', text: 'Test'),
-                          GosutoTextChip(index: '11', text: 'TestTest'),
-                          GosutoTextChip(index: '12', text: 'TestTest'),
-                        ],
+                        spacing: getProportionateScreenWidth(20),
+                        runSpacing: getProportionateScreenHeight(20),
+                        children: _generateTextChips(),
                       ),
                     ],
                   ),
@@ -106,8 +103,8 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                   flex: 1,
                   child: Column(
                     children: [
-                      const SizedBox(
-                        height: 10,
+                      SizedBox(
+                        height: getProportionateScreenHeight(10),
                       ),
                       GosutoButton(
                         text: 'continue'.tr,

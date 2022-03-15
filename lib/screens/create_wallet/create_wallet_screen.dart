@@ -6,6 +6,7 @@ import 'package:gosuto/utils/utils.dart';
 
 import '../../components/button.dart';
 import '../../components/checkbox.dart';
+import '../../utils/size_config.dart';
 import 'create_wallet_controller.dart';
 
 class CreateWalletScreen extends GetView<CreateWalletController> {
@@ -13,6 +14,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     InputDecoration _inputDecoration = InputDecoration(
       floatingLabelBehavior: FloatingLabelBehavior.always,
       labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(
@@ -45,17 +48,20 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
 
     return Scaffold(
       body: SafeArea(
-        child: Expanded(
+        child: SizedBox(
+          width: double.infinity,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(20),
+            ),
             child: Column(
               children: [
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: getProportionateScreenHeight(20),
                 ),
                 SvgPicture.asset('assets/images/logo.svg'),
-                const SizedBox(
-                  height: 20,
+                SizedBox(
+                  height: getProportionateScreenHeight(20),
                 ),
                 Text(
                   'create_a_new_wallet'.tr,
@@ -64,8 +70,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                const SizedBox(
-                  height: 25,
+                SizedBox(
+                  height: getProportionateScreenHeight(25),
                 ),
                 Row(
                   children: [
@@ -98,8 +104,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                           flex: 4,
                           child: Column(
                             children: [
-                              const SizedBox(
-                                height: 30,
+                              SizedBox(
+                                height: getProportionateScreenHeight(30),
                               ),
                               TextFormField(
                                 controller: controller.walletNameController,
@@ -116,8 +122,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   return controller.validateWalletName(value!);
                                 },
                               ),
-                              const SizedBox(
-                                height: 30,
+                              SizedBox(
+                                height: getProportionateScreenHeight(30),
                               ),
                               Obx(
                                 () => TextFormField(
@@ -158,8 +164,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   },
                                 ),
                               ),
-                              const SizedBox(
-                                height: 30,
+                              SizedBox(
+                                height: getProportionateScreenHeight(30),
                               ),
                               Obx(
                                 () => TextFormField(
@@ -201,8 +207,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   },
                                 ),
                               ),
-                              const SizedBox(
-                                height: 20,
+                              SizedBox(
+                                height: getProportionateScreenHeight(20),
                               ),
                               Obx(
                                 () => GosutoCheckbox(
@@ -229,8 +235,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   },
                                 ),
                               ),
-                              const SizedBox(
-                                height: 10,
+                              SizedBox(
+                                height: getProportionateScreenHeight(10),
                               ),
                               GosutoButton(
                                 text: 'back'.tr,

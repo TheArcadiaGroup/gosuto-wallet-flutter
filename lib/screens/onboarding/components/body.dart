@@ -4,6 +4,7 @@ import 'package:gosuto/components/button.dart';
 import 'package:gosuto/screens/onboarding/components/onboarding_content.dart';
 
 import '../../../utils/constants.dart';
+import '../../../utils/size_config.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -49,13 +50,15 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     return SafeArea(
       child: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
             const Spacer(
-              flex: 1,
+              flex: 3,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -68,7 +71,7 @@ class _BodyState extends State<Body> {
               height: 20,
             ),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: PageView.builder(
                 controller: _pageController,
                 onPageChanged: (value) {
@@ -86,7 +89,9 @@ class _BodyState extends State<Body> {
             Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(
+                  horizontal: getProportionateScreenWidth(20),
+                ),
                 child: Column(
                   children: [
                     GosutoButton(
@@ -98,8 +103,8 @@ class _BodyState extends State<Body> {
                         _nextPage();
                       },
                     ),
-                    const SizedBox(
-                      height: 10,
+                    SizedBox(
+                      height: getProportionateScreenHeight(10),
                     ),
                     GosutoButton(
                       text: 'skip'.tr,

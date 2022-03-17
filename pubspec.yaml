@@ -49,6 +49,7 @@ dependencies:
   dotted_line: ^3.1.0
   dotted_border: ^2.0.0+2
   bip39: ^1.0.6
+  flutter_custom_dialog: ^1.2.0
 
 dev_dependencies:
   flutter_test:

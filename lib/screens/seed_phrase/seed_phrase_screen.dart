@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/text_chip.dart';
@@ -32,8 +33,13 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
     controller.copied.value = true;
   }
 
-  void _onContinue() {
-    print(controller.copied.value);
+  void _onContinue(context) async {
+    if (!controller.copied.value) {
+      YYDialog.init(context);
+      YYDialog().build(context)
+        ..barrierColor = Colors.black.withOpacity(0.6)
+        ..show();
+    }
   }
 
   @override
@@ -150,7 +156,9 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                       GosutoButton(
                         text: 'continue'.tr,
                         style: GosutoButtonStyle.fill,
-                        onPressed: _onContinue,
+                        onPressed: () {
+                          _onContinue(context);
+                        },
                       ),
                     ],
                   ),

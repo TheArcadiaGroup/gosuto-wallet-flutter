@@ -33,17 +33,51 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
     controller.copied.value = true;
   }
 
-  void _onContinue(context) async {
+  void _onContinue(context, yyDialog) async {
     if (!controller.copied.value) {
       YYDialog.init(context);
-      YYDialog().build(context)
+      yyDialog = YYDialog().build(context)
         ..barrierColor = Colors.black.withOpacity(0.6)
+        ..borderRadius = 34
+        ..width = getProportionateScreenWidth(372)
+        ..widget(
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: getProportionateScreenWidth(60),
+              vertical: 30,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'did_not_copy_seed_phrase'.tr,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF121826),
+                  ),
+                ),
+                SizedBox(
+                  height: getProportionateScreenHeight(30),
+                ),
+                GosutoButton(
+                  text: 'Confirm',
+                  style: GosutoButtonStyle.fill,
+                  onPressed: () {
+                    yyDialog?.dismiss();
+                  },
+                )
+              ],
+            ),
+          ),
+        )
         ..show();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    YYDialog? yyDialog;
     SizeConfig().init(context);
 
     return Scaffold(
@@ -157,7 +191,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                         text: 'continue'.tr,
                         style: GosutoButtonStyle.fill,
                         onPressed: () {
-                          _onContinue(context);
+                          _onContinue(context, yyDialog);
                         },
                       ),
                     ],

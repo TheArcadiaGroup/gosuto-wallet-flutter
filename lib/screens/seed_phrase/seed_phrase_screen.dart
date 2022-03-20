@@ -34,10 +34,15 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
   }
 
   void _onContinue(context, yyDialog) async {
-    if (!controller.copied.value) {
+    if (controller.copied.value) {
+      Get.toNamed('/retype_seed_phrase', arguments: [
+        {'seed_phrase': controller.seedPhrase.value}
+      ]);
+    } else {
       YYDialog.init(context);
       yyDialog = YYDialog().build(context)
         ..barrierColor = Colors.black.withOpacity(0.6)
+        ..backgroundColor = Theme.of(context).scaffoldBackgroundColor
         ..borderRadius = 34
         ..width = getProportionateScreenWidth(372)
         ..widget(
@@ -51,10 +56,12 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                 Text(
                   'did_not_copy_seed_phrase'.tr,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF121826),
+                    color: ThemeService().isDarkMode
+                        ? Colors.white
+                        : const Color(0xFF121826),
                   ),
                 ),
                 SizedBox(

@@ -29,7 +29,7 @@ class _ButtonState extends State<GosutoButton> {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: widget.style == GosutoButtonStyle.fill ? 56 : 20,
+      height: widget.style == GosutoButtonStyle.fill ? 54 : 20,
       child: TextButton(
         style: TextButton.styleFrom(
           padding: const EdgeInsets.all(0),
@@ -48,7 +48,7 @@ class _ButtonState extends State<GosutoButton> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            height: 1.5,
+            height: 1.1,
             color: widget.style == GosutoButtonStyle.fill
                 ? Colors.white
                 : Theme.of(context)

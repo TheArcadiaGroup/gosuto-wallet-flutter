@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/text_chip.dart';
 import 'package:gosuto/services/service.dart';
 import '../../components/button.dart';
+import '../../components/dialog.dart';
 import '../../utils/constants.dart';
 import '../../utils/size_config.dart';
 import 'seed_phrase_controller.dart';
 
+// ignore: must_be_immutable
 class SeedPhraseScreen extends GetView<SeedPhraseController> {
-  const SeedPhraseScreen({Key? key}) : super(key: key);
+  const SeedPhraseScreen({
+    Key? key,
+  }) : super(key: key);
 
   List<Widget> _generateTextChips() {
     final words = controller.seedPhrase.value.split(' ');
@@ -19,7 +22,8 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
 
     if (words.length == 12) {
       textChips = List.generate(12, (index) {
-        return GosutoTextChip(index: index.toString(), text: words[index]);
+        return GosutoTextChip(
+            index: (index + 1).toString(), text: words[index]);
       }, growable: false);
     }
 
@@ -33,58 +37,40 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
     controller.copied.value = true;
   }
 
-  void _onContinue(context, yyDialog) async {
+  void _onContinue(context) async {
     if (controller.copied.value) {
       Get.toNamed('/retype_seed_phrase', arguments: [
         {'seed_phrase': controller.seedPhrase.value}
       ]);
     } else {
-      YYDialog.init(context);
-      yyDialog = YYDialog().build(context)
-        ..barrierColor = Colors.black.withOpacity(0.6)
-        ..backgroundColor = Theme.of(context).scaffoldBackgroundColor
-        ..borderRadius = 34
-        ..width = getProportionateScreenWidth(372)
-        ..widget(
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: getProportionateScreenWidth(60),
-              vertical: 30,
-            ),
-            child: Column(
-              children: [
-                Text(
-                  'did_not_copy_seed_phrase'.tr,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: ThemeService().isDarkMode
-                        ? Colors.white
-                        : const Color(0xFF121826),
-                  ),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(30),
-                ),
-                GosutoButton(
-                  text: 'Confirm',
-                  style: GosutoButtonStyle.fill,
-                  onPressed: () {
-                    yyDialog?.dismiss();
-                  },
-                )
-              ],
-            ),
+      GosutoDialog().buildDialog(context, [
+        Text(
+          'did_not_copy_seed_phrase'.tr,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: ThemeService().isDarkMode
+                ? Colors.white
+                : const Color(0xFF121826),
           ),
+        ),
+        SizedBox(
+          height: getProportionateScreenHeight(30),
+        ),
+        GosutoButton(
+          text: 'confirm'.tr,
+          style: GosutoButtonStyle.fill,
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
         )
-        ..show();
+      ]);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    YYDialog? yyDialog;
     SizeConfig().init(context);
 
     return Scaffold(
@@ -198,7 +184,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
                         text: 'continue'.tr,
                         style: GosutoButtonStyle.fill,
                         onPressed: () {
-                          _onContinue(context, yyDialog);
+                          _onContinue(context);
                         },
                       ),
                     ],

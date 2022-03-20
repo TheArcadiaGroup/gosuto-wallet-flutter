@@ -8,12 +8,14 @@ class GosutoTextChip extends StatefulWidget {
   final String index;
   final String text;
   final bool? isEditable;
+  final Function(String)? onChanged;
 
   const GosutoTextChip({
     Key? key,
     required this.index,
     required this.text,
     this.isEditable,
+    this.onChanged,
   }) : super(key: key);
 
   bool get _isEditable => isEditable == null ? false : isEditable!;
@@ -113,7 +115,6 @@ class _TextChipState extends State<GosutoTextChip> {
         borderRadius: const BorderRadius.all(Radius.circular(35)),
         child: Container(
           height: 38,
-          // padding: const EdgeInsets.fromLTRB(8, 8, 12, 8),
           decoration: BoxDecoration(
             color: ThemeService().isDarkMode
                 ? Colors.white.withOpacity(0.1)
@@ -138,7 +139,7 @@ class _TextChipState extends State<GosutoTextChip> {
                     ),
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.fromLTRB(8, 0, 12, 0),
+                      contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       prefixIconConstraints: const BoxConstraints(
                         minWidth: 36,
                         minHeight: 36,
@@ -169,6 +170,7 @@ class _TextChipState extends State<GosutoTextChip> {
                         ),
                       ),
                     ),
+                    onChanged: widget.onChanged,
                   ),
                 ),
               ),

@@ -1,41 +1,38 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/components/text_chip.dart';
 import '../../components/button.dart';
+import '../../services/theme_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/size_config.dart';
-import 'retype_seed_phrase_controller.dart';
+import 'confirm_seed_phrase_controller.dart';
 
-class RetypeSeedPhraseScreen extends GetView<RetypeSeedPhraseController> {
-  const RetypeSeedPhraseScreen({Key? key}) : super(key: key);
+class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
+  const ConfirmSeedPhraseScreen({Key? key}) : super(key: key);
 
   List<Widget> _generateTextChips() {
     final words = controller.seedPhrase.value.split(' ');
     List<Widget> textChips = [];
-    Random random = Random();
-    Set<int> setOfIndexes = {};
-
-    while (setOfIndexes.length < 3) {
-      setOfIndexes.add(random.nextInt(12));
-    }
-    print(setOfIndexes.length);
 
     if (words.length == 12) {
       textChips = List.generate(12, (index) {
         bool isEditable = false;
 
-        if (index == setOfIndexes.elementAt(0) ||
-            index == setOfIndexes.elementAt(1) ||
-            index == setOfIndexes.elementAt(2)) {
+        if (index == controller.listOfIndexes[0] ||
+            index == controller.listOfIndexes[1] ||
+            index == controller.listOfIndexes[2]) {
           isEditable = true;
         }
+
         return GosutoTextChip(
-          index: index.toString(),
+          index: (index + 1).toString(),
           text: words[index],
           isEditable: isEditable,
+          onChanged: (String text) {
+            _onMissingWordChanged(text, index);
+          },
         );
       }, growable: false);
     }
@@ -43,7 +40,68 @@ class RetypeSeedPhraseScreen extends GetView<RetypeSeedPhraseController> {
     return textChips;
   }
 
-  void _onContinue(context) {}
+  void _onMissingWordChanged(String text, int index) {
+    if (index == controller.listOfIndexes[0]) {
+      controller.word1.value = text;
+    }
+    if (index == controller.listOfIndexes[1]) {
+      controller.word2.value = text;
+    }
+    if (index == controller.listOfIndexes[2]) {
+      controller.word3.value = text;
+    }
+  }
+
+  List<String> _getListOfWords() {
+    return List.generate(12, (index) {
+      if (index == controller.listOfIndexes[0]) {
+        return controller.word1.value;
+      }
+
+      if (index == controller.listOfIndexes[1]) {
+        return controller.word2.value;
+      }
+
+      if (index == controller.listOfIndexes[2]) {
+        return controller.word3.value;
+      }
+
+      return controller.seedPhrase.split(' ')[index];
+    }, growable: false);
+  }
+
+  void _onContinue(context) {
+    List<String> words = _getListOfWords();
+    controller.seedPhraseToCompare.value = words.join(' ');
+
+    if (controller.seedPhraseToCompare.value == controller.seedPhrase.value) {
+      print('OK');
+    } else {
+      GosutoDialog().buildDialog(context, [
+        Text(
+          'invalid_seed_phrase'.tr,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: ThemeService().isDarkMode
+                ? Colors.white
+                : const Color(0xFF121826),
+          ),
+        ),
+        SizedBox(
+          height: getProportionateScreenHeight(30),
+        ),
+        GosutoButton(
+          text: 'confirm'.tr,
+          style: GosutoButtonStyle.fill,
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+        )
+      ]);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,12 +174,17 @@ class RetypeSeedPhraseScreen extends GetView<RetypeSeedPhraseController> {
                       SizedBox(
                         height: getProportionateScreenHeight(10),
                       ),
-                      GosutoButton(
-                        text: 'continue'.tr,
-                        style: GosutoButtonStyle.fill,
-                        onPressed: () {
-                          _onContinue(context);
-                        },
+                      Obx(
+                        () => GosutoButton(
+                          text: 'continue'.tr,
+                          style: GosutoButtonStyle.fill,
+                          disabled: controller.word1.value.isEmpty ||
+                              controller.word2.value.isEmpty ||
+                              controller.word3.value.isEmpty,
+                          onPressed: () {
+                            _onContinue(context);
+                          },
+                        ),
                       ),
                     ],
                   ),

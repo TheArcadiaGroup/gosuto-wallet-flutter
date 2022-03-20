@@ -45,8 +45,9 @@ const Map<String, String> enUs = {
   'did_not_copy_seed_phrase': 'You didn’t copy your seed phrase!',
   'confirm': 'Confirm',
   // Retype Seed Phrase Screen
-  'retype_seed_phrase_text1': 'Complete your seed phrase to conitnue',
+  'retype_seed_phrase_text1': 'Complete your seed phrase to continue',
   'retype_seed_phrase_text2': '• Type in the missing words',
+  'invalid_seed_phrase': 'Invalid Seed Phrase',
 
   'hello': 'Hello',
   'account_setting': 'Account Setting',

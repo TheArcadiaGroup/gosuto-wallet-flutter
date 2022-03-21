@@ -52,30 +52,12 @@ class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
     }
   }
 
-  List<String> _getListOfWords() {
-    return List.generate(12, (index) {
-      if (index == controller.listOfIndexes[0]) {
-        return controller.word1.value;
-      }
-
-      if (index == controller.listOfIndexes[1]) {
-        return controller.word2.value;
-      }
-
-      if (index == controller.listOfIndexes[2]) {
-        return controller.word3.value;
-      }
-
-      return controller.seedPhrase.split(' ')[index];
-    }, growable: false);
-  }
-
   void _onContinue(context) {
-    List<String> words = _getListOfWords();
+    List<String> words = controller.getListOfWords();
     controller.seedPhraseToCompare.value = words.join(' ');
 
     if (controller.seedPhraseToCompare.value == controller.seedPhrase.value) {
-      print('OK');
+      controller.generateWallet();
     } else {
       GosutoDialog().buildDialog(context, [
         Text(

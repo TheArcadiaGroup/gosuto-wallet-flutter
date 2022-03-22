@@ -170,7 +170,7 @@ class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

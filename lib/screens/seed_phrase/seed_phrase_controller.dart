@@ -2,7 +2,10 @@ import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
 class SeedPhraseController extends GetxController {
+  dynamic data = Get.arguments;
+
   var seedPhrase = ''.obs;
+  var password = ''.obs;
   var copied = false.obs;
 
   void _generateSeedPhrase() {
@@ -13,5 +16,7 @@ class SeedPhraseController extends GetxController {
   void onInit() {
     super.onInit();
     _generateSeedPhrase();
+
+    password.value = data[0]['password'];
   }
 }

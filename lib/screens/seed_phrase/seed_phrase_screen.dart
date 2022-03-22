@@ -40,7 +40,8 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
   void _onContinue(context) async {
     if (controller.copied.value) {
       Get.toNamed('/retype_seed_phrase', arguments: [
-        {'seed_phrase': controller.seedPhrase.value}
+        {'seed_phrase': controller.seedPhrase.value},
+        {'password': controller.password.value},
       ]);
     } else {
       GosutoDialog().buildDialog(context, [

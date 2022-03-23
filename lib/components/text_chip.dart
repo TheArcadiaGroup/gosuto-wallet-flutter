@@ -139,7 +139,7 @@ class _TextChipState extends State<GosutoTextChip> {
                     ),
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      contentPadding: const EdgeInsets.fromLTRB(8, 0, 2, 0),
                       prefixIconConstraints: const BoxConstraints(
                         minWidth: 36,
                         minHeight: 36,

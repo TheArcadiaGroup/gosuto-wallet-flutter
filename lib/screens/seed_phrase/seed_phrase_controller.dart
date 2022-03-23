@@ -5,6 +5,7 @@ class SeedPhraseController extends GetxController {
   dynamic data = Get.arguments;
 
   var seedPhrase = ''.obs;
+  var walletName = ''.obs;
   var password = ''.obs;
   var copied = false.obs;
 
@@ -17,6 +18,7 @@ class SeedPhraseController extends GetxController {
     super.onInit();
     _generateSeedPhrase();
 
-    password.value = data[0]['password'];
+    walletName.value = data[0]['walletName'];
+    password.value = data[1]['password'];
   }
 }

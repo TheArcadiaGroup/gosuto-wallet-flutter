@@ -52,12 +52,40 @@ class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
     }
   }
 
-  void _onContinue(context) {
+  Future<void> _onContinue(context) async {
     List<String> words = controller.getListOfWords();
     controller.seedPhraseToCompare.value = words.join(' ');
 
     if (controller.seedPhraseToCompare.value == controller.seedPhrase.value) {
-      controller.generateWallet();
+      int walletId = await controller.generateWallet();
+
+      if (walletId > 0) {
+        print(walletId);
+      } else {
+        GosutoDialog().buildDialog(context, [
+          Text(
+            'create_wallet_failed'.tr,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: ThemeService().isDarkMode
+                  ? Colors.white
+                  : const Color(0xFF121826),
+            ),
+          ),
+          SizedBox(
+            height: getProportionateScreenHeight(30),
+          ),
+          GosutoButton(
+            text: 'confirm'.tr,
+            style: GosutoButtonStyle.fill,
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+          )
+        ]);
+      }
     } else {
       GosutoDialog().buildDialog(context, [
         Text(

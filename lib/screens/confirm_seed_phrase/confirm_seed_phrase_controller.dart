@@ -61,7 +61,7 @@ class ConfirmSeedPhraseController extends GetxController {
     }, growable: false);
   }
 
-  void generateWallet() async {
+  Future<int> generateWallet() async {
     Uint8List seed = bip39.mnemonicToSeed(seedPhraseToCompare.value);
     String seedHex = hex.encode(Uint8List.fromList(seed.sublist(0, 32)));
     final privateKey = PrivateKey.fromHex(seedHex);
@@ -76,7 +76,7 @@ class ConfirmSeedPhraseController extends GetxController {
     String cipherText =
         await GosutoEncode().encodeWallet(walletKey, secretKey, nonce);
 
-    int id = await DBHelper().insertWallet(Wallet.fromMap({
+    int walletId = await DBHelper().insertWallet(Wallet.fromMap({
       'walletName': walletName.value,
       'publicKey': publicKey.toCompressedHex(),
       'cipherText': cipherText,
@@ -84,8 +84,7 @@ class ConfirmSeedPhraseController extends GetxController {
       'nonce': nonce,
     }));
 
-    print(id.toString());
-
+    return walletId;
     // List<int> decryptData = await GosutoEncode().decodeWallet(
     //   walletKey,
     //   password.value,

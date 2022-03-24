@@ -1,0 +1,67 @@
+{
+  "_buildCommand2" : {
+    "command" : "prepareForIndexing",
+    "enableIndexBuildArena" : false,
+    "targets" : null
+  },
+  "buildCommand" : "build",
+  "configuredTargets" : [
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98e5199a3f70555689be7018ee7f9f878d"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e989da425bb6d6d5d8dbb95e4afffb82217"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98312b4bc59bbbe2c06c205bf4da6737f5"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e989aa8bde11ede0daea4b3c9e3b9b8478f"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e9822a19f6c224a402387a233be75a6e268"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e98bf764fd5de43d0e244cbe6e2f69c1731"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e986f0e8be830d0d3c28782ddeefee89819"
+    },
+    {
+      "guid" : "bfdfe7dc352907fc980b868725387e983786431ce548989b846bbf1a7384f58e"
+    }
+  ],
+  "containerPath" : "/Volumes/DATA/Git/gosuto_wallet_flutter/ios/Pods/Pods.xcodeproj",
+  "continueBuildingAfterErrors" : true,
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "build",
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "",
+      "buildProductsPath" : "",
+      "derivedDataPath" : "/Users/hka/Library/Developer/Xcode/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/hka/Library/Developer/Xcode/DerivedData/Pods-dfbglbtaleuduxckghubjcmwuwmp/Index/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/hka/Library/Developer/Xcode/DerivedData/Pods-dfbglbtaleuduxckghubjcmwuwmp/Index/PrecompiledHeaders",
+      "pchPath" : ""
+    },
+    "configurationName" : "Release",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ENABLE_PREVIEWS" : "NO"
+        }
+      }
+    }
+  },
+  "qos" : "default",
+  "schemeCommand" : "launch",
+  "schemeCommand2" : "launch",
+  "shouldCollectMetrics" : false,
+  "showNonLoggedProgress" : true,
+  "useDryRun" : true,
+  "useImplicitDependencies" : false,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : false
+}

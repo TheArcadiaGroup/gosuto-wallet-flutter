@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:gosuto/models/wallet.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -30,9 +32,14 @@ class DBHelper {
   }
 
   Future<int> insertWallet(Wallet wallet) async {
-    Database db = await initDB();
-    int walletId = await db.insert(_table, wallet.toMap());
-    await db.close();
-    return walletId;
+    try {
+      Database db = await initDB();
+      int walletId = await db.insert(_table, wallet.toMap());
+      await db.close();
+      return walletId;
+    } catch (e) {
+      log('INSERT WALLET ERROR: ', error: e);
+      return -1;
+    }
   }
 }

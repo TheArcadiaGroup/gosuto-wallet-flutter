@@ -60,7 +60,7 @@ class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
       int walletId = await controller.generateWallet();
 
       if (walletId > 0) {
-        print(walletId);
+        Get.toNamed('/home');
       } else {
         GosutoDialog().buildDialog(context, [
           Text(

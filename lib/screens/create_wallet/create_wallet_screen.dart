@@ -6,6 +6,7 @@ import 'package:gosuto/utils/utils.dart';
 
 import '../../components/button.dart';
 import '../../components/checkbox.dart';
+import '../../components/dialog.dart';
 import '../../utils/size_config.dart';
 import 'create_wallet_controller.dart';
 
@@ -115,6 +116,9 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                 decoration: _inputDecoration.copyWith(
                                   labelText: 'wallet_name'.tr,
                                 ),
+                                onChanged: (value) {
+                                  controller.walletName.value = value;
+                                },
                                 onSaved: (value) {
                                   controller.walletName.value = value!;
                                 },
@@ -127,7 +131,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                               ),
                               Obx(
                                 () => TextFormField(
-                                  obscureText: controller.hidePassword.value,
+                                  // obscureText: controller.hidePassword.value,
                                   controller: controller.passwordController,
                                   cursorColor:
                                       Theme.of(context).colorScheme.onSurface,
@@ -169,7 +173,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                               ),
                               Obx(
                                 () => TextFormField(
-                                  obscureText: controller.hideRePassword.value,
+                                  // obscureText: controller.hideRePassword.value,
                                   controller: controller.password2Controller,
                                   cursorColor:
                                       Theme.of(context).colorScheme.onSurface,
@@ -230,8 +234,51 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   text: 'continue'.tr,
                                   style: GosutoButtonStyle.fill,
                                   disabled: !controller.agreed.value,
-                                  onPressed: () {
-                                    controller.checkValidate();
+                                  onPressed: () async {
+                                    bool isValid =
+                                        await controller.checkValidate();
+                                    print('walletName.value: ' +
+                                        controller.walletName.value);
+                                    print('password.value: ' +
+                                        controller.password.value);
+
+                                    if (isValid && controller.agreed.value) {
+                                      controller.formKey.currentState?.save();
+                                      Get.toNamed('/seed_phrase', arguments: [
+                                        {
+                                          'walletName':
+                                              controller.walletName.value
+                                        },
+                                        {'password': controller.password.value},
+                                      ]);
+                                    } else {
+                                      GosutoDialog().buildDialog(context, [
+                                        Text(
+                                          'wallet_name_exist'.tr,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                            color: ThemeService().isDarkMode
+                                                ? Colors.white
+                                                : const Color(0xFF121826),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height:
+                                              getProportionateScreenHeight(30),
+                                        ),
+                                        GosutoButton(
+                                          text: 'confirm'.tr,
+                                          style: GosutoButtonStyle.fill,
+                                          onPressed: () {
+                                            Navigator.of(context,
+                                                    rootNavigator: true)
+                                                .pop();
+                                          },
+                                        )
+                                      ]);
+                                    }
                                   },
                                 ),
                               ),

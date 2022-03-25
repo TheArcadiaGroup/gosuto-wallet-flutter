@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gosuto/database/dbhelper.dart';
 
 class CreateWalletController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -44,7 +45,7 @@ class CreateWalletController extends GetxController {
 
   String? validateWalletName(String value) {
     if (value.isEmpty) {
-      return 'Please enter wallet name';
+      return 'wallet_name_empty'.tr;
     }
 
     return null;
@@ -52,7 +53,7 @@ class CreateWalletController extends GetxController {
 
   String? validatePassword(String value) {
     if (value.isEmpty) {
-      return 'Please enter password';
+      return 'password_empty'.tr;
     }
 
     return null;
@@ -60,25 +61,20 @@ class CreateWalletController extends GetxController {
 
   String? validateConfirmPassword(String value) {
     if (value.isEmpty) {
-      return 'Please enter confirm password';
+      return 'confirm_password_empty'.tr;
     }
 
     if (value != password.value) {
-      return 'Confirm password does not match';
+      return 'confirm_password_wrong'.tr;
     }
 
     return null;
   }
 
-  void checkValidate() {
-    final isValid = formKey.currentState!.validate();
-
-    if (isValid && agreed.value) {
-      formKey.currentState!.save();
-      Get.toNamed('/seed_phrase', arguments: [
-        {'walletName': walletName.value},
-        {'password': password.value},
-      ]);
-    }
+  Future<bool> checkValidate() async {
+    bool isValid = formKey.currentState!.validate();
+    bool walletIsExist = await DBHelper().isWalletNameExist(walletName.value);
+    isValid = !walletIsExist;
+    return isValid;
   }
 }

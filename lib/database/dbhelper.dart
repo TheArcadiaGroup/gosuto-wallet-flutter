@@ -23,9 +23,9 @@ class DBHelper {
   void _onCreate(Database db, int version) async {
     await db.execute('''CREATE TABLE wallets(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-          walletName TEXT NOT NULL,
-          publicKey TEXT NOT NULL,
-          cipherText TEXT NOT NULL,
+          walletName TEXT NOT NULL UNIQUE,
+          publicKey TEXT NOT NULL UNIQUE,
+          cipherText TEXT NOT NULL UNIQUE,
           secretKey BLOB NOT NULL,
           nonce TEXT BLOB NULL
         )''');
@@ -40,6 +40,18 @@ class DBHelper {
     } catch (e) {
       log('INSERT WALLET ERROR: ', error: e);
       return -1;
+    }
+  }
+
+  Future<bool> isWalletNameExist(String name) async {
+    try {
+      Database db = await initDB();
+      List<Map> wallets =
+          await db.query('wallets', where: 'walletName = ?', whereArgs: [name]);
+      return wallets.isNotEmpty;
+    } catch (e) {
+      log('GET WALLET BY NAME ERROR: ', error: e);
+      return false;
     }
   }
 }

@@ -17,35 +17,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    InputDecoration _inputDecoration = InputDecoration(
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
-      contentPadding: const EdgeInsets.all(20),
-      border: OutlineInputBorder(
-        borderSide:
-            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(24),
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide:
-            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(24),
-        ),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide:
-            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(24),
-        ),
-      ),
-    );
+    InputDecoration _inputDecoration = AppConstants.getInputDecoration(context);
 
     return Scaffold(
       body: SafeArea(
@@ -131,7 +103,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                               ),
                               Obx(
                                 () => TextFormField(
-                                  // obscureText: controller.hidePassword.value,
+                                  obscureText: controller.hidePassword.value,
                                   controller: controller.passwordController,
                                   cursorColor:
                                       Theme.of(context).colorScheme.onSurface,
@@ -173,7 +145,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                               ),
                               Obx(
                                 () => TextFormField(
-                                  // obscureText: controller.hideRePassword.value,
+                                  obscureText: controller.hideRePassword.value,
                                   controller: controller.password2Controller,
                                   cursorColor:
                                       Theme.of(context).colorScheme.onSurface,
@@ -237,10 +209,6 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   onPressed: () async {
                                     bool isValid =
                                         await controller.checkValidate();
-                                    print('walletName.value: ' +
-                                        controller.walletName.value);
-                                    print('password.value: ' +
-                                        controller.password.value);
 
                                     if (isValid && controller.agreed.value) {
                                       controller.formKey.currentState?.save();

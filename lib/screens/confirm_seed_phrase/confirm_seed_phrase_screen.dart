@@ -150,11 +150,11 @@ class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'retype_seed_phrase_text1'.tr,
+                          'confirm_seed_phrase_text1'.tr,
                           style: AppConstants.subTextStyle,
                         ),
                         Text(
-                          'retype_seed_phrase_text2'.tr,
+                          'confirm_seed_phrase_text2'.tr,
                           style: AppConstants.subTextStyle,
                         ),
                       ],

@@ -50,10 +50,21 @@ const Map<String, String> enUs = {
   'did_not_copy_seed_phrase': 'You didn’t copy your seed phrase!',
   'create_wallet_failed': 'Could not create wallet. Please try again.',
   'confirm': 'Confirm',
-  // Retype Seed Phrase Screen
-  'retype_seed_phrase_text1': 'Complete your seed phrase to continue',
-  'retype_seed_phrase_text2': '• Type in the missing words',
+  // Confirm Seed Phrase Screen
+  'confirm_seed_phrase_text1': 'Complete your seed phrase to continue',
+  'confirm_seed_phrase_text2': '• Type in the missing words',
   'invalid_seed_phrase': 'Invalid Seed Phrase',
+  // Import Seed Phrase Screen
+  'import_your_wallet': 'Import Your Wallet',
+  'import_seed_phrase': 'Import for seed phrase',
+  'import_seed_phrase_text1':
+      '• Enter your seed phrase with a space betweem each word.',
+  'import_seed_phrase_text2':
+      '• Setup a password for this specific instance of Gosuto.',
+  'seed_phrase': 'Seed Phrase',
+  'paste': 'Paste',
+  'seed_phrase_empty': 'Please enter seed phrase',
+  'seed_phrase_invalid': 'Invalid seed phrase',
 
   'hello': 'Hello',
   'account_setting': 'Account Setting',

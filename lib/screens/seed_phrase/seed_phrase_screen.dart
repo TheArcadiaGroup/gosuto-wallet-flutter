@@ -39,7 +39,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
 
   void _onContinue(context) async {
     if (controller.copied.value) {
-      Get.toNamed('/retype_seed_phrase', arguments: [
+      Get.toNamed('/confirm_seed_phrase', arguments: [
         {'walletName': controller.walletName.value},
         {'seedPhrase': controller.seedPhrase.value},
         {'password': controller.password.value},

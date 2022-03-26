@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:gosuto/screens/create_wallet/create_wallet.dart';
 import 'package:gosuto/screens/home/home.dart';
+import 'package:gosuto/screens/import_seed/import_seed.dart';
 import 'package:gosuto/screens/onboarding/onboarding_screen.dart';
 import 'package:gosuto/screens/add_wallet/add_wallet.dart';
 import 'package:gosuto/screens/seed_phrase/seed_phrase.dart';
@@ -32,7 +33,7 @@ class AppPages {
       binding: SeedPhraseBinding(),
     ),
     GetPage(
-      name: Routes.retypeSeedPhrase,
+      name: Routes.confirmSeedPhrase,
       page: () => const ConfirmSeedPhraseScreen(),
       binding: ConfirmSeedPhraseBinding(),
     ),
@@ -40,6 +41,11 @@ class AppPages {
       name: Routes.createWallet,
       page: () => const CreateWalletScreen(),
       binding: CreateWalletBinding(),
+    ),
+    GetPage(
+      name: Routes.importSeed,
+      page: () => const ImportSeedScreen(),
+      binding: ImportSeedBinding(),
     ),
   ];
 }

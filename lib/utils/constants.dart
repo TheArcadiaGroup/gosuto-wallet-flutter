@@ -32,4 +32,36 @@ class AppConstants {
       color: ThemeService().isDarkMode
           ? AppDarkColors.textColor1
           : const Color(0xFFA1A1A1));
+
+  static InputDecoration getInputDecoration(context) {
+    return InputDecoration(
+      floatingLabelBehavior: FloatingLabelBehavior.always,
+      labelStyle: Theme.of(context).textTheme.bodyText1?.copyWith(
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+      contentPadding: const EdgeInsets.all(20),
+      border: OutlineInputBorder(
+        borderSide:
+            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(24),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide:
+            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(24),
+        ),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide:
+            BorderSide(color: Theme.of(context).colorScheme.onSecondary),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(24),
+        ),
+      ),
+    );
+  }
 }

@@ -24,11 +24,6 @@ class GosutoWalletApp extends StatefulWidget {
 
 class GosutoWalletAppState extends State<GosutoWalletApp> {
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     var initialRoute = OnboardingService().isFirstTimeOpen
         ? Routes.onboarding

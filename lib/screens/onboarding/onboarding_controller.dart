@@ -1,8 +1,9 @@
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class OnboardingService {
-  final _key = 'isFirstTimeOpen';
+class OnboardingController extends GetxController {
   final _box = GetStorage();
+  final _key = 'isFirstTimeOpen';
 
   bool get isFirstTimeOpen {
     if (_box.read(_key) == null) {

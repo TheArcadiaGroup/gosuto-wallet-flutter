@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/themes/theme.dart';
 import 'app_binding.dart';
 import 'routes/app_pages.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(const GosutoWalletApp());
   configLoading();
 }
@@ -21,12 +23,19 @@ class GosutoWalletApp extends StatefulWidget {
 }
 
 class GosutoWalletAppState extends State<GosutoWalletApp> {
-  var initialRoute = OnboardingService().isFirstTimeOpen
-      ? Routes.onboarding
-      : Routes.addWallet;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    var initialRoute = OnboardingService().isFirstTimeOpen
+        ? Routes.onboarding
+        : Routes.addWallet;
+
+    print(OnboardingService().isFirstTimeOpen);
+
     return GetMaterialApp(
       initialRoute: initialRoute,
       getPages: AppPages.routes,

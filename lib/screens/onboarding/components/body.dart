@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:gosuto/components/button.dart';
 import 'package:gosuto/screens/onboarding/components/onboarding_content.dart';
+import 'package:gosuto/services/onboarding_service.dart';
 
 import '../../../utils/constants.dart';
 import '../../../utils/size_config.dart';
@@ -40,11 +41,13 @@ class _BodyState extends State<Body> {
         curve: Curves.easeIn,
       );
     } else {
+      OnboardingService().setFirstTimeOpen();
       Get.offAllNamed('/add_wallet');
     }
   }
 
   void _skip() {
+    OnboardingService().setFirstTimeOpen();
     Get.offAllNamed('/add_wallet');
   }
 
@@ -52,11 +55,14 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
+    print(OnboardingService().isFirstTimeOpen);
+
     return SafeArea(
       child: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
+            Text(OnboardingService().isFirstTimeOpen.toString()),
             const Spacer(
               flex: 3,
             ),

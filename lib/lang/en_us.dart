@@ -47,7 +47,7 @@ const Map<String, String> enUs = {
   'seed_phrase_text4': '• Anyone with the phrase can acces the wallet.',
   'seed_phrase_text5': '• You will need this list to recover tour wallet.',
   'copy_to_clipboard': 'Copy to clipboard',
-  'did_not_copy_seed_phrase': 'You didn’t copy your seed phrase!',
+  'did_not_copy_seed_phrase': 'You didn\'t copy your seed phrase!',
   'create_wallet_failed': 'Could not create wallet. Please try again.',
   'confirm': 'Confirm',
   // Confirm Seed Phrase Screen

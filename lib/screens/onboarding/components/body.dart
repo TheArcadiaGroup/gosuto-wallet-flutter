@@ -55,14 +55,11 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    print(OnboardingService().isFirstTimeOpen);
-
     return SafeArea(
       child: SizedBox(
         width: double.infinity,
         child: Column(
           children: [
-            Text(OnboardingService().isFirstTimeOpen.toString()),
             const Spacer(
               flex: 3,
             ),

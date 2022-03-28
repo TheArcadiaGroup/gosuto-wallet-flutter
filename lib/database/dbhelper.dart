@@ -54,4 +54,27 @@ class DBHelper {
       return false;
     }
   }
+
+  Future<List<Map>> getAllWallets() async {
+    try {
+      Database db = await initDB();
+      List<Map> wallets = await db.query('wallets');
+      return wallets;
+    } catch (e) {
+      log('GET ALL WALLETS ERROR: ', error: e);
+      return [];
+    }
+  }
+
+  Future<List<Map>?> getWalletById(int id) async {
+    try {
+      Database db = await initDB();
+      List<Map> wallet =
+          await db.query('wallets', where: 'id = ?', whereArgs: [id]);
+      return wallet;
+    } catch (e) {
+      log('GET WALLET BY ID ERROR: ', error: e);
+      return null;
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:blake2b/blake2b_hash.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
@@ -9,7 +10,7 @@ import 'package:gosuto/models/wallet.dart';
 import 'package:secp256k1/secp256k1.dart';
 import 'package:convert/convert.dart';
 
-import '../../utils/crypto.dart';
+import '../../utils/aes256gcm.dart';
 
 class ConfirmSeedPhraseController extends GetxController {
   dynamic data = Get.arguments;
@@ -62,45 +63,38 @@ class ConfirmSeedPhraseController extends GetxController {
   }
 
   Future<int> generateWallet() async {
-    Uint8List seed = bip39.mnemonicToSeed(seedPhraseToCompare.value);
+    Uint8List seed = bip39.mnemonicToSeed(seedPhrase.value);
     String seedHex = hex.encode(Uint8List.fromList(seed.sublist(0, 32)));
-    final privateKey = PrivateKey.fromHex(seedHex);
-    final publicKey = privateKey.publicKey;
-    String hashedPassword = await GosutoEncode().hashPassword(password.value);
-    String walletKey = privateKey.toHex() + hashedPassword;
+    PrivateKey privateKey = PrivateKey.fromHex(seedHex);
+    String publicKey = privateKey.publicKey.toCompressedHex();
 
-    final algorithm = AesCbc.with256bits(macAlgorithm: Hmac.sha256());
-    final secretKey = await algorithm.newSecretKey();
-    final nonce = algorithm.newNonce();
+    Hash hashedPasswordBytes = await Sha1().hash(password.value.codeUnits);
+    String hashedPassword = hex.encode(hashedPasswordBytes.bytes);
 
     String cipherText =
-        await GosutoEncode().encodeWallet(walletKey, secretKey, nonce);
+        await GosutoAes256Gcm.encrypt(privateKey.toHex(), hashedPassword);
 
-    int walletId = await DBHelper().insertWallet(Wallet.fromMap({
-      'walletName': walletName.value,
-      'publicKey': publicKey.toCompressedHex(),
-      'cipherText': cipherText,
-      'secretKey': await secretKey.extractBytes(),
-      'nonce': nonce,
-    }));
+    // Decrypt wallet
+    // var decrypted = await GosutoAes256Gcm.decrypt(cipherText, hasedPassword);
+
+    List<int> signature = 'secp256k1'.codeUnits;
+    List<int> bytes = [...signature, 0, ...hex.decode(publicKey)];
+
+    // Calculate Account Hash
+    Uint8List hashedBytes =
+        Blake2bHash.hash(Uint8List.fromList(bytes), 0, bytes.length);
+    String accountHash = hex.encode(hashedBytes);
+
+    int walletId = await DBHelper().insertWallet(
+      Wallet(
+        walletName: walletName.value,
+        password: hashedPassword,
+        publicKey: publicKey,
+        accountHash: accountHash,
+        cipherText: cipherText,
+      ),
+    );
 
     return walletId;
-    // List<int> decryptData = await GosutoEncode().decodeWallet(
-    //   walletKey,
-    //   password.value,
-    //   secretKey,
-    //   nonce,
-    // );
-
-    // Uint8List decodedPk = Uint8List.fromList(decryptData.sublist(0, 128));
-    // Uint8List decodedPassword =
-    //     Uint8List.fromList(decryptData.sublist(128, decryptData.length));
-
-    // print('PK: ' + privateKey.toHex());
-    // print('Hashed PK: ' + hashedPrivateKey.length.toString());
-    // print('walletKey: $walletKey');
-    // print(String.fromCharCodes(decodedPk));
-    // print('hashed password: ' + hashedPassword);
-    // print('password: ' + String.fromCharCodes(decodedPassword));
   }
 }

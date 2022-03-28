@@ -24,10 +24,10 @@ class DBHelper {
     await db.execute('''CREATE TABLE wallets(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
           walletName TEXT NOT NULL UNIQUE,
+          password TEXT NOT NULL,
           publicKey TEXT NOT NULL UNIQUE,
-          cipherText TEXT NOT NULL UNIQUE,
-          secretKey BLOB NOT NULL,
-          nonce TEXT BLOB NULL
+          accountHash TEXT NOT NULL UNIQUE,
+          cipherText TEXT NOT NULL UNIQUE
         )''');
   }
 

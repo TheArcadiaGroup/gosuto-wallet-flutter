@@ -1,35 +1,35 @@
-import 'dart:typed_data';
+// ignore_for_file: file_names
 
 class Wallet {
   late String walletName;
+  late String password;
   late String publicKey;
+  late String accountHash;
   late String cipherText;
-  late Uint8List secretKey;
-  late Uint8List nonce;
 
   Wallet({
     required this.walletName,
+    required this.password,
     required this.publicKey,
+    required this.accountHash,
     required this.cipherText,
-    required this.secretKey,
-    required this.nonce,
   });
 
   Map<String, dynamic> toMap() {
     return {
       'walletName': walletName,
+      'password': password,
       'publicKey': publicKey,
+      'accountHash': accountHash,
       'cipherText': cipherText,
-      'secretKey': secretKey,
-      'nonce': nonce
     };
   }
 
   Wallet.fromMap(Map<String, dynamic> map) {
     walletName = map['walletName'];
+    password = map['password'];
     publicKey = map['publicKey'];
+    accountHash = map['accountHash'];
     cipherText = map['cipherText'];
-    secretKey = map['secretKey'];
-    nonce = map['nonce'];
   }
 }

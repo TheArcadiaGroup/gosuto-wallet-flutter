@@ -27,7 +27,7 @@ class HomeScreen extends GetView<HomeController> {
                   Row(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(10),
+                        padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
                         child: Tab(
                             icon: SvgPicture.asset('assets/svgs/ic-menu.svg')),
                       ),

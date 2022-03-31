@@ -2,11 +2,13 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
+import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/utils/utils.dart';
+import 'package:gosuto/routes/routes.dart';
 
 import 'history.dart';
 
-class HistoryTab extends GetView<HistoryController> {
+class HistoryTab extends GetView<HomeController> {
   HistoryTab({Key? key}) : super(key: key);
 
   final HistoryController _hController = Get.put(HistoryController());
@@ -22,10 +24,11 @@ class HistoryTab extends GetView<HistoryController> {
 
   Widget _listViewBuilder(BuildContext context) {
     double horizontalPadding = (MediaQuery.of(context).size.width - 97) / 2;
-    return ListView.builder(
+    return Obx(
+          () => ListView.builder(
         padding: EdgeInsets.only(
             top: 10, left: 0, right: 0, bottom: _heightBottomView),
-        itemCount: 7,
+        itemCount: _hController.transfers.length + 3,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
@@ -33,9 +36,12 @@ class HistoryTab extends GetView<HistoryController> {
               child: Stack(
                 alignment: AlignmentDirectional.bottomEnd,
                 children: [
-                  const WalletCard(),
+                  if (controller.selectedWallet != null)
+                    WalletCard(wallet: controller.selectedWallet!.value),
                   FloatingActionButton(
-                    onPressed: () => {},
+                    onPressed: () {
+                      Get.offAllNamed(Routes.addWallet);
+                    },
                     child: Image.asset('assets/images/ic-add.png'),
                   )
                 ],
@@ -55,7 +61,7 @@ class HistoryTab extends GetView<HistoryController> {
                     width: 142,
                     child: DropdownButtonHideUnderline(
                       child: Obx(
-                        () => DropdownButton2(
+                            () => DropdownButton2(
                           value: _selectedFilter.value,
                           style: Theme.of(context)
                               .textTheme
@@ -86,7 +92,7 @@ class HistoryTab extends GetView<HistoryController> {
             );
           }
 
-          if (index == 6) {
+          if (index == _hController.transfers.length + 2) {
             return Padding(
               padding: EdgeInsets.only(
                 top: 37,
@@ -98,7 +104,15 @@ class HistoryTab extends GetView<HistoryController> {
                 height: 40,
                 width: 97,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _hController.page.value++;
+                    _hController.getTransfers(
+                        '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
+                        _hController.page.value,
+                        _hController.limit.value,
+                        'DESC',
+                        1);
+                  },
                   child: Text(
                     'show_more'.tr,
                     style: Theme.of(context)
@@ -120,6 +134,12 @@ class HistoryTab extends GetView<HistoryController> {
             );
           }
 
+          // TODO Fake publickey
+          final _wallet = controller.selectedWallet?.value;
+          _wallet?.publicKey =
+          '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
+          print(controller.rate.obs);
+
           return Padding(
             padding: const EdgeInsets.only(top: 12.0, left: 10, right: 10),
             child: Column(
@@ -129,7 +149,11 @@ class HistoryTab extends GetView<HistoryController> {
                     color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(19),
                   ),
-                  child: HistoryItem(index: index, subTitle: 'Wallet1'),
+                  child: HistoryItem(
+                    transfer: _hController.transfers[index - 2],
+                    wallet: _wallet!,
+                    rate: controller.rate.value,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 Divider(
@@ -139,7 +163,9 @@ class HistoryTab extends GetView<HistoryController> {
               ],
             ),
           );
-        });
+        },
+      ),
+    );
   }
 
   void _showHideBottomView(bool isShow) {
@@ -161,54 +187,54 @@ class HistoryTab extends GetView<HistoryController> {
 
   Widget _buildBottomView(BuildContext context) {
     return Obx(() => AnimatedContainer(
-          decoration: BoxDecoration(
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(30.0)),
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(12),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, -1), // changes position of shadow
-              ),
-            ],
+      decoration: BoxDecoration(
+        borderRadius:
+        const BorderRadius.vertical(top: Radius.circular(30.0)),
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(12),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, -1), // changes position of shadow
           ),
-          height: _hController.isShowBottom.value ? 550 : _heightBottomView,
-          width: MediaQuery.of(context).size.width,
-          duration: const Duration(milliseconds: 500),
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 70, left: 52, right: 52, bottom: 60),
-                  child: _hController.isShowBottom.value
-                      ? const TransactionInfoCard(subTitle: 'Wallet1')
-                      : Text(
-                          'bottom_text_note'.tr,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.subtitle2,
-                        ),
-                ),
+        ],
+      ),
+      height: _hController.isShowBottom.value ? 550 : _heightBottomView,
+      width: MediaQuery.of(context).size.width,
+      duration: const Duration(milliseconds: 500),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 70, left: 52, right: 52, bottom: 60),
+              child: _hController.isShowBottom.value
+                  ? const TransactionInfoCard(subTitle: 'Wallet1')
+                  : Text(
+                'bottom_text_note'.tr,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle2,
               ),
-              GestureDetector(
-                onTap: () =>
-                    {_showHideBottomView(!_hController.isShowBottom.value)},
-                child: Container(
-                  width: 155,
-                  height: 8,
-                  margin: const EdgeInsets.only(top: 12),
-                  decoration: BoxDecoration(
-                      color: const Color(0xFFC4C4C4).withOpacity(0.3),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(30))),
-                ),
-              ),
-            ],
+            ),
           ),
-        ));
+          GestureDetector(
+            onTap: () =>
+            {_showHideBottomView(!_hController.isShowBottom.value)},
+            child: Container(
+              width: 155,
+              height: 8,
+              margin: const EdgeInsets.only(top: 12),
+              decoration: BoxDecoration(
+                  color: const Color(0xFFC4C4C4).withOpacity(0.3),
+                  borderRadius:
+                  const BorderRadius.all(Radius.circular(30))),
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }

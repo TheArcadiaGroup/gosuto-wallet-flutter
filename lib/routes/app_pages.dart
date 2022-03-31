@@ -19,7 +19,7 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
-      name: Routes.onboarding,
+      name: Routes.onBoarding,
       page: () => const OnboardingScreen(),
       binding: OnboardingBinding(),
     ),

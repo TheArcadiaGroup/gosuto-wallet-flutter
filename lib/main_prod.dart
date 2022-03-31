@@ -21,8 +21,12 @@ void main() async {
     initialRoute = Routes.home;
   }
 
+  // FlavorConfig(name: 'prod', variables: {
+  //   'baseUrl': 'https://event-store-api-clarity-mainnet.make.services',
+  // });
+
   BuildEnvironment.init(
-      flavor: BuildFlavor.development, baseUrl: 'https://event-store-api-clarity-testnet.make.services/');
+      flavor: BuildFlavor.development, baseUrl: 'https://event-store-api-clarity-mainnet.make.services/');
 
   runApp(MyApp(
     initialRoute: initialRoute,

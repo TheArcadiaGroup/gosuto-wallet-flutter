@@ -121,4 +121,5 @@ const Map<String, String> enUs = {
   'new_password': 'New Password',
   'current_password': 'Current Password',
   're_enter_new_password': 'Re-Enter New Password',
+  'update_wallet_success': 'Update Wallet Success!',
 };

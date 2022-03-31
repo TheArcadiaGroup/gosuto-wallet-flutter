@@ -1,6 +1,7 @@
 // ignore_for_file: file_names
 
 class Wallet {
+  int? id;
   late String walletName;
   late String password;
   late String publicKey;
@@ -17,6 +18,7 @@ class Wallet {
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'walletName': walletName,
       'password': password,
       'publicKey': publicKey,
@@ -26,6 +28,7 @@ class Wallet {
   }
 
   Wallet.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
     walletName = map['walletName'];
     password = map['password'];
     publicKey = map['publicKey'];

@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/components/text_chip.dart';
+import 'package:gosuto/routes/routes.dart';
 import '../../components/button.dart';
 import '../../services/theme_service.dart';
 import '../../utils/constants.dart';
@@ -60,7 +61,7 @@ class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
       int walletId = await controller.generateWallet();
 
       if (walletId > 0) {
-        Get.toNamed('/home');
+        Get.toNamed(Routes.home);
       } else {
         GosutoDialog().buildDialog(context, [
           Text(

@@ -3,25 +3,38 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/screens/home/home.dart';
 
+import '../../../../routes/routes.dart';
+
 class ChooseWalletTab extends GetView<HomeController> {
-  const ChooseWalletTab({Key? key}) : super(key: key);
+  ChooseWalletTab({Key? key}) : super(key: key);
+
+  final ChooseWalletController _cwController =
+  Get.put(ChooseWalletController());
 
   @override
   Widget build(BuildContext context) {
+    _fetchData();
     return _listViewBuilder();
   }
 
-  void _onTapWalletItem() {
+  Future<void> _fetchData() async {
+    await _cwController.fetchData();
+    controller.selectedWallet ??= _cwController.wallets[0].obs;
+  }
+
+  void _onTapWalletItem(int index) {
     final idx = MainTabs.currencyPerformance.index;
     controller.tabController.animateTo(idx);
+    controller.selectedWallet?.value = _cwController.wallets[index];
     controller.switchTab(idx);
   }
 
   Widget _listViewBuilder() {
-    return ListView.builder(
+    return Obx(
+          () => ListView.builder(
         padding:
-            const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 22),
-        itemCount: 10,
+        const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 22),
+        itemCount: _cwController.wallets.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
@@ -35,7 +48,9 @@ class ChooseWalletTab extends GetView<HomeController> {
                     height: 36,
                     child: ElevatedButton.icon(
                       icon: Image.asset('assets/images/ic-add-no-bg.png'),
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.offAllNamed(Routes.addWallet);
+                      },
                       label: Text(
                         'add_wallet'.tr,
                         style: Theme.of(context)
@@ -57,7 +72,10 @@ class ChooseWalletTab extends GetView<HomeController> {
           }
 
           return GestureDetector(
-              child: const WalletCard(), onTap: _onTapWalletItem);
-        });
+              child: WalletCard(wallet: _cwController.wallets[index - 1]),
+              onTap: () => {_onTapWalletItem(index - 1)});
+        },
+      ),
+    );
   }
 }

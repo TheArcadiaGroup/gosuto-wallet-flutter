@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
+import 'package:gosuto/screens/home/home.dart';
+import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
-import 'wallet_home.dart';
+import '../../../../routes/routes.dart';
 
-class WalletHomeTab extends GetView<WalletHomeController> {
+class WalletHomeTab extends GetView<HomeController> {
   WalletHomeTab({Key? key}) : super(key: key);
 
   final WalletHomeController _whController = Get.put(WalletHomeController());
@@ -18,19 +20,22 @@ class WalletHomeTab extends GetView<WalletHomeController> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      alignment: AlignmentDirectional.bottomEnd,
-      children: [
-        _listViewBuilder(context),
-        _buildBottomView(context),
-      ],
+    return Obx(
+          () => Stack(
+        alignment: AlignmentDirectional.bottomEnd,
+        children: [
+          _listViewBuilder(context),
+          if (_whController.currentTab.value != WalletHomeTabs.walletSettings)
+            _buildBottomView(context),
+        ],
+      ),
     );
   }
 
   int _getItemCountListView(WalletHomeTabs tab) {
     switch (tab) {
       case WalletHomeTabs.history:
-        return 9;
+        return _whController.transfers.length + 5;
       case WalletHomeTabs.send:
         return 5;
       case WalletHomeTabs.stake:
@@ -62,19 +67,28 @@ class WalletHomeTab extends GetView<WalletHomeController> {
     double horizontalPadding = (MediaQuery.of(context).size.width - 97) / 2;
 
     return Obx(
-      () => ListView.builder(
+          () => ListView.builder(
         padding: EdgeInsets.only(
-            top: 10, left: 0, right: 0, bottom: _heightBottomView),
+            top: 10,
+            left: 0,
+            right: 0,
+            bottom:
+            _whController.currentTab.value != WalletHomeTabs.walletSettings
+                ? _heightBottomView
+                : 20),
         itemCount: _getItemCountListView(_whController.currentTab.value),
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
               padding: const EdgeInsets.all(10),
               child:
-                  Stack(alignment: AlignmentDirectional.bottomEnd, children: [
-                const WalletCard(),
+              Stack(alignment: AlignmentDirectional.bottomEnd, children: [
+                if (controller.selectedWallet != null)
+                  WalletCard(wallet: controller.selectedWallet!.value),
                 FloatingActionButton(
-                  onPressed: () => {},
+                  onPressed: () {
+                    Get.offAllNamed(Routes.addWallet);
+                  },
                   child: Image.asset('assets/images/ic-add.png'),
                 )
               ]),
@@ -100,7 +114,7 @@ class WalletHomeTab extends GetView<WalletHomeController> {
                       text: 'send'.tr,
                       assetName: 'assets/svgs/ic-send.svg',
                       isActive:
-                          _whController.currentTab.value == WalletHomeTabs.send,
+                      _whController.currentTab.value == WalletHomeTabs.send,
                     ),
                     CustomTab(
                       text: 'stake'.tr,
@@ -118,7 +132,7 @@ class WalletHomeTab extends GetView<WalletHomeController> {
                       text: 'swap'.tr,
                       assetName: 'assets/svgs/ic-swap.svg',
                       isActive:
-                          _whController.currentTab.value == WalletHomeTabs.swap,
+                      _whController.currentTab.value == WalletHomeTabs.swap,
                     ),
                   ]),
             );
@@ -133,9 +147,11 @@ class WalletHomeTab extends GetView<WalletHomeController> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 20, top: 20),
-                      child: Text(
-                        'Wallet1',
-                        style: Theme.of(context).textTheme.headline1,
+                      child: Obx(
+                            () => Text(
+                          controller.selectedWallet?.value.walletName ?? '',
+                          style: Theme.of(context).textTheme.headline1,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -143,9 +159,9 @@ class WalletHomeTab extends GetView<WalletHomeController> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.all(Colors.transparent),
+                          MaterialStateProperty.all(Colors.transparent),
                           shadowColor:
-                              MaterialStateProperty.all(Colors.transparent),
+                          MaterialStateProperty.all(Colors.transparent),
                         ),
                         onPressed: () => {},
                         child: Row(
@@ -190,7 +206,7 @@ class WalletHomeTab extends GetView<WalletHomeController> {
           }
 
           if (index ==
-                  _getItemCountListView(_whController.currentTab.value) - 1 &&
+              _getItemCountListView(_whController.currentTab.value) - 1 &&
               _whController.currentTab.value == WalletHomeTabs.history) {
             return Padding(
               padding: EdgeInsets.only(
@@ -203,7 +219,15 @@ class WalletHomeTab extends GetView<WalletHomeController> {
                 height: 40,
                 width: 97,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _whController.page.value++;
+                    _whController.getTransfers(
+                        '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
+                        _whController.page.value,
+                        _whController.limit.value,
+                        'DESC',
+                        1);
+                  },
                   child: Text(
                     'show_more'.tr,
                     style: Theme.of(context)
@@ -246,7 +270,7 @@ class WalletHomeTab extends GetView<WalletHomeController> {
               width: 142,
               child: DropdownButtonHideUnderline(
                 child: Obx(
-                  () => DropdownButton2(
+                      () => DropdownButton2(
                     value: _selectedFilter.value,
                     style: Theme.of(context)
                         .textTheme
@@ -277,6 +301,11 @@ class WalletHomeTab extends GetView<WalletHomeController> {
       );
     }
 
+    // TODO Fake publickey
+    final _wallet = controller.selectedWallet?.value;
+    _wallet?.publicKey =
+    '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
+
     return Padding(
       padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
       child: Column(
@@ -286,7 +315,11 @@ class WalletHomeTab extends GetView<WalletHomeController> {
               color: Theme.of(context).colorScheme.secondaryContainer,
               borderRadius: BorderRadius.circular(19),
             ),
-            child: HistoryItem(index: index),
+            child: HistoryItem(
+              transfer: _whController.transfers[index - 1],
+              wallet: _wallet!,
+              rate: controller.rate.value,
+            ),
           ),
           const SizedBox(height: 12),
           Divider(
@@ -316,7 +349,9 @@ class WalletHomeTab extends GetView<WalletHomeController> {
               height: 36,
               child: ElevatedButton.icon(
                 icon: Image.asset('assets/images/ic-add-no-bg.png'),
-                onPressed: () {},
+                onPressed: () {
+
+                },
                 label: Text('add_token'.tr,
                     style: Theme.of(context)
                         .textTheme
@@ -359,32 +394,32 @@ class WalletHomeTab extends GetView<WalletHomeController> {
           items: _sliderList,
         ),
         Obx(
-          () => Row(
+              () => Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: _sliderList.asMap().entries.map((entry) {
               return _currentSliderIdx.value == entry.key
                   ? Container(
-                      width: 8,
-                      height: 4,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        shape: BoxShape.rectangle,
-                        color: Theme.of(context).colorScheme.background,
-                      ),
-                    )
+                width: 8,
+                height: 4,
+                margin: const EdgeInsets.symmetric(
+                    vertical: 8.0, horizontal: 2.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  shape: BoxShape.rectangle,
+                  color: Theme.of(context).colorScheme.background,
+                ),
+              )
                   : Container(
-                      width: 4.0,
-                      height: 4.0,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        shape: BoxShape.rectangle,
-                        color: const Color(0xFFC4C4C4).withOpacity(0.35),
-                      ),
-                    );
+                width: 4.0,
+                height: 4.0,
+                margin: const EdgeInsets.symmetric(
+                    vertical: 8.0, horizontal: 2.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(2),
+                  shape: BoxShape.rectangle,
+                  color: const Color(0xFFC4C4C4).withOpacity(0.35),
+                ),
+              );
             }).toList(),
           ),
         ),
@@ -399,7 +434,52 @@ class WalletHomeTab extends GetView<WalletHomeController> {
     );
   }
 
-  void _changeWalletName(String text) {}
+  void _changeWalletName(String text) {
+    _whController.walletName(text);
+  }
+
+  // void _changePublicKey(String text) {
+  //   _whController.publicKey(text);
+  // }
+  // void _changePrivateKey(String text) {
+  //   _whController.privateKey(text);
+  // }
+
+  void _oldPassword(String text) {}
+
+  void _changePassword(String text) {}
+
+  void _updateWalletName(BuildContext context) async {
+    if (controller.selectedWallet != null) {
+      controller.selectedWallet!.value.walletName =
+          _whController.walletName.value;
+      controller.selectedWallet?.refresh();
+      await _whController.updateWallet(controller.selectedWallet!.value);
+      GosutoDialog().buildDialog(context, [
+        Text(
+          'update_wallet_success'.tr,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: ThemeService().isDarkMode
+                ? Colors.white
+                : const Color(0xFF121826),
+          ),
+        ),
+        SizedBox(
+          height: getProportionateScreenHeight(30),
+        ),
+        GosutoButton(
+          text: 'OK'.tr,
+          style: GosutoButtonStyle.fill,
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+        )
+      ]);
+    }
+  }
 
   Widget _buildMnemonicItem(BuildContext context, String num, String label) {
     return Container(
@@ -449,17 +529,21 @@ class WalletHomeTab extends GetView<WalletHomeController> {
   }
 
   Widget _buildWalletSettings(BuildContext context, int index) {
+    TextEditingController _walletName = TextEditingController(
+        text: controller.selectedWallet?.value.walletName);
     TextEditingController _publicKeyController =
-        TextEditingController(text: '2346AD27D7568BA9896F1B7DA6B5991251DEBDF2');
-    TextEditingController _privateKeyController =
-        TextEditingController(text: '2346AD27D7568BA9896F1B7DA6B5991251DEBDF2');
+    TextEditingController(text: controller.selectedWallet?.value.publicKey);
+    // TextEditingController _privateKeyController = TextEditingController(
+    //     text: controller.selectedWallet?.value.secretKey.toString());
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CustomWidgets.textField(context, 'wallet_name'.tr,
-              onChanged: _changeWalletName, borderRadius: 12),
+              controller: _walletName,
+              onChanged: _changeWalletName,
+              borderRadius: 12),
           const SizedBox(height: 20),
           Stack(
             alignment: AlignmentDirectional.topStart,
@@ -467,7 +551,8 @@ class WalletHomeTab extends GetView<WalletHomeController> {
               Padding(
                 padding: const EdgeInsets.only(top: 10, bottom: 10),
                 child: Container(
-                  padding: const EdgeInsets.only(top: 20, bottom: 20, left: 13, right: 13),
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 20, left: 13, right: 13),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
@@ -515,7 +600,7 @@ class WalletHomeTab extends GetView<WalletHomeController> {
           CustomWidgets.textField(
             context,
             'public_key'.tr,
-            onChanged: _changeWalletName,
+            // onChanged: _changePublicKey,
             borderRadius: 12,
             controller: _publicKeyController,
             enable: false,
@@ -588,7 +673,7 @@ class WalletHomeTab extends GetView<WalletHomeController> {
                 height: 51,
                 width: 150,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => _updateWalletName(context),
                   child: Text(
                     'save'.tr,
                     style: Theme.of(context)
@@ -636,53 +721,53 @@ class WalletHomeTab extends GetView<WalletHomeController> {
 
   Widget _buildBottomView(BuildContext context) {
     return Obx(() => AnimatedContainer(
-          decoration: BoxDecoration(
-            borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(30.0)),
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(12),
-                spreadRadius: 5,
-                blurRadius: 7,
-                offset: const Offset(0, -1), // changes position of shadow
-              ),
-            ],
+      decoration: BoxDecoration(
+        borderRadius:
+        const BorderRadius.vertical(top: Radius.circular(30.0)),
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(12),
+            spreadRadius: 5,
+            blurRadius: 7,
+            offset: const Offset(0, -1), // changes position of shadow
           ),
-          height: _whController.isShowBottom.value ? 550 : _heightBottomView,
-          width: MediaQuery.of(context).size.width,
-          duration: const Duration(milliseconds: 500),
-          child: Stack(
-            alignment: Alignment.topCenter,
-            children: [
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 70, left: 52, right: 52, bottom: 60),
-                  child: _whController.isShowBottom.value
-                      ? const TransactionInfoCard()
-                      : Text('bottom_text_note'.tr,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.subtitle2),
-                ),
-              ),
-              GestureDetector(
-                onTap: () =>
-                    {_showHideBottomView(!_whController.isShowBottom.value)},
-                child: Container(
-                  width: 155,
-                  height: 8,
-                  margin: const EdgeInsets.only(top: 12),
-                  decoration: BoxDecoration(
-                      color: const Color(0xFFC4C4C4).withOpacity(0.3),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(30))),
-                ),
-              ),
-            ],
+        ],
+      ),
+      height: _whController.isShowBottom.value ? 550 : _heightBottomView,
+      width: MediaQuery.of(context).size.width,
+      duration: const Duration(milliseconds: 500),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 70, left: 52, right: 52, bottom: 60),
+              child: _whController.isShowBottom.value
+                  ? const TransactionInfoCard()
+                  : Text('bottom_text_note'.tr,
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.subtitle2),
+            ),
           ),
-        ));
+          GestureDetector(
+            onTap: () =>
+            {_showHideBottomView(!_whController.isShowBottom.value)},
+            child: Container(
+              width: 155,
+              height: 8,
+              margin: const EdgeInsets.only(top: 12),
+              decoration: BoxDecoration(
+                  color: const Color(0xFFC4C4C4).withOpacity(0.3),
+                  borderRadius:
+                  const BorderRadius.all(Radius.circular(30))),
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 
   void _showHideBottomView(bool isShow) {

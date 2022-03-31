@@ -7,3 +7,5 @@ export 'custom_tab.dart';
 export 'stake_card.dart';
 export 'validator_item.dart';
 export 'custom_widgets.dart';
+export 'dialog.dart';
+export 'button.dart';

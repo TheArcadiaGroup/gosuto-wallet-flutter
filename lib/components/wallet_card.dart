@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
+import 'package:gosuto/models/wallet.dart';
 import 'package:gosuto/themes/colors.dart';
 
 class WalletCard extends StatelessWidget {
-  const WalletCard({Key? key}) : super(key: key);
+  const WalletCard({Key? key, required this.wallet}) : super(key: key);
+
+  final Wallet wallet;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +46,7 @@ class WalletCard extends StatelessWidget {
                           width: 36, height: 36),
                       const SizedBox(width: 5),
                       Expanded(
-                          child: Text('Wallet 1',
+                          child: Text(wallet.walletName,
                               style: Theme.of(context).textTheme.headline2,
                               overflow: TextOverflow.ellipsis))
                     ],

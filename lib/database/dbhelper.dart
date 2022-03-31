@@ -55,6 +55,26 @@ class DBHelper {
     }
   }
 
+  Future<List<Wallet>> getWallets() async {
+    Database db = await initDB();
+    List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $_table');
+
+    List<Wallet> wallets = [];
+    if (maps.isNotEmpty) {
+      for (var element in maps) {
+        wallets.add(Wallet.fromMap(element));
+      }
+      return maps.map((e) => Wallet.fromMap(e)).toList();
+    }
+
+    return wallets;
+  }
+
+  Future<int> delete(int id) async {
+    Database db = await initDB();
+    return await db.delete(_table, where: 'id = ?', whereArgs: [id]);
+  }
+
   Future<List<Map>> getAllWallets() async {
     try {
       Database db = await initDB();
@@ -76,5 +96,12 @@ class DBHelper {
       log('GET WALLET BY ID ERROR: ', error: e);
       return null;
     }
+  }
+
+  Future<int> update(Wallet wallet) async {
+    Database db = await initDB();
+
+    return await db.update(_table, wallet.toMap(),
+        where: 'id = ?', whereArgs: [wallet.id]);
   }
 }

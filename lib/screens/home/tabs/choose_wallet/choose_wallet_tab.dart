@@ -23,7 +23,7 @@ class ChooseWalletTab extends GetView<HomeController> {
   }
 
   void _onTapWalletItem(int index) {
-    final idx = MainTabs.currencyPerformance.index;
+    final idx = MainTabs.walletHome.index;
     controller.tabController.animateTo(idx);
     controller.selectedWallet?.value = _cwController.wallets[index];
     controller.switchTab(idx);

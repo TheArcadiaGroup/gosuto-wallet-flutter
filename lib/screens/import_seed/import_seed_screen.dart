@@ -24,8 +24,28 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
         children: [
           Expanded(
             flex: 4,
-            child: Column(
+            child: ListView(
               children: [
+                SizedBox(
+                  height: getProportionateScreenHeight(30),
+                ),
+                TextFormField(
+                  controller: controller.walletNameController,
+                  cursorColor: Theme.of(context).colorScheme.onSurface,
+                  style: Theme.of(context).textTheme.bodyText1,
+                  decoration: _inputDecoration.copyWith(
+                    labelText: 'wallet_name'.tr,
+                  ),
+                  onChanged: (value) {
+                    controller.walletName.value = value;
+                  },
+                  onSaved: (value) {
+                    controller.walletName.value = value!;
+                  },
+                  validator: (value) {
+                    return controller.validateWalletName(value!);
+                  },
+                ),
                 SizedBox(
                   height: getProportionateScreenHeight(30),
                 ),

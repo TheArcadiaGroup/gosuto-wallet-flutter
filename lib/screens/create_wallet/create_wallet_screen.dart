@@ -7,7 +7,6 @@ import 'package:gosuto/utils/utils.dart';
 import '../../components/button.dart';
 import '../../components/checkbox.dart';
 import '../../components/dialog.dart';
-import '../../utils/size_config.dart';
 import 'create_wallet_controller.dart';
 
 class CreateWalletScreen extends GetView<CreateWalletController> {

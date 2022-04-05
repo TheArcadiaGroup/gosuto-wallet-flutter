@@ -6,10 +6,12 @@ import '../../database/dbhelper.dart';
 
 class ImportSeedController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  late TextEditingController walletNameController;
   late TextEditingController seedPhraseController;
   late TextEditingController passwordController;
   late TextEditingController password2Controller;
 
+  var walletName = ''.obs;
   var seedPhrase = ''.obs;
   var password = ''.obs;
   var password2 = ''.obs;
@@ -20,6 +22,7 @@ class ImportSeedController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    walletNameController = TextEditingController();
     seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
@@ -27,6 +30,7 @@ class ImportSeedController extends GetxController {
 
   @override
   void onClose() {
+    walletNameController.dispose();
     passwordController.dispose();
     password2Controller.dispose();
   }
@@ -37,6 +41,14 @@ class ImportSeedController extends GetxController {
 
   void toggleRePassword() {
     hideRePassword.value = !hideRePassword.value;
+  }
+
+  String? validateWalletName(String value) {
+    if (value.isEmpty) {
+      return 'wallet_name_empty'.tr;
+    }
+
+    return null;
   }
 
   String? validateSeedPhrase(String value) {
@@ -73,7 +85,7 @@ class ImportSeedController extends GetxController {
 
   Future<bool> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletIsExist = await DBHelper().isWalletNameExist(seedPhrase.value);
+    bool walletIsExist = await DBHelper().isWalletNameExist(walletName.value);
     isValid = !walletIsExist;
     return isValid;
   }

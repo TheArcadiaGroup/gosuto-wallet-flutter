@@ -53,11 +53,11 @@ dependencies:
   sqflite: ^2.0.2
   secp256k1: ^0.3.0
   cryptography: ^2.0.5
+  blake2b: ^0.2.2
   dio: ^4.0.5
   retrofit: ^3.0.1+1
   logger: ^1.1.0
   pretty_dio_logger: ^1.2.0-beta-1
-  blake2b: ^0.2.2
   url_launcher: ^6.0.20
 
 dev_dependencies:

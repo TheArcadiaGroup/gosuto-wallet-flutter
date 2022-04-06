@@ -71,8 +71,10 @@ class ConfirmSeedPhraseController extends GetxController {
     Hash hashedPasswordBytes = await Sha1().hash(password.value.codeUnits);
     String hashedPassword = hex.encode(hashedPasswordBytes.bytes);
 
-    String cipherText =
+    String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(privateKey.toHex(), hashedPassword);
+    String hashedSeedPhrase =
+        await GosutoAes256Gcm.encrypt(seedHex, hashedPassword);
 
     // Decrypt wallet
     // var decrypted = await GosutoAes256Gcm.decrypt(cipherText, hasedPassword);
@@ -91,7 +93,8 @@ class ConfirmSeedPhraseController extends GetxController {
         password: hashedPassword,
         publicKey: publicKey,
         accountHash: accountHash,
-        cipherText: cipherText,
+        seedPhrase: hashedSeedPhrase,
+        privateKey: hashedPrivateKey,
       ),
     );
 

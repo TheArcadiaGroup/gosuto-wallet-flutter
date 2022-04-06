@@ -27,7 +27,8 @@ class DBHelper {
           password TEXT NOT NULL,
           publicKey TEXT NOT NULL UNIQUE,
           accountHash TEXT NOT NULL UNIQUE,
-          cipherText TEXT NOT NULL UNIQUE
+          seedPhrase TEXT NOT NULL UNIQUE,
+          privateKey TEXT NOT NULL UNIQUE
         )''');
   }
 

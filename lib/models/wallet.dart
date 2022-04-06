@@ -6,14 +6,16 @@ class Wallet {
   late String password;
   late String publicKey;
   late String accountHash;
-  late String cipherText;
+  late String seedPhrase;
+  late String privateKey;
 
   Wallet({
     required this.walletName,
     required this.password,
     required this.publicKey,
     required this.accountHash,
-    required this.cipherText,
+    required this.seedPhrase,
+    required this.privateKey,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,7 +25,8 @@ class Wallet {
       'password': password,
       'publicKey': publicKey,
       'accountHash': accountHash,
-      'cipherText': cipherText,
+      'seedPhrase': seedPhrase,
+      'privateKey': privateKey,
     };
   }
 
@@ -33,6 +36,7 @@ class Wallet {
     password = map['password'];
     publicKey = map['publicKey'];
     accountHash = map['accountHash'];
-    cipherText = map['cipherText'];
+    seedPhrase = map['seedPhrase'];
+    privateKey = map['privateKey'];
   }
 }

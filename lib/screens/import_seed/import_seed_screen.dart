@@ -22,213 +22,198 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
       autovalidateMode: AutovalidateMode.always,
       child: Column(
         children: [
-          Expanded(
-            flex: 4,
-            child: ListView(
-              children: [
-                SizedBox(
-                  height: getProportionateScreenHeight(30),
-                ),
-                TextFormField(
-                  controller: controller.walletNameController,
-                  cursorColor: Theme.of(context).colorScheme.onSurface,
-                  style: Theme.of(context).textTheme.bodyText1,
-                  decoration: _inputDecoration.copyWith(
-                    labelText: 'wallet_name'.tr,
-                  ),
-                  onChanged: (value) {
-                    controller.walletName.value = value;
-                  },
-                  onSaved: (value) {
-                    controller.walletName.value = value!;
-                  },
-                  validator: (value) {
-                    return controller.validateWalletName(value!);
-                  },
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(30),
-                ),
-                SizedBox(
-                  height: 5 * 30,
-                  child: TextFormField(
-                    maxLines: 5,
-                    minLines: 5,
-                    controller: controller.seedPhraseController,
-                    cursorColor: Theme.of(context).colorScheme.onSurface,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: _inputDecoration.copyWith(
-                        labelText: 'seed_phrase'.tr,
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.only(bottom: 22, right: 20),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              GestureDetector(
-                                onTap: () async {
-                                  var clipboardData = await Clipboard.getData(
-                                      Clipboard.kTextPlain);
-                                  controller.seedPhrase.value =
-                                      clipboardData!.text!;
-                                  controller.seedPhraseController.text =
-                                      clipboardData.text!;
-                                },
-                                child: Text(
-                                  'paste'.tr,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: AppDarkColors.orangeColor,
-                                  ),
-                                ),
-                              )
-                            ],
+          SizedBox(
+            height: getProportionateScreenHeight(30),
+          ),
+          TextFormField(
+            controller: controller.walletNameController,
+            cursorColor: Theme.of(context).colorScheme.onSurface,
+            style: Theme.of(context).textTheme.bodyText1,
+            decoration: _inputDecoration.copyWith(
+              labelText: 'wallet_name'.tr,
+            ),
+            onChanged: (value) {
+              controller.walletName.value = value;
+            },
+            onSaved: (value) {
+              controller.walletName.value = value!;
+            },
+            validator: (value) {
+              return controller.validateWalletName(value!);
+            },
+          ),
+          SizedBox(
+            height: getProportionateScreenHeight(30),
+          ),
+          SizedBox(
+            height: 5 * 30,
+            child: TextFormField(
+              maxLines: 5,
+              minLines: 5,
+              controller: controller.seedPhraseController,
+              cursorColor: Theme.of(context).colorScheme.onSurface,
+              style: Theme.of(context).textTheme.bodyText1,
+              decoration: _inputDecoration.copyWith(
+                  labelText: 'seed_phrase'.tr,
+                  suffixIcon: Padding(
+                    padding: const EdgeInsets.only(bottom: 22, right: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () async {
+                            var clipboardData =
+                                await Clipboard.getData(Clipboard.kTextPlain);
+                            controller.seedPhrase.value = clipboardData!.text!;
+                            controller.seedPhraseController.text =
+                                clipboardData.text!;
+                          },
+                          child: Text(
+                            'paste'.tr,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppDarkColors.orangeColor,
+                            ),
                           ),
-                        )),
-                    onChanged: (value) {
-                      controller.seedPhrase.value = value;
-                    },
-                    onSaved: (value) {
-                      controller.seedPhrase.value = value!;
-                    },
-                    validator: (value) {
-                      return controller.validateSeedPhrase(value!);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(30),
-                ),
-                Obx(
-                  () => TextFormField(
-                    obscureText: controller.hidePassword.value,
-                    controller: controller.passwordController,
-                    cursorColor: Theme.of(context).colorScheme.onSurface,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: _inputDecoration.copyWith(
-                      labelText: 'wallet_paddword'.tr,
-                      prefixIcon: IconButton(
-                        icon: ThemeService().isDarkMode
-                            ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
-                            : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
-                        onPressed: null,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(controller.hidePassword.value
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () => controller.togglePassword(),
-                        color: ThemeService().isDarkMode
-                            ? Colors.white.withOpacity(0.4)
-                            : Colors.black.withOpacity(0.4),
-                      ),
+                        )
+                      ],
                     ),
-                    onChanged: (value) {
-                      controller.password.value = value;
-                    },
-                    onSaved: (value) {
-                      controller.password.value = value!;
-                    },
-                    validator: (value) {
-                      return controller.validatePassword(value!);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(30),
-                ),
-                Obx(
-                  () => TextFormField(
-                    obscureText: controller.hideRePassword.value,
-                    controller: controller.password2Controller,
-                    cursorColor: Theme.of(context).colorScheme.onSurface,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: _inputDecoration.copyWith(
-                      labelText: 'wallet_paddword2'.tr,
-                      prefixIcon: IconButton(
-                        icon: ThemeService().isDarkMode
-                            ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
-                            : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
-                        onPressed: null,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(controller.hideRePassword.value
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () => controller.toggleRePassword(),
-                        color: ThemeService().isDarkMode
-                            ? Colors.white.withOpacity(0.4)
-                            : Colors.black.withOpacity(0.4),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      controller.password2.value = value;
-                    },
-                    onSaved: (value) {
-                      controller.password2.value = value!;
-                    },
-                    validator: (value) {
-                      return controller.validateConfirmPassword(value!);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(20),
-                ),
-              ],
+                  )),
+              onChanged: (value) {
+                controller.seedPhrase.value = value;
+              },
+              onSaved: (value) {
+                controller.seedPhrase.value = value!;
+              },
+              validator: (value) {
+                return controller.validateSeedPhrase(value!);
+              },
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: Column(
-              children: [
-                GosutoButton(
-                  text: 'continue'.tr,
-                  style: GosutoButtonStyle.fill,
-                  onPressed: () async {
-                    bool isValid = await controller.checkValidate();
-
-                    if (isValid) {
-                      controller.formKey.currentState?.save();
-                      print('done');
-                    } else {
-                      GosutoDialog().buildDialog(context, [
-                        Text(
-                          'wallet_name_exist'.tr,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: ThemeService().isDarkMode
-                                ? Colors.white
-                                : const Color(0xFF121826),
-                          ),
-                        ),
-                        SizedBox(
-                          height: getProportionateScreenHeight(30),
-                        ),
-                        GosutoButton(
-                          text: 'confirm'.tr,
-                          style: GosutoButtonStyle.fill,
-                          onPressed: () {
-                            Navigator.of(context, rootNavigator: true).pop();
-                          },
-                        )
-                      ]);
-                    }
-                  },
+          SizedBox(
+            height: getProportionateScreenHeight(30),
+          ),
+          Obx(
+            () => TextFormField(
+              obscureText: controller.hidePassword.value,
+              controller: controller.passwordController,
+              cursorColor: Theme.of(context).colorScheme.onSurface,
+              style: Theme.of(context).textTheme.bodyText1,
+              decoration: _inputDecoration.copyWith(
+                labelText: 'wallet_paddword'.tr,
+                prefixIcon: IconButton(
+                  icon: ThemeService().isDarkMode
+                      ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                      : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+                  onPressed: null,
                 ),
-                SizedBox(
-                  height: getProportionateScreenHeight(10),
+                suffixIcon: IconButton(
+                  icon: Icon(controller.hidePassword.value
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                  onPressed: () => controller.togglePassword(),
+                  color: ThemeService().isDarkMode
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black.withOpacity(0.4),
                 ),
-                GosutoButton(
-                  text: 'back'.tr,
-                  style: GosutoButtonStyle.text,
-                  onPressed: () {
-                    Get.back();
-                  },
-                )
-              ],
+              ),
+              onChanged: (value) {
+                controller.password.value = value;
+              },
+              onSaved: (value) {
+                controller.password.value = value!;
+              },
+              validator: (value) {
+                return controller.validatePassword(value!);
+              },
             ),
+          ),
+          SizedBox(
+            height: getProportionateScreenHeight(30),
+          ),
+          Obx(
+            () => TextFormField(
+              obscureText: controller.hideRePassword.value,
+              controller: controller.password2Controller,
+              cursorColor: Theme.of(context).colorScheme.onSurface,
+              style: Theme.of(context).textTheme.bodyText1,
+              decoration: _inputDecoration.copyWith(
+                labelText: 'wallet_paddword2'.tr,
+                prefixIcon: IconButton(
+                  icon: ThemeService().isDarkMode
+                      ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                      : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+                  onPressed: null,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(controller.hideRePassword.value
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                  onPressed: () => controller.toggleRePassword(),
+                  color: ThemeService().isDarkMode
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black.withOpacity(0.4),
+                ),
+              ),
+              onChanged: (value) {
+                controller.password2.value = value;
+              },
+              onSaved: (value) {
+                controller.password2.value = value!;
+              },
+              validator: (value) {
+                return controller.validateConfirmPassword(value!);
+              },
+            ),
+          ),
+          SizedBox(
+            height: getProportionateScreenHeight(40),
+          ),
+          GosutoButton(
+            text: 'continue'.tr,
+            style: GosutoButtonStyle.fill,
+            onPressed: () async {
+              bool isValid = await controller.checkValidate();
+
+              if (isValid) {
+                controller.formKey.currentState?.save();
+                print('done');
+              } else {
+                GosutoDialog().buildDialog(context, [
+                  Text(
+                    'wallet_name_exist'.tr,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: ThemeService().isDarkMode
+                          ? Colors.white
+                          : const Color(0xFF121826),
+                    ),
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(30),
+                  ),
+                  GosutoButton(
+                    text: 'confirm'.tr,
+                    style: GosutoButtonStyle.fill,
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop();
+                    },
+                  )
+                ]);
+              }
+            },
+          ),
+          SizedBox(
+            height: getProportionateScreenHeight(10),
+          ),
+          GosutoButton(
+            text: 'back'.tr,
+            style: GosutoButtonStyle.text,
+            onPressed: () {
+              Get.back();
+            },
           ),
         ],
       ),
@@ -262,32 +247,42 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                       ),
+                  textAlign: TextAlign.center,
                 ),
-                SizedBox(
-                  height: getProportionateScreenHeight(25),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      SizedBox(
+                        height: getProportionateScreenHeight(25),
+                      ),
+                      Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'import_seed_phrase'.tr,
+                                style: AppConstants.subTextStyle,
+                              ),
+                              Text(
+                                'import_seed_phrase_text1'.tr,
+                                style: AppConstants.subTextStyle,
+                              ),
+                              Text(
+                                'import_seed_phrase_text2'.tr,
+                                style: AppConstants.subTextStyle,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      _buildForm(context),
+                      // Expanded(
+                      //   child: _buildForm(context),
+                      // ),
+                    ],
+                  ),
                 ),
-                Row(
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'import_seed_phrase'.tr,
-                          style: AppConstants.subTextStyle,
-                        ),
-                        Text(
-                          'import_seed_phrase_text1'.tr,
-                          style: AppConstants.subTextStyle,
-                        ),
-                        Text(
-                          'import_seed_phrase_text2'.tr,
-                          style: AppConstants.subTextStyle,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Expanded(child: _buildForm(context)),
               ],
             ),
           ),

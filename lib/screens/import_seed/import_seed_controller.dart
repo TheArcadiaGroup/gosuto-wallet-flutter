@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
 import '../../database/dbhelper.dart';
+import '../../utils/aes256gcm.dart';
 
 class ImportSeedController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -83,10 +84,23 @@ class ImportSeedController extends GetxController {
     return null;
   }
 
-  Future<bool> checkValidate() async {
+  Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletIsExist = await DBHelper().isWalletNameExist(walletName.value);
-    isValid = !walletIsExist;
-    return isValid;
+    bool walletNameIsExist =
+        await DBHelper().isWalletNameExist(walletName.value);
+
+    String errorMessage = '';
+    var map = {};
+
+    if (walletNameIsExist) {
+      errorMessage = 'wallet_name_exist'.tr;
+    } else {
+      errorMessage = 'seed_phrase_exist'.tr;
+    }
+    isValid = !walletNameIsExist;
+
+    map['isValid'] = isValid;
+    map['errorMessage'] = errorMessage;
+    return map;
   }
 }

@@ -65,6 +65,7 @@ const Map<String, String> enUs = {
   'paste': 'Paste',
   'seed_phrase_empty': 'Please enter seed phrase',
   'seed_phrase_invalid': 'Invalid seed phrase',
+  'seed_phrase_exist': 'This wallet is already exist',
 
   'hello': 'Hello',
   'account_setting': 'Account Setting',

@@ -173,9 +173,9 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
             text: 'continue'.tr,
             style: GosutoButtonStyle.fill,
             onPressed: () async {
-              bool isValid = await controller.checkValidate();
+              var obj = await controller.checkValidate();
 
-              if (isValid) {
+              if (obj['isValid']) {
                 controller.formKey.currentState?.save();
                 print('done');
               } else {

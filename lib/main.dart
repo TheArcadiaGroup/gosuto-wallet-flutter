@@ -21,8 +21,14 @@ void main() async {
     initialRoute = Routes.home;
   }
 
+  // final _settings = await DBHelper().getSettings();
+  // if (_settings.isEmpty) {
+  //   initialRoute = '';
+  // }
+
   BuildEnvironment.init(
-      flavor: BuildFlavor.development, baseUrl: 'https://event-store-api-clarity-testnet.make.services/');
+      flavor: BuildFlavor.development,
+      baseUrl: 'https://event-store-api-clarity-testnet.make.services/');
 
   runApp(MyApp(
     initialRoute: initialRoute,

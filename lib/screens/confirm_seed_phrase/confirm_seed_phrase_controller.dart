@@ -6,6 +6,7 @@ import 'package:cryptography/cryptography.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
+import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/models/wallet.dart';
 import 'package:secp256k1/secp256k1.dart';
 import 'package:convert/convert.dart';
@@ -90,13 +91,15 @@ class ConfirmSeedPhraseController extends GetxController {
     int walletId = await DBHelper().insertWallet(
       Wallet(
         walletName: walletName.value,
-        password: hashedPassword,
         publicKey: publicKey,
         accountHash: accountHash,
         seedPhrase: hashedSeedPhrase,
         privateKey: hashedPrivateKey,
       ),
     );
+
+    // Update password for settings
+    await DBHelper().updateSettings(Settings(password: hashedPassword));
 
     return walletId;
   }

@@ -8,10 +8,9 @@ import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/models/wallet.dart';
+import 'package:gosuto/utils/aes256gcm.dart';
 import 'package:secp256k1/secp256k1.dart';
 import 'package:convert/convert.dart';
-
-import '../../utils/aes256gcm.dart';
 
 class ConfirmSeedPhraseController extends GetxController {
   dynamic data = Get.arguments;
@@ -64,8 +63,7 @@ class ConfirmSeedPhraseController extends GetxController {
   }
 
   Future<int> generateWallet() async {
-    Uint8List seed = bip39.mnemonicToSeed(seedPhrase.value);
-    String seedHex = hex.encode(Uint8List.fromList(seed.sublist(0, 32)));
+    String seedHex = bip39.mnemonicToSeedHex(seedPhrase.value).substring(0, 64);
     PrivateKey privateKey = PrivateKey.fromHex(seedHex);
     String publicKey = privateKey.publicKey.toCompressedHex();
     String hashedPassword;

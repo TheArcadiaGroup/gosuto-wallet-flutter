@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
+import 'package:gosuto/models/settings.dart';
 
 class CreateWalletController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -69,6 +70,17 @@ class CreateWalletController extends GetxController {
     }
 
     return null;
+  }
+
+  Future<String> getPassword() async {
+    final _data = await DBHelper().getSettings();
+
+    if (_data.isNotEmpty) {
+      Settings _settings = Settings.fromMap(_data[0]);
+      return _settings.password ?? '';
+    }
+
+    return '';
   }
 
   Future<bool> checkValidate() async {

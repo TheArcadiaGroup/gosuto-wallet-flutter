@@ -1,29 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/settings.dart';
+import 'package:gosuto/components/button.dart';
+import 'package:gosuto/components/checkbox.dart';
+import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
-import '../../components/button.dart';
-import '../../components/checkbox.dart';
-import '../../components/dialog.dart';
 import 'create_wallet_controller.dart';
 
 class CreateWalletScreen extends GetView<CreateWalletController> {
   const CreateWalletScreen({Key? key}) : super(key: key);
-
-  Future<String> getPassword() async {
-    final _data = await DBHelper().getSettings();
-
-    if (_data.isNotEmpty) {
-      Settings _settings = Settings.fromMap(_data[0]);
-      return _settings.password ?? '';
-    }
-
-    return '';
-  }
 
   Widget _buildForm(context) {
     InputDecoration _inputDecoration = AppConstants.getInputDecoration(context);
@@ -58,11 +45,10 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
       key: controller.formKey,
       autovalidateMode: AutovalidateMode.always,
       child: FutureBuilder<String>(
-        future: getPassword(),
+        future: controller.getPassword(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // add password fields
-            print(snapshot.data);
             if (snapshot.hasData &&
                 (snapshot.data == null || snapshot.data == '')) {
               widgets.addAll([
@@ -192,7 +178,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                       ),
                 ),
                 Expanded(
-                  flex: 5,
+                  flex: 4,
                   child: ListView(
                     children: [
                       SizedBox(
@@ -224,6 +210,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                   ),
                 ),
                 Expanded(
+                  flex: 1,
                   child: Column(
                     children: [
                       Obx(

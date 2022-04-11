@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
-
-import '../../database/dbhelper.dart';
-import '../../utils/aes256gcm.dart';
+import 'package:gosuto/database/dbhelper.dart';
+import 'package:gosuto/models/settings.dart';
+import 'package:gosuto/utils/aes256gcm.dart';
+import 'package:convert/convert.dart';
 
 class ImportSeedController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -19,6 +22,7 @@ class ImportSeedController extends GetxController {
 
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
+  var agreed = false.obs;
 
   @override
   void onInit() {
@@ -42,6 +46,10 @@ class ImportSeedController extends GetxController {
 
   void toggleRePassword() {
     hideRePassword.value = !hideRePassword.value;
+  }
+
+  void toggleAgreed() {
+    agreed.value = !agreed.value;
   }
 
   String? validateWalletName(String value) {
@@ -84,6 +92,17 @@ class ImportSeedController extends GetxController {
     return null;
   }
 
+  Future<String> getPassword() async {
+    final _data = await DBHelper().getSettings();
+
+    if (_data.isNotEmpty) {
+      Settings _settings = Settings.fromMap(_data[0]);
+      return _settings.password ?? '';
+    }
+
+    return '';
+  }
+
   Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
     bool walletNameIsExist =
@@ -95,6 +114,21 @@ class ImportSeedController extends GetxController {
     if (walletNameIsExist) {
       errorMessage = 'wallet_name_exist'.tr;
     } else {
+      // check seed phrase exist
+      String password = await getPassword();
+
+      if (password != '') {
+        String seedHex =
+            bip39.mnemonicToSeedHex(seedPhrase.value).substring(0, 64);
+        String hashedSeedPhrase =
+            await GosutoAes256Gcm.encrypt(seedHex, password);
+
+        print('----');
+        print(seedHex);
+        print(seedPhrase.value);
+        print(password);
+        print(hashedSeedPhrase);
+      }
       errorMessage = 'seed_phrase_exist'.tr;
     }
     isValid = !walletNameIsExist;

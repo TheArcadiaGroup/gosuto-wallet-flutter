@@ -277,9 +277,6 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                         ],
                       ),
                       _buildForm(context),
-                      // Expanded(
-                      //   child: _buildForm(context),
-                      // ),
                     ],
                   ),
                 ),

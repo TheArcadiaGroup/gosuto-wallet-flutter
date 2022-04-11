@@ -68,9 +68,23 @@ class ConfirmSeedPhraseController extends GetxController {
     String seedHex = hex.encode(Uint8List.fromList(seed.sublist(0, 32)));
     PrivateKey privateKey = PrivateKey.fromHex(seedHex);
     String publicKey = privateKey.publicKey.toCompressedHex();
+    String hashedPassword;
+    String _passwordDB = '';
 
-    Hash hashedPasswordBytes = await Sha1().hash(password.value.codeUnits);
-    String hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+    // Get password from db
+    final _data = await DBHelper().getSettings();
+
+    if (_data.isNotEmpty) {
+      Settings _settings = Settings.fromMap(_data[0]);
+      _passwordDB = _settings.password ?? '';
+    }
+
+    if (_passwordDB != '') {
+      hashedPassword = _passwordDB;
+    } else {
+      Hash hashedPasswordBytes = await Sha1().hash(password.value.codeUnits);
+      hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+    }
 
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(privateKey.toHex(), hashedPassword);

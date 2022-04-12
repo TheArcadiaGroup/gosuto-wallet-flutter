@@ -55,7 +55,7 @@ const Map<String, String> enUs = {
   'confirm_seed_phrase_text2': '• Type in the missing words',
   'invalid_seed_phrase': 'Invalid Seed Phrase',
   // Import Seed Phrase Screen
-  'import_your_wallet': 'Import Your Wallet',
+  'import_your_wallet': 'Import your wallet',
   'import_seed_phrase': 'Import for seed phrase',
   'import_seed_phrase_text1':
       '• Enter your seed phrase with a space betweem each word.',
@@ -66,6 +66,8 @@ const Map<String, String> enUs = {
   'seed_phrase_empty': 'Please enter seed phrase',
   'seed_phrase_invalid': 'Invalid seed phrase',
   'seed_phrase_exist': 'This wallet is already exist',
+  // Import File Screen
+  'import_from_file': 'Import from File',
 
   'hello': 'Hello',
   'account_setting': 'Account Setting',

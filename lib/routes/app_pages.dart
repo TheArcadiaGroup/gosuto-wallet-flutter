@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:gosuto/screens/import_file/import_file.dart';
 import 'package:gosuto/screens/onboarding/onboarding.dart';
 import 'package:gosuto/screens/add_wallet/add_wallet.dart';
 import 'package:gosuto/screens/create_wallet/create_wallet.dart';
@@ -47,6 +48,11 @@ class AppPages {
       name: Routes.importSeed,
       page: () => const ImportSeedScreen(),
       binding: ImportSeedBinding(),
+    ),
+    GetPage(
+      name: Routes.importFile,
+      page: () => const ImportFileScreen(),
+      binding: ImportFileBinding(),
     ),
   ];
 }

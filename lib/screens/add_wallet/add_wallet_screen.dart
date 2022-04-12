@@ -21,7 +21,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
         Get.toNamed('/import_seed');
         break;
       case 3:
-        Get.offNamed('/import_seed');
+        Get.toNamed('/import_file');
         break;
       default:
         Get.toNamed('/create_wallet');

@@ -22,7 +22,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
       controller.formKey.currentState?.save();
 
       // save wallet to db
-      int walletId = await controller.importWallet();
+      int walletId = await controller.createWallet();
 
       if (walletId > 0) {
         Get.toNamed(Routes.home);

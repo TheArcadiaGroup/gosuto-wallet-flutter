@@ -58,7 +58,7 @@ class ConfirmSeedPhraseScreen extends GetView<ConfirmSeedPhraseController> {
     controller.seedPhraseToCompare.value = words.join(' ');
 
     if (controller.seedPhraseToCompare.value == controller.seedPhrase.value) {
-      int walletId = await controller.generateWallet();
+      int walletId = await controller.createWallet();
 
       if (walletId > 0) {
         Get.toNamed(Routes.home);

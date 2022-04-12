@@ -77,7 +77,7 @@ class CreateWalletController extends GetxController {
 
     if (_data.isNotEmpty) {
       Settings _settings = Settings.fromMap(_data[0]);
-      return _settings.password ?? '';
+      return _settings.password;
     }
 
     return '';

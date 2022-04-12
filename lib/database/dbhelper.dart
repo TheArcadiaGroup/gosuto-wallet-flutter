@@ -24,7 +24,9 @@ class DBHelper {
   void _onCreate(Database db, int version) async {
     await db.execute('''CREATE TABLE settings(
       password TEXT DEFAULT '',
-      useBiometricAuth INT DEFAULT 0
+      useBiometricAuth INT DEFAULT 0,
+      salt BLOB,
+      iv BLOB
     )''');
     await db.execute('''CREATE TABLE wallets(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -58,7 +60,7 @@ class DBHelper {
     }
   }
 
-  Future<int> updateSettings(Settings settings) async {
+  Future<int> updateSettings(Settings settings, [String? type]) async {
     try {
       var currentSettings = await getSettings();
 
@@ -66,7 +68,32 @@ class DBHelper {
         return await insertSettings(settings);
       } else {
         Database db = await initDB();
-        int result = await db.update('settings', settings.toMap());
+        String query = '';
+        List<dynamic> args = [];
+
+        switch (type) {
+          case 'password':
+            query = 'UPDATE settings SET password = ?';
+            args = [settings.password];
+            break;
+          case 'salt':
+            query = 'UPDATE settings SET salt = ?, iv = ?';
+            args = [settings.salt, settings.iv];
+            break;
+          case 'all':
+          default:
+            query =
+                'UPDATE settings SET password = ?, useBiometricAuth = ?, salt = ?, iv = ?';
+            args = [
+              settings.password,
+              settings.useBiometricAuth,
+              settings.salt,
+              settings.iv
+            ];
+            break;
+        }
+
+        int result = await db.rawUpdate(query, args);
         return result;
       }
     } catch (e) {
@@ -132,6 +159,18 @@ class DBHelper {
     } catch (e) {
       log('GET WALLET BY ID ERROR: ', error: e);
       return null;
+    }
+  }
+
+  Future<List<Map>> getWalletsBySeedPhrase(String seedphrase) async {
+    try {
+      Database db = await initDB();
+      List<Map> wallet = await db
+          .query('wallets', where: 'seedPhrase = ?', whereArgs: [seedphrase]);
+      return wallet;
+    } catch (e) {
+      log('GET WALLET BY SEED PHRASE ERROR: ', error: e);
+      return [];
     }
   }
 

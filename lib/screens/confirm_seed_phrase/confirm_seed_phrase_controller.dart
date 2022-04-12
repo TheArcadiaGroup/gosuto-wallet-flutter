@@ -68,13 +68,27 @@ class ConfirmSeedPhraseController extends GetxController {
     String publicKey = privateKey.publicKey.toCompressedHex();
     String hashedPassword;
     String _passwordDB = '';
+    Settings _settings = Settings(
+      password: '',
+      useBiometricAuth: 0,
+      salt: Uint8List(0),
+      iv: Uint8List(0),
+    );
 
     // Get password from db
-    final _data = await DBHelper().getSettings();
+    var _data = await DBHelper().getSettings();
 
     if (_data.isNotEmpty) {
-      Settings _settings = Settings.fromMap(_data[0]);
-      _passwordDB = _settings.password ?? '';
+      _settings = Settings.fromMap(_data[0]);
+      _passwordDB = _settings.password;
+    }
+
+    if (_settings.salt.isNotEmpty && _settings.iv.isNotEmpty) {
+      _settings.salt = _settings.salt;
+      _settings.iv = _settings.iv;
+    } else {
+      _settings.salt = GosutoAes256Gcm.randomBytes(16);
+      _settings.iv = GosutoAes256Gcm.randomBytes(12);
     }
 
     if (_passwordDB != '') {
@@ -82,12 +96,23 @@ class ConfirmSeedPhraseController extends GetxController {
     } else {
       Hash hashedPasswordBytes = await Sha1().hash(password.value.codeUnits);
       hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+
+      // Update password for the first wallet
+      await DBHelper().updateSettings(
+        Settings(
+          password: hashedPassword,
+          useBiometricAuth: _settings.useBiometricAuth,
+          salt: _settings.salt,
+          iv: _settings.iv,
+        ),
+        'password',
+      );
     }
 
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(privateKey.toHex(), hashedPassword);
     String hashedSeedPhrase =
-        await GosutoAes256Gcm.encrypt(seedHex, hashedPassword);
+        await GosutoAes256Gcm.encrypt(seedPhrase.value, hashedPassword);
 
     // Decrypt wallet
     // var decrypted = await GosutoAes256Gcm.decrypt(cipherText, hasedPassword);
@@ -109,9 +134,6 @@ class ConfirmSeedPhraseController extends GetxController {
         privateKey: hashedPrivateKey,
       ),
     );
-
-    // Update password for settings
-    await DBHelper().updateSettings(Settings(password: hashedPassword));
 
     return walletId;
   }

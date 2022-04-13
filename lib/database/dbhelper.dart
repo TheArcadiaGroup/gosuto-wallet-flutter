@@ -16,7 +16,6 @@ class DBHelper {
 
   Future<Database> initDB() async {
     String path = join(await getDatabasesPath(), _dbName);
-    print(path);
     var theDb = await openDatabase(path, version: 1, onCreate: _onCreate);
     return theDb;
   }

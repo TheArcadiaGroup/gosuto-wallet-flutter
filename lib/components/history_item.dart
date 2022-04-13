@@ -5,14 +5,18 @@ import 'package:gosuto/models/models.dart';
 import 'package:gosuto/models/transfer_model.dart';
 
 class HistoryItem extends StatelessWidget {
-  const HistoryItem({Key? key, required this.transfer, required this.wallet, required this.rate, this.subTitle = ''})
+  const HistoryItem(
+      {Key? key,
+      required this.transfer,
+      required this.wallet,
+      required this.rate,
+      this.subTitle = ''})
       : super(key: key);
 
   final String subTitle;
   final TransferModel transfer;
   final Wallet wallet;
   final double rate;
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +41,8 @@ class HistoryItem extends StatelessWidget {
                       index == 1
                           ? 'received'.tr
                           : (index == 2
-                          ? 'stake'.tr
-                          : (index == 3 ? 'swap'.tr : 'sent'.tr)),
+                              ? 'stake'.tr
+                              : (index == 3 ? 'swap'.tr : 'sent'.tr)),
                       style: Theme.of(context)
                           .textTheme
                           .headline4
@@ -69,22 +73,22 @@ class HistoryItem extends StatelessWidget {
           (index == 1
               ? Container()
               : Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '-$amount CSPR'.tr,
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(fontSize: 13),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                '${(amount * rate).toStringAsFixed(2)} USD',
-                style: Theme.of(context).textTheme.headline5,
-              )
-            ],
-          )),
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '-$amount CSPR'.tr,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          ?.copyWith(fontSize: 13),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      '${(amount * rate).toStringAsFixed(2)} USD',
+                      style: Theme.of(context).textTheme.headline5,
+                    )
+                  ],
+                )),
           if (index == 3)
             Padding(
               padding: const EdgeInsets.all(8.0),

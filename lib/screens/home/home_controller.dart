@@ -36,7 +36,7 @@ class HomeController extends GetxController
     accountSettingTab = AccountSettingTab();
     currencyPerformanceTab = const CurrencyPerformanceTab();
     chooseWalletTab = ChooseWalletTab();
-    walletHomeTab =  WalletHomeTab();
+    walletHomeTab = WalletHomeTab();
     historyTab = HistoryTab();
     stakeTab = StakeTab();
 
@@ -59,8 +59,8 @@ class HomeController extends GetxController
         return 0;
       case MainTabs.walletHome:
         return 1;
-    // case MainTabs.tab3:
-    //   return 2;
+      // case MainTabs.tab3:
+      //   return 2;
       case MainTabs.history:
         return 2;
       case MainTabs.stake:
@@ -80,8 +80,8 @@ class HomeController extends GetxController
         return MainTabs.chooseWallet;
       case 1:
         return MainTabs.walletHome;
-    // case 2:
-    //   return MainTabs.tab3;
+      // case 2:
+      //   return MainTabs.tab3;
       case 2:
         return MainTabs.history;
       case 3:
@@ -95,10 +95,9 @@ class HomeController extends GetxController
     }
   }
 
-  Future<void>  getRate(int rateId) async {
+  Future<void> getRate(int rateId) async {
     final response = await apiClient.rateAmount(rateId);
     final _rate = response.data;
-    print(response.data);
     rate(_rate);
   }
 }

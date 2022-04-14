@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/models/settings.dart';
-import 'package:gosuto/utils/aes256gcm.dart';
-import 'package:gosuto/utils/importwallet.dart';
 import 'package:gosuto/utils/utils.dart';
 
 class ImportSeedController extends GetxController {
@@ -143,8 +141,8 @@ class ImportSeedController extends GetxController {
   Future<int> createWallet() async {
     return await WalletUtils.importWallet(
       walletName.value,
-      seedPhrase.value,
       password.value,
+      seedPhrase.value,
     );
   }
 }

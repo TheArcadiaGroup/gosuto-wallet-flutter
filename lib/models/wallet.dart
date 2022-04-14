@@ -3,14 +3,14 @@ class Wallet {
   late String walletName;
   late String publicKey;
   late String accountHash;
-  late String seedPhrase;
+  String? seedPhrase;
   late String privateKey;
 
   Wallet({
     required this.walletName,
     required this.publicKey,
     required this.accountHash,
-    required this.seedPhrase,
+    this.seedPhrase,
     required this.privateKey,
   });
 

@@ -65,9 +65,13 @@ const Map<String, String> enUs = {
   'paste': 'Paste',
   'seed_phrase_empty': 'Please enter seed phrase',
   'seed_phrase_invalid': 'Invalid seed phrase',
-  'seed_phrase_exist': 'This wallet is already exist',
+  'seed_phrase_exist': 'This wallet already exists',
   // Import File Screen
   'import_from_file': 'Import from File',
+  'upload_privatekey_file': 'Upload Private Key File',
+  'import_invalid_json': 'Invalid JSON Format',
+  'private_key_invalid': 'Invalid private key',
+  'private_key_exist': 'This wallet already exists',
 
   'hello': 'Hello',
   'account_setting': 'Account Setting',

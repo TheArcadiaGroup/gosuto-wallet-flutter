@@ -3,19 +3,19 @@ import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/models/settings.dart';
-import 'package:gosuto/utils/aes256gcm.dart';
+import 'package:gosuto/utils/utils.dart';
 
 class ImportFileController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
-  late TextEditingController seedPhraseController;
   late TextEditingController passwordController;
   late TextEditingController password2Controller;
 
   var walletName = ''.obs;
-  var seedPhrase = ''.obs;
+  var privateKey = ''.obs;
   var password = ''.obs;
   var password2 = ''.obs;
+  var fileName = ''.obs;
 
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
@@ -25,7 +25,6 @@ class ImportFileController extends GetxController {
   void onInit() {
     super.onInit();
     walletNameController = TextEditingController();
-    seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
   }
@@ -52,18 +51,6 @@ class ImportFileController extends GetxController {
   String? validateWalletName(String value) {
     if (value.isEmpty) {
       return 'wallet_name_empty'.tr;
-    }
-
-    return null;
-  }
-
-  String? validateSeedPhrase(String value) {
-    if (value.isEmpty) {
-      return 'seed_phrase_empty'.tr;
-    }
-
-    if (!bip39.validateMnemonic(value)) {
-      return 'seed_phrase_invalid'.tr;
     }
 
     return null;
@@ -116,25 +103,35 @@ class ImportFileController extends GetxController {
       String password = await getPassword();
 
       if (password != '') {
-        String hashedSeedPhrase =
-            await GosutoAes256Gcm.encrypt(seedPhrase.value, password);
+        String hashedPrivateKey =
+            await GosutoAes256Gcm.encrypt(privateKey.value, password);
 
         // check seed phrase exist
-        var wallets = await DBHelper().getWalletsBySeedPhrase(hashedSeedPhrase);
+        var wallets = await DBHelper().getWalletByPrivateKey(hashedPrivateKey);
+        // print(wallets[0]);
         if (wallets.isNotEmpty) {
-          errorMessage = 'seed_phrase_exist'.tr;
+          errorMessage = 'private_key_exist'.tr;
           isValid = false;
         }
       }
     }
 
-    if (!bip39.validateMnemonic(seedPhrase.value)) {
-      errorMessage = 'seed_phrase_invalid'.tr;
+    if (privateKey.value.length != 64) {
+      errorMessage = 'private_key_invalid'.tr;
       isValid = false;
     }
 
     map['isValid'] = isValid;
     map['errorMessage'] = errorMessage;
     return map;
+  }
+
+  Future<int> createWallet() async {
+    return await WalletUtils.importWallet(
+      walletName.value,
+      password.value,
+      '',
+      privateKey.value,
+    );
   }
 }

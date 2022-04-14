@@ -11,11 +11,18 @@ import 'package:convert/convert.dart';
 import 'package:secp256k1/secp256k1.dart';
 
 class WalletUtils {
-  static Future<int> importWallet(
-      String walletName, String seedPhrase, String password) async {
-    String seedHex = bip39.mnemonicToSeedHex(seedPhrase).substring(0, 64);
-    PrivateKey privateKey = PrivateKey.fromHex(seedHex);
-    String publicKey = privateKey.publicKey.toCompressedHex();
+  static Future<int> importWallet(String walletName, String password,
+      [String seedPhrase = '', String privateKey = '']) async {
+    PrivateKey _privateKey;
+
+    if (seedPhrase != '') {
+      String seedHex = bip39.mnemonicToSeedHex(seedPhrase).substring(0, 64);
+      _privateKey = PrivateKey.fromHex(seedHex);
+    } else {
+      _privateKey = PrivateKey.fromHex(privateKey);
+    }
+
+    String publicKey = _privateKey.publicKey.toCompressedHex();
     String hashedPassword;
     String _passwordDB = '';
     Settings _settings = Settings(
@@ -60,9 +67,16 @@ class WalletUtils {
     }
 
     String hashedPrivateKey =
-        await GosutoAes256Gcm.encrypt(privateKey.toHex(), hashedPassword);
-    String hashedSeedPhrase =
-        await GosutoAes256Gcm.encrypt(seedPhrase, hashedPassword);
+        await GosutoAes256Gcm.encrypt(_privateKey.toHex(), hashedPassword);
+
+    print(_privateKey.toHex());
+    print(hashedPrivateKey);
+
+    String hashedSeedPhrase = '';
+    if (seedPhrase != '') {
+      hashedSeedPhrase =
+          await GosutoAes256Gcm.encrypt(seedPhrase, hashedPassword);
+    }
 
     // Decrypt wallet
     // var decrypted = await GosutoAes256Gcm.decrypt(cipherText, hasedPassword);

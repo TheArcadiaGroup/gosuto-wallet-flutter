@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:gosuto/utils/importwallet.dart';
+import 'package:gosuto/utils/utils.dart';
 import 'package:get/get.dart';
 
 class ConfirmSeedPhraseController extends GetxController {
@@ -55,8 +55,8 @@ class ConfirmSeedPhraseController extends GetxController {
   Future<int> createWallet() async {
     return await WalletUtils.importWallet(
       walletName.value,
-      seedPhrase.value,
       password.value,
+      seedPhrase.value,
     );
   }
 }

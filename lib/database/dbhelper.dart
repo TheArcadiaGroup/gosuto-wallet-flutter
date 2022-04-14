@@ -32,7 +32,7 @@ class DBHelper {
           walletName TEXT NOT NULL UNIQUE,
           publicKey TEXT NOT NULL UNIQUE,
           accountHash TEXT NOT NULL UNIQUE,
-          seedPhrase TEXT NOT NULL UNIQUE,
+          seedPhrase TEXT,
           privateKey TEXT NOT NULL UNIQUE
         )''');
   }
@@ -169,6 +169,18 @@ class DBHelper {
       return wallet;
     } catch (e) {
       log('GET WALLET BY SEED PHRASE ERROR: ', error: e);
+      return [];
+    }
+  }
+
+  Future<List<Map>> getWalletByPrivateKey(String privateKey) async {
+    try {
+      Database db = await initDB();
+      List<Map> wallet = await db
+          .query('wallets', where: 'privateKey = ?', whereArgs: [privateKey]);
+      return wallet;
+    } catch (e) {
+      log('GET WALLET BY PRIVATE KEY ERROR: ', error: e);
       return [];
     }
   }

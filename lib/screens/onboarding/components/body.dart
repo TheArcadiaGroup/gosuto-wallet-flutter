@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:gosuto/components/button.dart';
+import 'package:gosuto/routes/routes.dart';
 import 'package:gosuto/screens/onboarding/components/onboarding_content.dart';
 import 'package:gosuto/services/onboarding_service.dart';
 
@@ -42,13 +43,13 @@ class _BodyState extends State<Body> {
       );
     } else {
       OnboardingService().setFirstTimeOpen();
-      Get.offAllNamed('/add_wallet');
+      Get.offAllNamed(Routes.addWallet);
     }
   }
 
   void _skip() {
     OnboardingService().setFirstTimeOpen();
-    Get.offAllNamed('/add_wallet');
+    Get.offAllNamed(Routes.addWallet);
   }
 
   @override

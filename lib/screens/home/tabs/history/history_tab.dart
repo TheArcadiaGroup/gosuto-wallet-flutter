@@ -25,7 +25,7 @@ class HistoryTab extends GetView<HomeController> {
   Widget _listViewBuilder(BuildContext context) {
     double horizontalPadding = (MediaQuery.of(context).size.width - 97) / 2;
     return Obx(
-          () => ListView.builder(
+      () => ListView.builder(
         padding: EdgeInsets.only(
             top: 10, left: 0, right: 0, bottom: _heightBottomView),
         itemCount: _hController.transfers.length + 3,
@@ -40,7 +40,7 @@ class HistoryTab extends GetView<HomeController> {
                     WalletCard(wallet: controller.selectedWallet!.value),
                   FloatingActionButton(
                     onPressed: () {
-                      Get.offAllNamed(Routes.addWallet);
+                      Get.toNamed(Routes.addWallet);
                     },
                     child: Image.asset('assets/images/ic-add.png'),
                   )
@@ -61,7 +61,7 @@ class HistoryTab extends GetView<HomeController> {
                     width: 142,
                     child: DropdownButtonHideUnderline(
                       child: Obx(
-                            () => DropdownButton2(
+                        () => DropdownButton2(
                           value: _selectedFilter.value,
                           style: Theme.of(context)
                               .textTheme
@@ -137,7 +137,7 @@ class HistoryTab extends GetView<HomeController> {
           // TODO Fake publickey
           final _wallet = controller.selectedWallet?.value;
           _wallet?.publicKey =
-          '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
+              '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
           print(controller.rate.obs);
 
           return Padding(
@@ -187,54 +187,54 @@ class HistoryTab extends GetView<HomeController> {
 
   Widget _buildBottomView(BuildContext context) {
     return Obx(() => AnimatedContainer(
-      decoration: BoxDecoration(
-        borderRadius:
-        const BorderRadius.vertical(top: Radius.circular(30.0)),
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(12),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, -1), // changes position of shadow
-          ),
-        ],
-      ),
-      height: _hController.isShowBottom.value ? 550 : _heightBottomView,
-      width: MediaQuery.of(context).size.width,
-      duration: const Duration(milliseconds: 500),
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 70, left: 52, right: 52, bottom: 60),
-              child: _hController.isShowBottom.value
-                  ? const TransactionInfoCard(subTitle: 'Wallet1')
-                  : Text(
-                'bottom_text_note'.tr,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2,
+          decoration: BoxDecoration(
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(30.0)),
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(12),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, -1), // changes position of shadow
               ),
-            ),
+            ],
           ),
-          GestureDetector(
-            onTap: () =>
-            {_showHideBottomView(!_hController.isShowBottom.value)},
-            child: Container(
-              width: 155,
-              height: 8,
-              margin: const EdgeInsets.only(top: 12),
-              decoration: BoxDecoration(
-                  color: const Color(0xFFC4C4C4).withOpacity(0.3),
-                  borderRadius:
-                  const BorderRadius.all(Radius.circular(30))),
-            ),
+          height: _hController.isShowBottom.value ? 550 : _heightBottomView,
+          width: MediaQuery.of(context).size.width,
+          duration: const Duration(milliseconds: 500),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 70, left: 52, right: 52, bottom: 60),
+                  child: _hController.isShowBottom.value
+                      ? const TransactionInfoCard(subTitle: 'Wallet1')
+                      : Text(
+                          'bottom_text_note'.tr,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () =>
+                    {_showHideBottomView(!_hController.isShowBottom.value)},
+                child: Container(
+                  width: 155,
+                  height: 8,
+                  margin: const EdgeInsets.only(top: 12),
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFC4C4C4).withOpacity(0.3),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(30))),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ));
+        ));
   }
 }

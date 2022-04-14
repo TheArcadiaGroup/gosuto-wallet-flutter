@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
+import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/screens/home/home.dart';
-
-import '../../../../routes/routes.dart';
 
 class ChooseWalletTab extends GetView<HomeController> {
   ChooseWalletTab({Key? key}) : super(key: key);
 
   final ChooseWalletController _cwController =
-  Get.put(ChooseWalletController());
+      Get.put(ChooseWalletController());
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +30,9 @@ class ChooseWalletTab extends GetView<HomeController> {
 
   Widget _listViewBuilder() {
     return Obx(
-          () => ListView.builder(
+      () => ListView.builder(
         padding:
-        const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 22),
+            const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 22),
         itemCount: _cwController.wallets.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -49,7 +48,7 @@ class ChooseWalletTab extends GetView<HomeController> {
                     child: ElevatedButton.icon(
                       icon: Image.asset('assets/images/ic-add-no-bg.png'),
                       onPressed: () {
-                        Get.offAllNamed(Routes.addWallet);
+                        Get.toNamed(Routes.addWallet);
                       },
                       label: Text(
                         'add_wallet'.tr,

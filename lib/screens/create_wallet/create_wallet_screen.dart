@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
 import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
+import 'package:gosuto/routes/routes.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
@@ -223,7 +224,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
 
                             if (isValid && controller.agreed.value) {
                               controller.formKey.currentState?.save();
-                              Get.toNamed('/seed_phrase', arguments: [
+                              Get.toNamed(Routes.seedPhrase, arguments: [
                                 {'walletName': controller.walletName.value},
                                 {'password': controller.password.value},
                               ]);

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/text_chip.dart';
+import 'package:gosuto/routes/routes.dart';
 import 'package:gosuto/services/service.dart';
 import '../../components/button.dart';
 import '../../components/dialog.dart';
@@ -39,7 +40,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
 
   void _onContinue(context) async {
     if (controller.copied.value) {
-      Get.toNamed('/confirm_seed_phrase', arguments: [
+      Get.toNamed(Routes.confirmSeedPhrase, arguments: [
         {'walletName': controller.walletName.value},
         {'seedPhrase': controller.seedPhrase.value},
         {'password': controller.password.value},

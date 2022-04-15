@@ -25,7 +25,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
       int walletId = await controller.createWallet();
 
       if (walletId > 0) {
-        Get.toNamed(Routes.home);
+        Get.offAllNamed(Routes.home);
       } else {
         GosutoDialog().buildDialog(context, [
           Text(

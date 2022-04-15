@@ -22,6 +22,7 @@ class DBHelper {
 
   void _onCreate(Database db, int version) async {
     await db.execute('''CREATE TABLE settings(
+      seedPhrase TEXT DEFAULT '',
       password TEXT DEFAULT '',
       useBiometricAuth INT DEFAULT 0,
       salt BLOB,
@@ -32,7 +33,6 @@ class DBHelper {
           walletName TEXT NOT NULL UNIQUE,
           publicKey TEXT NOT NULL UNIQUE,
           accountHash TEXT NOT NULL UNIQUE,
-          seedPhrase TEXT,
           privateKey TEXT NOT NULL UNIQUE
         )''');
   }
@@ -82,8 +82,9 @@ class DBHelper {
           case 'all':
           default:
             query =
-                'UPDATE settings SET password = ?, useBiometricAuth = ?, salt = ?, iv = ?';
+                'UPDATE settings SET seedPhrase = ?, password = ?, useBiometricAuth = ?, salt = ?, iv = ?';
             args = [
+              settings.seedPhrase,
               settings.password,
               settings.useBiometricAuth,
               settings.salt,

@@ -12,7 +12,64 @@ import 'package:secp256k1/secp256k1.dart';
 
 class WalletUtils {
   static Future<int> importWallet(String walletName, String password,
-      [String seedPhrase = '', String privateKey = '']) async {
+      [String privateKey = '', String seedPhrase = '']) async {
+    String _passwordDB = '';
+    String hashedPassword = '';
+
+    String _seedPhraseDB = '';
+    String hashedSeedPhrase = '';
+
+    Settings _settings = Settings(
+      seedPhrase: '',
+      password: '',
+      useBiometricAuth: 0,
+      salt: Uint8List(0),
+      iv: Uint8List(0),
+    );
+
+    // Get settings from db
+    var _data = await DBHelper().getSettings();
+    if (_data.isNotEmpty) {
+      _settings = Settings.fromMap(_data[0]);
+      _passwordDB = _settings.password;
+      _seedPhraseDB = _settings.seedPhrase;
+    }
+
+    if (_settings.salt.isEmpty && _settings.iv.isEmpty) {
+      _settings.salt = GosutoAes256Gcm.randomBytes(16);
+      _settings.iv = GosutoAes256Gcm.randomBytes(12);
+    }
+
+    if (_passwordDB != '') {
+      hashedPassword = _passwordDB;
+    }
+
+    if (_seedPhraseDB != '') {
+      hashedSeedPhrase = _seedPhraseDB;
+    }
+
+    // Add password & seed phrase for the first time
+    if (_passwordDB == '' && _seedPhraseDB == '') {
+      Hash hashedPasswordBytes = await Sha1().hash(password.codeUnits);
+      hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+
+      if (seedPhrase != '') {
+        hashedSeedPhrase =
+            await GosutoAes256Gcm.encrypt(seedPhrase, hashedPassword);
+      }
+
+      await DBHelper().updateSettings(
+        Settings(
+          seedPhrase: hashedSeedPhrase,
+          password: hashedPassword,
+          useBiometricAuth: _settings.useBiometricAuth,
+          salt: _settings.salt,
+          iv: _settings.iv,
+        ),
+        'all',
+      );
+    }
+
     PrivateKey _privateKey;
 
     if (seedPhrase != '') {
@@ -23,60 +80,9 @@ class WalletUtils {
     }
 
     String publicKey = _privateKey.publicKey.toCompressedHex();
-    String hashedPassword;
-    String _passwordDB = '';
-    Settings _settings = Settings(
-      password: '',
-      useBiometricAuth: 0,
-      salt: Uint8List(0),
-      iv: Uint8List(0),
-    );
-
-    // Get password from db
-    var _data = await DBHelper().getSettings();
-
-    if (_data.isNotEmpty) {
-      _settings = Settings.fromMap(_data[0]);
-      _passwordDB = _settings.password;
-    }
-
-    if (_settings.salt.isNotEmpty && _settings.iv.isNotEmpty) {
-      _settings.salt = _settings.salt;
-      _settings.iv = _settings.iv;
-    } else {
-      _settings.salt = GosutoAes256Gcm.randomBytes(16);
-      _settings.iv = GosutoAes256Gcm.randomBytes(12);
-    }
-
-    if (_passwordDB != '') {
-      hashedPassword = _passwordDB;
-    } else {
-      Hash hashedPasswordBytes = await Sha1().hash(password.codeUnits);
-      hashedPassword = hex.encode(hashedPasswordBytes.bytes);
-
-      // Update password for the first wallet
-      await DBHelper().updateSettings(
-        Settings(
-          password: hashedPassword,
-          useBiometricAuth: _settings.useBiometricAuth,
-          salt: _settings.salt,
-          iv: _settings.iv,
-        ),
-        'password',
-      );
-    }
 
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(_privateKey.toHex(), hashedPassword);
-
-    print(_privateKey.toHex());
-    print(hashedPrivateKey);
-
-    String hashedSeedPhrase = '';
-    if (seedPhrase != '') {
-      hashedSeedPhrase =
-          await GosutoAes256Gcm.encrypt(seedPhrase, hashedPassword);
-    }
 
     // Decrypt wallet
     // var decrypted = await GosutoAes256Gcm.decrypt(cipherText, hasedPassword);
@@ -94,7 +100,6 @@ class WalletUtils {
         walletName: walletName,
         publicKey: publicKey,
         accountHash: accountHash,
-        seedPhrase: hashedSeedPhrase,
         privateKey: hashedPrivateKey,
       ),
     );

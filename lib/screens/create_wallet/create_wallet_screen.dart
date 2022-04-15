@@ -224,10 +224,21 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
 
                             if (isValid && controller.agreed.value) {
                               controller.formKey.currentState?.save();
-                              Get.toNamed(Routes.seedPhrase, arguments: [
-                                {'walletName': controller.walletName.value},
-                                {'password': controller.password.value},
-                              ]);
+                              String seedPhrase =
+                                  await controller.getSeedPhrase();
+
+                              if (seedPhrase == '') {
+                                // Create seedphrase
+                                Get.toNamed(Routes.seedPhrase, arguments: [
+                                  {'walletName': controller.walletName.value},
+                                  {'password': controller.password.value},
+                                ]);
+                              } else {
+                                // Get.toNamed(Routes.seedPhrase, arguments: [
+                                //   {'walletName': controller.walletName.value},
+                                //   {'password': controller.password.value},
+                                // ]);
+                              }
                             } else {
                               GosutoDialog().buildDialog(context, [
                                 Text(

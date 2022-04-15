@@ -139,10 +139,11 @@ class ImportSeedController extends GetxController {
   }
 
   Future<int> createWallet() async {
-    return await WalletUtils.importWallet(
-      walletName.value,
-      password.value,
-      seedPhrase.value,
-    );
+    return 0;
+    // await WalletUtils.importWallet(
+    //   walletName.value,
+    //   password.value,
+    //   seedPhrase.value,
+    // );
   }
 }

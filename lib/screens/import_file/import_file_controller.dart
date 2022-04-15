@@ -129,7 +129,6 @@ class ImportFileController extends GetxController {
     return await WalletUtils.importWallet(
       walletName.value,
       password.value,
-      '',
       privateKey.value,
     );
   }

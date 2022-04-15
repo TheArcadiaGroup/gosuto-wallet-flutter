@@ -3,14 +3,12 @@ class Wallet {
   late String walletName;
   late String publicKey;
   late String accountHash;
-  String? seedPhrase;
   late String privateKey;
 
   Wallet({
     required this.walletName,
     required this.publicKey,
     required this.accountHash,
-    this.seedPhrase,
     required this.privateKey,
   });
 
@@ -20,7 +18,6 @@ class Wallet {
       'walletName': walletName,
       'publicKey': publicKey,
       'accountHash': accountHash,
-      'seedPhrase': seedPhrase,
       'privateKey': privateKey,
     };
   }
@@ -30,7 +27,6 @@ class Wallet {
     walletName = map['walletName'];
     publicKey = map['publicKey'];
     accountHash = map['accountHash'];
-    seedPhrase = map['seedPhrase'];
     privateKey = map['privateKey'];
   }
 }

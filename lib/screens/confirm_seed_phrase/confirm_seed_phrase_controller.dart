@@ -56,6 +56,7 @@ class ConfirmSeedPhraseController extends GetxController {
     return await WalletUtils.importWallet(
       walletName.value,
       password.value,
+      '',
       seedPhrase.value,
     );
   }

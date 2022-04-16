@@ -16,6 +16,7 @@ class DBHelper {
 
   Future<Database> initDB() async {
     String path = join(await getDatabasesPath(), _dbName);
+    // print(path);
     var theDb = await openDatabase(path, version: 1, onCreate: _onCreate);
     return theDb;
   }
@@ -24,9 +25,7 @@ class DBHelper {
     await db.execute('''CREATE TABLE settings(
       seedPhrase TEXT DEFAULT '',
       password TEXT DEFAULT '',
-      useBiometricAuth INT DEFAULT 0,
-      salt BLOB,
-      iv BLOB
+      useBiometricAuth INT DEFAULT 0
     )''');
     await db.execute('''CREATE TABLE wallets(
           id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -75,20 +74,14 @@ class DBHelper {
             query = 'UPDATE settings SET password = ?';
             args = [settings.password];
             break;
-          case 'salt':
-            query = 'UPDATE settings SET salt = ?, iv = ?';
-            args = [settings.salt, settings.iv];
-            break;
           case 'all':
           default:
             query =
-                'UPDATE settings SET seedPhrase = ?, password = ?, useBiometricAuth = ?, salt = ?, iv = ?';
+                'UPDATE settings SET seedPhrase = ?, password = ?, useBiometricAuth = ?';
             args = [
               settings.seedPhrase,
               settings.password,
               settings.useBiometricAuth,
-              settings.salt,
-              settings.iv
             ];
             break;
         }
@@ -171,6 +164,21 @@ class DBHelper {
     } catch (e) {
       log('GET WALLET BY SEED PHRASE ERROR: ', error: e);
       return [];
+    }
+  }
+
+  Future<int> getTheLastestWalletId() async {
+    try {
+      Database db = await initDB();
+      List<Map> data = await db
+          .query('sqlite_sequence', where: 'name = ?', whereArgs: ['wallets']);
+      if (data.isNotEmpty) {
+        return data[0]['seq'];
+      }
+      return 0;
+    } catch (e) {
+      log('GET LATEST WALLET ID ERROR: ', error: e);
+      return 0;
     }
   }
 

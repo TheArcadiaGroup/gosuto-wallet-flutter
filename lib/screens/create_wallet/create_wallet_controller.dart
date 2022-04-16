@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/models/settings.dart';
+import 'package:gosuto/utils/utils.dart';
 
 class CreateWalletController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -99,5 +100,12 @@ class CreateWalletController extends GetxController {
     bool walletIsExist = await DBHelper().isWalletNameExist(walletName.value);
     isValid = !walletIsExist;
     return isValid;
+  }
+
+  Future<int> createWallet() async {
+    return await WalletUtils.importWallet(
+      walletName.value,
+      password.value,
+    );
   }
 }

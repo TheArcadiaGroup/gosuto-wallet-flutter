@@ -234,10 +234,37 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                                   {'password': controller.password.value},
                                 ]);
                               } else {
-                                // Get.toNamed(Routes.seedPhrase, arguments: [
-                                //   {'walletName': controller.walletName.value},
-                                //   {'password': controller.password.value},
-                                // ]);
+                                int walletId = await controller.createWallet();
+
+                                if (walletId > 0) {
+                                  Get.offAllNamed(Routes.home);
+                                } else {
+                                  GosutoDialog().buildDialog(context, [
+                                    Text(
+                                      'create_wallet_failed'.tr,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: ThemeService().isDarkMode
+                                            ? Colors.white
+                                            : const Color(0xFF121826),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: getProportionateScreenHeight(30),
+                                    ),
+                                    GosutoButton(
+                                      text: 'confirm'.tr,
+                                      style: GosutoButtonStyle.fill,
+                                      onPressed: () {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop();
+                                      },
+                                    )
+                                  ]);
+                                }
                               }
                             } else {
                               GosutoDialog().buildDialog(context, [

@@ -1,57 +1,52 @@
 import 'dart:typed_data';
 
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:blake2b/blake2b_hash.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/models/wallet.dart';
+import 'package:gosuto/utils/casper_hdkey.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:convert/convert.dart';
-import 'package:secp256k1/secp256k1.dart';
+import 'package:hdkey/hdkey.dart';
 
 class WalletUtils {
-  static Future<int> importWallet(String walletName, String password,
-      [String privateKey = '', String seedPhrase = '']) async {
-    String _passwordDB = '';
+  static Future<int> importWallet(String walletName,
+      [String password = '', String seedPhrase = '']) async {
+    String passwordDB = '';
     String hashedPassword = '';
 
-    String _seedPhraseDB = '';
+    String seedPhraseDB = '';
     String hashedSeedPhrase = '';
 
     Settings _settings = Settings(
       seedPhrase: '',
       password: '',
       useBiometricAuth: 0,
-      salt: Uint8List(0),
-      iv: Uint8List(0),
     );
 
     // Get settings from db
     var _data = await DBHelper().getSettings();
     if (_data.isNotEmpty) {
       _settings = Settings.fromMap(_data[0]);
-      _passwordDB = _settings.password;
-      _seedPhraseDB = _settings.seedPhrase;
+      passwordDB = _settings.password;
+      seedPhraseDB = _settings.seedPhrase;
     }
 
-    if (_settings.salt.isEmpty && _settings.iv.isEmpty) {
-      _settings.salt = GosutoAes256Gcm.randomBytes(16);
-      _settings.iv = GosutoAes256Gcm.randomBytes(12);
+    if (passwordDB != '') {
+      hashedPassword = passwordDB;
     }
 
-    if (_passwordDB != '') {
-      hashedPassword = _passwordDB;
-    }
-
-    if (_seedPhraseDB != '') {
-      hashedSeedPhrase = _seedPhraseDB;
+    if (seedPhraseDB != '') {
+      hashedSeedPhrase = seedPhraseDB;
     }
 
     // Add password & seed phrase for the first time
-    if (_passwordDB == '' && _seedPhraseDB == '') {
-      Hash hashedPasswordBytes = await Sha1().hash(password.codeUnits);
-      hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+    if (passwordDB == '' && seedPhraseDB == '') {
+      if (password != '') {
+        Hash hashedPasswordBytes = await Sha1().hash(password.codeUnits);
+        hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+      }
 
       if (seedPhrase != '') {
         hashedSeedPhrase =
@@ -63,29 +58,28 @@ class WalletUtils {
           seedPhrase: hashedSeedPhrase,
           password: hashedPassword,
           useBiometricAuth: _settings.useBiometricAuth,
-          salt: _settings.salt,
-          iv: _settings.iv,
         ),
         'all',
       );
+
+      passwordDB = hashedPassword;
+      seedPhraseDB = hashedSeedPhrase;
     }
 
-    PrivateKey _privateKey;
+    String decryptedSeedPhrase =
+        await GosutoAes256Gcm.decrypt(seedPhraseDB, passwordDB);
 
-    if (seedPhrase != '') {
-      String seedHex = bip39.mnemonicToSeedHex(seedPhrase).substring(0, 64);
-      _privateKey = PrivateKey.fromHex(seedHex);
-    } else {
-      _privateKey = PrivateKey.fromHex(privateKey);
-    }
+    // Get current index
+    int walletIndex = await DBHelper().getTheLastestWalletId();
 
-    String publicKey = _privateKey.publicKey.toCompressedHex();
+    HDKey hdKey = HDKey.fromMnemonic(decryptedSeedPhrase);
+    CasperHDKey cHDkey = CasperHDKey(hdKey);
+    HDKey childKey = cHDkey.deriveIndex(walletIndex);
+    String privateKey = hex.encode(childKey.privateKey!.toList());
+    String publicKey = hex.encode(childKey.publicKey!.toList());
 
     String hashedPrivateKey =
-        await GosutoAes256Gcm.encrypt(_privateKey.toHex(), hashedPassword);
-
-    // Decrypt wallet
-    // var decrypted = await GosutoAes256Gcm.decrypt(cipherText, hasedPassword);
+        await GosutoAes256Gcm.encrypt(privateKey, passwordDB);
 
     List<int> signature = 'secp256k1'.codeUnits;
     List<int> bytes = [...signature, 0, ...hex.decode(publicKey)];

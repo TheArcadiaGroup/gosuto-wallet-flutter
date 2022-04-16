@@ -51,7 +51,6 @@ dependencies:
   bip39: ^1.0.6
   flutter_custom_dialog: ^1.2.0
   sqflite: ^2.0.2
-  secp256k1: ^0.3.0
   cryptography: ^2.0.5
   blake2b: ^0.2.2
   dio: ^4.0.5
@@ -61,6 +60,7 @@ dependencies:
   url_launcher: ^6.0.20
   local_auth: ^1.1.11
   file_picker: ^4.5.1
+  hdkey: ^0.0.1
 
 dev_dependencies:
   flutter_test:

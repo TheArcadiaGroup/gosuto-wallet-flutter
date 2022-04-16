@@ -5,8 +5,6 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:cryptography/cryptography.dart';
 import 'package:convert/convert.dart';
-import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/settings.dart';
 
 const int KEY_LENGTH = 32;
 const int IV_LENGTH = 12;
@@ -19,37 +17,6 @@ class GosutoAes256Gcm {
   static Future<String> encrypt(String cleartext, String password) async {
     Uint8List salt = randomBytes(SALT_LENGTH);
     Uint8List iv = randomBytes(IV_LENGTH);
-
-    // Get salt, iv from database
-    final _data = await DBHelper().getSettings();
-    Settings _settings = Settings(
-      seedPhrase: '',
-      password: '',
-      useBiometricAuth: 0,
-      salt: Uint8List(0),
-      iv: Uint8List(0),
-    );
-
-    if (_data.isNotEmpty) {
-      _settings = Settings.fromMap(_data[0]);
-
-      if (_settings.salt.isNotEmpty && _settings.iv.isNotEmpty) {
-        salt = _settings.salt;
-        iv = _settings.iv;
-      }
-    } else {
-      // update database
-      await DBHelper().updateSettings(
-        Settings(
-          seedPhrase: _settings.seedPhrase,
-          password: _settings.password,
-          useBiometricAuth: _settings.useBiometricAuth,
-          salt: salt,
-          iv: iv,
-        ),
-        'salt',
-      );
-    }
 
     final key = await deriveKey(password, salt);
     final algorithm = AesGcm.with256bits();

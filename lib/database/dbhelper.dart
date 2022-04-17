@@ -47,6 +47,20 @@ class DBHelper {
     }
   }
 
+  Future<bool> isSeedPhraseAdded() async {
+    try {
+      var data = await getSettings();
+      if (data.isNotEmpty) {
+        Settings _settings = Settings.fromMap(data[0]);
+        return _settings.seedPhrase != '';
+      }
+      return false;
+    } catch (e) {
+      log('CHECK SEED PHRASE ADDED ERROR: ', error: e);
+      return false;
+    }
+  }
+
   Future<int> insertSettings(Settings settings) async {
     try {
       Database db = await initDB();

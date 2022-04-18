@@ -114,9 +114,8 @@ class ImportFileController extends GetxController {
   }
 
   Future<int> createWallet() async {
-    return await WalletUtils.importWallet(
+    return await WalletUtils.importWalletByPrivateKey(
       walletName.value,
-      password.value,
       privateKey.value,
     );
   }

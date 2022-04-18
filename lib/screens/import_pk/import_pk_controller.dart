@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:secp256k1/secp256k1.dart';

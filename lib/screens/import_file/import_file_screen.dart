@@ -98,8 +98,16 @@ class ImportFileScreen extends GetView<ImportFileController> {
         if (result.files.single.extension == 'json') {
           try {
             var data = jsonDecode(content);
-            if (data['privatekey'] != '') {
-              controller.privateKey.value = data['privatekey'];
+            bool seedPhraseAdded = await DBHelper().isSeedPhraseAdded();
+
+            if (seedPhraseAdded) {
+              if (data['privatekey'] != '') {
+                controller.privateKey.value = data['privatekey'];
+              }
+            } else {
+              if (data['seedphrase'] != '') {
+                controller.seedPhrase.value = data['seedphrase'];
+              }
             }
           } catch (e) {
             GosutoDialog().buildDialog(
@@ -171,27 +179,6 @@ class ImportFileScreen extends GetView<ImportFileController> {
         SizedBox(
           height: getProportionateScreenHeight(20),
         ),
-        Obx(
-          () => TextButton.icon(
-            onPressed: () => onPickFile(context),
-            icon: SvgPicture.asset('assets/svgs/import.svg'),
-            label: Text(
-              controller.fileName.value != ''
-                  ? controller.fileName.value
-                  : 'upload_privatekey_file'.tr,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                height: 1.1,
-                color: AppDarkColors.orangeColor,
-              ),
-            ),
-          ),
-        ),
-        // File picker here
-        SizedBox(
-          height: getProportionateScreenHeight(30),
-        ),
       ];
 
       return Form(
@@ -201,6 +188,31 @@ class ImportFileScreen extends GetView<ImportFileController> {
             future: DBHelper().getPassword(),
             builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
+                widgets.addAll([
+                  Obx(
+                    () => TextButton.icon(
+                      onPressed: () => onPickFile(context),
+                      icon: SvgPicture.asset('assets/svgs/import.svg'),
+                      label: Text(
+                        controller.fileName.value != ''
+                            ? controller.fileName.value
+                            : (snapshot.data == ''
+                                ? 'upload_seed_file'.tr
+                                : 'upload_privatekey_file'.tr),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          height: 1.1,
+                          color: AppDarkColors.orangeColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // File picker here
+                  SizedBox(
+                    height: getProportionateScreenHeight(30),
+                  ),
+                ]);
                 // add password fields
                 if (snapshot.hasData &&
                     (snapshot.data == null || snapshot.data == '')) {

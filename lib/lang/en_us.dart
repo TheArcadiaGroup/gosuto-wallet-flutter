@@ -72,10 +72,10 @@ const Map<String, String> enUs = {
   'invalid_private_key': 'Invalid private key',
   // Import File Screen
   'import_from_file': 'Import from File',
+  'upload_seed_file': 'Upload Seed Phrase File',
   'upload_privatekey_file': 'Upload Private Key File',
   'import_invalid_json': 'Invalid JSON Format',
   'private_key_invalid': 'Invalid private key',
-  'private_key_exist': 'This wallet already exists',
 
   'hello': 'Hello',
   'account_setting': 'Account Setting',

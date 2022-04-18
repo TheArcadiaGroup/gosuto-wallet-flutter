@@ -2,15 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/utils/utils.dart';
+import 'package:secp256k1/secp256k1.dart';
+import 'package:bip39/bip39.dart' as bip39;
 
 class ImportFileController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
+  late TextEditingController seedPhraseController;
   late TextEditingController passwordController;
   late TextEditingController password2Controller;
 
   var walletName = ''.obs;
   var privateKey = ''.obs;
+  var seedPhrase = ''.obs;
   var password = ''.obs;
   var password2 = ''.obs;
   var fileName = ''.obs;
@@ -23,6 +27,7 @@ class ImportFileController extends GetxController {
   void onInit() {
     super.onInit();
     walletNameController = TextEditingController();
+    seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
   }
@@ -30,6 +35,7 @@ class ImportFileController extends GetxController {
   @override
   void onClose() {
     walletNameController.dispose();
+    seedPhraseController.dispose();
     passwordController.dispose();
     password2Controller.dispose();
   }
@@ -87,24 +93,27 @@ class ImportFileController extends GetxController {
       isValid = false;
     } else {
       // check seed phrase exist
-      String password = await DBHelper().getPassword();
+      String passwordDB = await DBHelper().getPassword();
 
-      if (password != '') {
-        String hashedPrivateKey =
-            await GosutoAes256Gcm.encrypt(privateKey.value, password);
-
-        // check seed phrase exist
-        var wallets = await DBHelper().getWalletByPublicKey(hashedPrivateKey);
-
+      if (passwordDB != '' && privateKey.value.length == 64) {
+        // check wallet exist
+        PrivateKey pk = PrivateKey.fromHex(privateKey.value);
+        String publicKey = pk.publicKey.toCompressedHex();
+        var wallets = await DBHelper().getWalletByPublicKey(publicKey);
         if (wallets.isNotEmpty) {
-          errorMessage = 'private_key_exist'.tr;
+          errorMessage = 'wallet_exist'.tr;
           isValid = false;
         }
       }
     }
 
-    if (privateKey.value.length != 64) {
+    if (privateKey.value != '' && privateKey.value.length != 64) {
       errorMessage = 'private_key_invalid'.tr;
+      isValid = false;
+    }
+
+    if (seedPhrase.value != '' && !bip39.validateMnemonic(seedPhrase.value)) {
+      errorMessage = 'seed_phrase_invalid'.tr;
       isValid = false;
     }
 
@@ -114,9 +123,22 @@ class ImportFileController extends GetxController {
   }
 
   Future<int> createWallet() async {
-    return await WalletUtils.importWalletByPrivateKey(
-      walletName.value,
-      privateKey.value,
-    );
+    int walletId = 0;
+    bool seedPhraseAdded = await DBHelper().isSeedPhraseAdded();
+
+    if (seedPhraseAdded) {
+      walletId = await WalletUtils.importWalletByPrivateKey(
+        walletName.value,
+        privateKey.value,
+      );
+    } else {
+      walletId = await WalletUtils.importWallet(
+        walletName.value,
+        password.value,
+        seedPhrase.value,
+      );
+    }
+
+    return walletId;
   }
 }

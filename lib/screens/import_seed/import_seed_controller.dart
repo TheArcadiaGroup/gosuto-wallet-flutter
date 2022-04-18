@@ -5,6 +5,8 @@ import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/utils/utils.dart';
 
 class ImportSeedController extends GetxController {
+  dynamic data = Get.arguments;
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
   late TextEditingController seedPhraseController;
@@ -23,7 +25,9 @@ class ImportSeedController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    walletNameController = TextEditingController();
+
+    walletNameController = TextEditingController(
+        text: 'Gosuto ' + data[0]['walletIndex'].toString());
     seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();

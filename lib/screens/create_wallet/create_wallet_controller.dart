@@ -5,6 +5,8 @@ import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/utils/utils.dart';
 
 class CreateWalletController extends GetxController {
+  dynamic data = Get.arguments;
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
   late TextEditingController passwordController;
@@ -21,7 +23,8 @@ class CreateWalletController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    walletNameController = TextEditingController();
+    walletNameController = TextEditingController(
+        text: 'Gosuto ' + data[0]['walletIndex'].toString());
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
   }

@@ -5,6 +5,8 @@ import 'package:gosuto/utils/utils.dart';
 import 'package:secp256k1/secp256k1.dart';
 
 class ImportPkController extends GetxController {
+  dynamic data = Get.arguments;
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
   late TextEditingController privateKeyController;
@@ -19,7 +21,8 @@ class ImportPkController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    walletNameController = TextEditingController();
+    walletNameController = TextEditingController(
+        text: 'Gosuto ' + data[0]['walletIndex'].toString());
     privateKeyController = TextEditingController();
   }
 

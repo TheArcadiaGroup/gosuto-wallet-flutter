@@ -6,6 +6,8 @@ import 'package:secp256k1/secp256k1.dart';
 import 'package:bip39/bip39.dart' as bip39;
 
 class ImportFileController extends GetxController {
+  dynamic data = Get.arguments;
+
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
   late TextEditingController seedPhraseController;
@@ -26,7 +28,8 @@ class ImportFileController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    walletNameController = TextEditingController();
+    walletNameController = TextEditingController(
+        text: 'Gosuto ' + data[0]['walletIndex'].toString());
     seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();

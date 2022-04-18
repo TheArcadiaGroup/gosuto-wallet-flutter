@@ -15,22 +15,28 @@ class AddWalletScreen extends GetView<AddWalletController> {
     return (value) => controller.updateAddWalletMethod(value);
   }
 
-  void _onNextPressed() {
+  Future<void> _onNextPressed() async {
+    int walletIndex = await DBHelper().getTheLastestWalletId();
+
+    final args = [
+      {'walletIndex': walletIndex + 1}
+    ];
+
     switch (controller.methodId.value) {
       case 1:
-        Get.toNamed(Routes.createWallet);
+        Get.toNamed(Routes.createWallet, arguments: args);
         break;
       case 2:
-        Get.toNamed(Routes.importSeed);
+        Get.toNamed(Routes.importSeed, arguments: args);
         break;
       case 3:
-        Get.toNamed(Routes.importFile);
+        Get.toNamed(Routes.importFile, arguments: args);
         break;
       case 4:
-        Get.toNamed(Routes.importPk);
+        Get.toNamed(Routes.importPk, arguments: args);
         break;
       default:
-        Get.toNamed(Routes.createWallet);
+        Get.toNamed(Routes.createWallet, arguments: args);
         break;
     }
   }

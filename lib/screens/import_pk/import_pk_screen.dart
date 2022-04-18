@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
-import 'package:gosuto/components/checkbox.dart';
+// import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/services/theme_service.dart';
@@ -148,13 +148,13 @@ class ImportPkScreen extends GetView<ImportPkController> {
       SizedBox(
         height: getProportionateScreenHeight(30),
       ),
-      Obx(
-        () => GosutoCheckbox(
-          label: 'confirm_text'.tr,
-          isChecked: controller.agreed.value,
-          onChanged: (value) => controller.toggleAgreed(),
-        ),
-      )
+      // Obx(
+      //   () => GosutoCheckbox(
+      //     label: 'confirm_text'.tr,
+      //     isChecked: controller.agreed.value,
+      //     onChanged: (value) => controller.toggleAgreed(),
+      //   ),
+      // )
     ];
 
     return Form(
@@ -213,16 +213,17 @@ class ImportPkScreen extends GetView<ImportPkController> {
                       SizedBox(
                         height: getProportionateScreenHeight(40),
                       ),
-                      Obx(
-                        () => GosutoButton(
-                          text: 'continue'.tr,
-                          style: GosutoButtonStyle.fill,
-                          disabled: !controller.agreed.value,
-                          onPressed: () async {
-                            _onContinue(context);
-                          },
-                        ),
+                      // Obx(
+                      //   () =>
+                      GosutoButton(
+                        text: 'continue'.tr,
+                        style: GosutoButtonStyle.fill,
+                        // disabled: !controller.agreed.value,
+                        onPressed: () async {
+                          _onContinue(context);
+                        },
                       ),
+                      // ),
                       SizedBox(
                         height: getProportionateScreenHeight(10),
                       ),

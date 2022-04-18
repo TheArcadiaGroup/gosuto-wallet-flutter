@@ -18,7 +18,7 @@ class CreateWalletController extends GetxController {
 
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
-  var agreed = false.obs;
+  var agreed = true.obs; // false.obs;
 
   @override
   void onInit() {

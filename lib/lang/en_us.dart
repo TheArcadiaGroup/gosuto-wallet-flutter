@@ -37,7 +37,7 @@ const Map<String, String> enUs = {
   'wallet_paddword2': 'Confirm Password',
   'confirm_text': 'I have read and agree to the terms of service',
   'wallet_name_empty': 'Please enter wallet name',
-  'wallet_name_exist': 'This wallet name is already exist',
+  'wallet_name_exist': 'This wallet name already exists',
   'password_empty': 'Please enter password',
   'confirm_password_empty': 'Please enter confirm password',
   'confirm_password_wrong': 'Confirm password does not match',

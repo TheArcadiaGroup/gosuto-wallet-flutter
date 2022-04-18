@@ -112,9 +112,9 @@ class ImportPkScreen extends GetView<ImportPkController> {
         decoration: _inputDecoration.copyWith(
             labelText: 'private_key'.tr,
             suffixIcon: Padding(
-              padding: const EdgeInsets.only(bottom: 22, right: 20),
+              padding: const EdgeInsets.only(right: 20),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
                     onTap: () async {

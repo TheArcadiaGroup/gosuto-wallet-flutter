@@ -94,8 +94,8 @@ class ImportFileController extends GetxController {
             await GosutoAes256Gcm.encrypt(privateKey.value, password);
 
         // check seed phrase exist
-        var wallets = await DBHelper().getWalletByPrivateKey(hashedPrivateKey);
-        // print(wallets[0]);
+        var wallets = await DBHelper().getWalletByPublicKey(hashedPrivateKey);
+
         if (wallets.isNotEmpty) {
           errorMessage = 'private_key_exist'.tr;
           isValid = false;

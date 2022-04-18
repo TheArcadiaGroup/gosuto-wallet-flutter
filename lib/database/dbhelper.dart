@@ -207,14 +207,14 @@ class DBHelper {
     }
   }
 
-  Future<List<Map>> getWalletByPrivateKey(String privateKey) async {
+  Future<List<Map>> getWalletByPublicKey(String publicKey) async {
     try {
       Database db = await initDB();
       List<Map> wallet = await db
-          .query('wallets', where: 'privateKey = ?', whereArgs: [privateKey]);
+          .query('wallets', where: 'publicKey = ?', whereArgs: [publicKey]);
       return wallet;
     } catch (e) {
-      log('GET WALLET BY PRIVATE KEY ERROR: ', error: e);
+      log('GET WALLET BY PUBLIC KEY ERROR: ', error: e);
       return [];
     }
   }

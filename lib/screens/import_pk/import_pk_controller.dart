@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/utils/utils.dart';
+import 'package:secp256k1/secp256k1.dart';
 
 class ImportPkController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -85,11 +86,10 @@ class ImportPkController extends GetxController {
       String password = await DBHelper().getPassword();
 
       if (password != '') {
-        String hashedPrivateKey =
-            await GosutoAes256Gcm.encrypt(privateKey.value, password);
-
-        // check seed phrase exist
-        var wallets = await DBHelper().getWalletByPrivateKey(hashedPrivateKey);
+        // check wallet exist
+        PrivateKey pk = PrivateKey.fromHex(privateKey.value);
+        String publicKey = pk.publicKey.toCompressedHex();
+        var wallets = await DBHelper().getWalletByPublicKey(publicKey);
         if (wallets.isNotEmpty) {
           errorMessage = 'wallet_exist'.tr;
           isValid = false;
@@ -108,11 +108,9 @@ class ImportPkController extends GetxController {
   }
 
   Future<int> createWallet() async {
-    return 0;
-    // await WalletUtils.importWallet(
-    //   walletName.value,
-    //   password.value,
-    //   seedPhrase.value,
-    // );
+    return await WalletUtils.importWalletByPrivateKey(
+      walletName.value,
+      privateKey.value,
+    );
   }
 }

@@ -9,6 +9,7 @@ import 'package:gosuto/utils/casper_hdkey.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:convert/convert.dart';
 import 'package:hdkey/hdkey.dart';
+import 'package:secp256k1/secp256k1.dart';
 
 class WalletUtils {
   static Future<int> importWallet(String walletName,
@@ -81,6 +82,48 @@ class WalletUtils {
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(privateKey, passwordDB);
 
+    List<int> signature = 'secp256k1'.codeUnits;
+    List<int> bytes = [...signature, 0, ...hex.decode(publicKey)];
+
+    // Calculate Account Hash
+    Uint8List hashedBytes =
+        Blake2bHash.hash(Uint8List.fromList(bytes), 0, bytes.length);
+    String accountHash = hex.encode(hashedBytes);
+
+    int walletId = await DBHelper().insertWallet(
+      Wallet(
+        walletName: walletName,
+        publicKey: publicKey,
+        accountHash: accountHash,
+        privateKey: hashedPrivateKey,
+      ),
+    );
+
+    return walletId;
+  }
+
+  static Future<int> importWalletByPrivateKey(
+      String walletName, String privateKey) async {
+    String passwordDB = '';
+
+    Settings _settings = Settings(
+      seedPhrase: '',
+      password: '',
+      useBiometricAuth: 0,
+    );
+
+    // Get settings from db
+    var _data = await DBHelper().getSettings();
+    if (_data.isNotEmpty) {
+      _settings = Settings.fromMap(_data[0]);
+      passwordDB = _settings.password;
+    }
+
+    String hashedPrivateKey =
+        await GosutoAes256Gcm.encrypt(privateKey, passwordDB);
+
+    PrivateKey pk = PrivateKey.fromHex(privateKey);
+    String publicKey = pk.publicKey.toCompressedHex();
     List<int> signature = 'secp256k1'.codeUnits;
     List<int> bytes = [...signature, 0, ...hex.decode(publicKey)];
 

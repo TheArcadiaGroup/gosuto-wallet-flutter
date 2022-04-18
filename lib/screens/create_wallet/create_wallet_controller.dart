@@ -73,17 +73,6 @@ class CreateWalletController extends GetxController {
     return null;
   }
 
-  Future<String> getPassword() async {
-    final _data = await DBHelper().getSettings();
-
-    if (_data.isNotEmpty) {
-      Settings _settings = Settings.fromMap(_data[0]);
-      return _settings.password;
-    }
-
-    return '';
-  }
-
   Future<String> getSeedPhrase() async {
     final _data = await DBHelper().getSettings();
 

@@ -1,19 +1,16 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/utils/utils.dart';
 
-class ImportFileController extends GetxController {
+class ImportPkController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
-  late TextEditingController passwordController;
-  late TextEditingController password2Controller;
+  late TextEditingController privateKeyController;
 
   var walletName = ''.obs;
   var privateKey = ''.obs;
-  var password = ''.obs;
-  var password2 = ''.obs;
-  var fileName = ''.obs;
 
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
@@ -23,15 +20,13 @@ class ImportFileController extends GetxController {
   void onInit() {
     super.onInit();
     walletNameController = TextEditingController();
-    passwordController = TextEditingController();
-    password2Controller = TextEditingController();
+    privateKeyController = TextEditingController();
   }
 
   @override
   void onClose() {
     walletNameController.dispose();
-    passwordController.dispose();
-    password2Controller.dispose();
+    privateKeyController.dispose();
   }
 
   void togglePassword() {
@@ -54,21 +49,21 @@ class ImportFileController extends GetxController {
     return null;
   }
 
-  String? validatePassword(String value) {
+  String? validateSeedPhrase(String value) {
     if (value.isEmpty) {
-      return 'password_empty'.tr;
+      return 'seed_phrase_empty'.tr;
+    }
+
+    if (value.length != 64) {
+      return 'invalid_private_key'.tr;
     }
 
     return null;
   }
 
-  String? validateConfirmPassword(String value) {
+  String? validatePassword(String value) {
     if (value.isEmpty) {
-      return 'confirm_password_empty'.tr;
-    }
-
-    if (value != password.value) {
-      return 'confirm_password_wrong'.tr;
+      return 'password_empty'.tr;
     }
 
     return null;
@@ -95,16 +90,15 @@ class ImportFileController extends GetxController {
 
         // check seed phrase exist
         var wallets = await DBHelper().getWalletByPrivateKey(hashedPrivateKey);
-        // print(wallets[0]);
         if (wallets.isNotEmpty) {
-          errorMessage = 'private_key_exist'.tr;
+          errorMessage = 'wallet_exist'.tr;
           isValid = false;
         }
       }
     }
 
     if (privateKey.value.length != 64) {
-      errorMessage = 'private_key_invalid'.tr;
+      errorMessage = 'invalid_private_key'.tr;
       isValid = false;
     }
 
@@ -114,10 +108,11 @@ class ImportFileController extends GetxController {
   }
 
   Future<int> createWallet() async {
-    return await WalletUtils.importWallet(
-      walletName.value,
-      password.value,
-      privateKey.value,
-    );
+    return 0;
+    // await WalletUtils.importWallet(
+    //   walletName.value,
+    //   password.value,
+    //   seedPhrase.value,
+    // );
   }
 }

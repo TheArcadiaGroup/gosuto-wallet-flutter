@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/utils/utils.dart';
 
 class ImportSeedController extends GetxController {
@@ -33,6 +32,7 @@ class ImportSeedController extends GetxController {
   @override
   void onClose() {
     walletNameController.dispose();
+    seedPhraseController.dispose();
     passwordController.dispose();
     password2Controller.dispose();
   }
@@ -89,17 +89,6 @@ class ImportSeedController extends GetxController {
     return null;
   }
 
-  Future<String> getPassword() async {
-    final _data = await DBHelper().getSettings();
-
-    if (_data.isNotEmpty) {
-      Settings _settings = Settings.fromMap(_data[0]);
-      return _settings.password;
-    }
-
-    return '';
-  }
-
   Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
     bool walletNameIsExist =
@@ -113,7 +102,7 @@ class ImportSeedController extends GetxController {
       isValid = false;
     } else {
       // check seed phrase exist
-      String password = await getPassword();
+      String password = await DBHelper().getPassword();
 
       if (password != '') {
         String hashedSeedPhrase =

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
 import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
+import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/routes/routes.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
@@ -46,7 +47,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
       key: controller.formKey,
       autovalidateMode: AutovalidateMode.always,
       child: FutureBuilder<String>(
-        future: controller.getPassword(),
+        future: DBHelper().getPassword(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // add password fields

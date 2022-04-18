@@ -61,6 +61,17 @@ class DBHelper {
     }
   }
 
+  Future<String> getPassword() async {
+    final _data = await getSettings();
+
+    if (_data.isNotEmpty) {
+      Settings _settings = Settings.fromMap(_data[0]);
+      return _settings.password;
+    }
+
+    return '';
+  }
+
   Future<int> insertSettings(Settings settings) async {
     try {
       Database db = await initDB();

@@ -60,14 +60,16 @@ const Map<String, String> enUs = {
   'import_your_wallet': 'Import your wallet',
   'import_seed_phrase': 'Import for seed phrase',
   'import_seed_phrase_text1':
-      '• Enter your seed phrase with a space betweem each word.',
+      '• Enter your seed phrase with a space between each word.',
   'import_seed_phrase_text2':
       '• Setup a password for this specific instance of Gosuto.',
   'seed_phrase': 'Seed Phrase',
   'paste': 'Paste',
   'seed_phrase_empty': 'Please enter seed phrase',
   'seed_phrase_invalid': 'Invalid seed phrase',
-  'seed_phrase_exist': 'This wallet already exists',
+  'wallet_exist': 'This wallet already exists',
+  // Import Private Key Screen
+  'invalid_private_key': 'Invalid private key',
   // Import File Screen
   'import_from_file': 'Import from File',
   'upload_privatekey_file': 'Upload Private Key File',

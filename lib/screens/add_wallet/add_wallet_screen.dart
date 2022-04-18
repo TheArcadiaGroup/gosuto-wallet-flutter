@@ -27,7 +27,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
         Get.toNamed(Routes.importFile);
         break;
       case 4:
-        Get.toNamed('/import_file');
+        Get.toNamed(Routes.importPk);
         break;
       default:
         Get.toNamed(Routes.createWallet);

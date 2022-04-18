@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
 import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
+import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/services/theme_service.dart';
 import 'package:gosuto/themes/colors.dart';
@@ -159,7 +160,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
         key: controller.formKey,
         autovalidateMode: AutovalidateMode.always,
         child: FutureBuilder<String>(
-          future: controller.getPassword(),
+          future: DBHelper().getPassword(),
           builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               // add password fields

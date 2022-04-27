@@ -13,6 +13,8 @@ class HistoryController extends GetxController {
   var page = 1.obs;
   var limit = 10.obs;
 
+  Rx<TransferModel>? selectedTransfer;
+
   @override
   void onInit() {
     super.onInit();

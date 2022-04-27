@@ -26,7 +26,9 @@ void main() async {
   // });
 
   BuildEnvironment.init(
-      flavor: BuildFlavor.development, baseUrl: 'https://event-store-api-clarity-mainnet.make.services/');
+      flavor: BuildFlavor.development,
+      baseUrl: 'https://event-store-api-clarity-mainnet.make.services/',
+      deployHashExplorer: 'https://cspr.live/deploy/');
 
   runApp(MyApp(
     initialRoute: initialRoute,

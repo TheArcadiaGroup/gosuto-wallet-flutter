@@ -194,13 +194,18 @@ class StakeTab extends GetView<HomeController> {
               padding: const EdgeInsets.only(
                   top: 70, left: 52, right: 52, bottom: 60),
               child: _sController.isShowBottom.value
-                  ? const TransactionInfoCard()
+                  ? Text(
+                      'select_a_position_to_take_actions'.tr,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.subtitle2,
+                    )
                   : Text(
-                'select_a_position_to_take_actions'.tr,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2,
-              ),
+                    'select_a_position_to_take_actions'.tr,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subtitle2,
+                  ),
             ),
           ),
           GestureDetector(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
@@ -310,16 +311,21 @@ class WalletHomeTab extends GetView<HomeController> {
       padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(19),
+          GestureDetector(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(19),
+              ),
+              child: HistoryItem(
+                transfer: _whController.transfers[index - 1],
+                wallet: _wallet!,
+                rate: controller.rate.value,
+              ),
             ),
-            child: HistoryItem(
-              transfer: _whController.transfers[index - 1],
-              wallet: _wallet!,
-              rate: controller.rate.value,
-            ),
+            onTap: () => {
+              _onTapHistoryItem(_whController.transfers[index - 1], _wallet)
+            },
           ),
           const SizedBox(height: 12),
           Divider(
@@ -718,6 +724,10 @@ class WalletHomeTab extends GetView<HomeController> {
   }
 
   Widget _buildBottomView(BuildContext context) {
+    // TODO Fake publickey
+    final _wallet = controller.selectedWallet?.value;
+    _wallet?.publicKey =
+    '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
     return Obx(() => AnimatedContainer(
           decoration: BoxDecoration(
             borderRadius:
@@ -743,7 +753,11 @@ class WalletHomeTab extends GetView<HomeController> {
                   padding: const EdgeInsets.only(
                       top: 70, left: 52, right: 52, bottom: 60),
                   child: _whController.isShowBottom.value
-                      ? const TransactionInfoCard()
+                      ? TransactionInfoCard(
+                          rate: controller.rate.value,
+                          transfer: _whController.selectedTransfer!.value,
+                          wallet: _wallet!,
+                        )
                       : Text('bottom_text_note'.tr,
                           maxLines: 2,
                           textAlign: TextAlign.center,
@@ -751,8 +765,7 @@ class WalletHomeTab extends GetView<HomeController> {
                 ),
               ),
               GestureDetector(
-                onTap: () =>
-                    {_showHideBottomView(!_whController.isShowBottom.value)},
+                onTap: () => {_showHideBottomView(false)},
                 child: Container(
                   width: 155,
                   height: 8,
@@ -774,6 +787,17 @@ class WalletHomeTab extends GetView<HomeController> {
 
   void _changeFilter(value) {
     _selectedFilter(value);
+  }
+
+  void _onTapHistoryItem(TransferModel transfer, Wallet wallet) {
+    _showHideBottomView(true);
+    // _whController.selectedTransfer = transfer.obs;
+    // _whController.selectedTransfer?.refresh();
+    if (_whController.selectedTransfer == null) {
+      _whController.selectedTransfer = transfer.obs;
+    } else {
+      _whController.selectedTransfer!(transfer);
+    }
   }
 
   List<DropdownMenuItem<String>> _buildDropDownMenuItems() {

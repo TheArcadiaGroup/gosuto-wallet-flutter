@@ -121,10 +121,10 @@ class SliderItem extends StatelessWidget {
                       children: [
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
-                          child: SvgPicture.asset('assets/svgs/ic-up.svg'),
+                          child: isGrowing ? SvgPicture.asset('assets/svgs/ic-up.svg') : SvgPicture.asset('assets/svgs/ic-down.svg'),
                         ),
                         TextSpan(
-                          text: " +15%",
+                          text: isGrowing ? " +15%" : " -15%",
                           style: isGrowing
                               ? Theme.of(context)
                                   .textTheme

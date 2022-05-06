@@ -22,8 +22,6 @@ class HistoryItem extends StatelessWidget {
     final index = wallet.publicKey == transfer.fromAccountPublicKey ? 4 : 1;
 
     final amount = double.parse(transfer.amount) / 1e9;
-    print(amount);
-    print(rate);
 
     return Padding(
       padding: const EdgeInsets.all(15),

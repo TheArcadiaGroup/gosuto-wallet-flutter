@@ -1,14 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:gosuto/env/env.dart';
+import 'package:gosuto/utils/utils.dart';
+
+import '../models/models.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TransactionInfoCard extends StatelessWidget {
-  const TransactionInfoCard({Key? key, this.subTitle = ''}) : super(key: key);
+  const TransactionInfoCard({
+    Key? key,
+    required this.transfer,
+    required this.wallet,
+    required this.rate,
+    this.subTitle = '',
+  }) : super(key: key);
 
   final String subTitle;
 
+  final TransferModel transfer;
+  final Wallet wallet;
+  final double rate;
+
+
   @override
   Widget build(BuildContext context) {
+    final index = wallet.publicKey == transfer.fromAccountPublicKey ? 4 : 1;
+    final amount = double.parse(transfer.amount) / 1e9;
+
     return Container(
       width: 400,
       // height: 435,
@@ -32,9 +51,13 @@ class TransactionInfoCard extends StatelessWidget {
           SizedBox(
             width: 400,
             child: Text(
-              'received'.tr,
+              index == 1
+                  ? 'received'.tr
+                  : (index == 2
+                  ? 'stake'.tr
+                  : (index == 3 ? 'swap'.tr : 'sent'.tr)),
               style:
-                  Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+              Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
               textAlign: TextAlign.center,
             ),
           ),
@@ -61,7 +84,7 @@ class TransactionInfoCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '0x9f98e01d2...4ed7',
+                  Strings.displayHash(transfer.toAccountPublicKey ?? ''),
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       color: Theme.of(context).colorScheme.tertiaryContainer),
                 )
@@ -79,7 +102,7 @@ class TransactionInfoCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.subtitle1,
                     )),
                 Text(
-                  '0x9f98e01d2...4ed7',
+                  Strings.displayHash(transfer.fromAccountPublicKey),
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       color: Theme.of(context).colorScheme.tertiaryContainer),
                 )
@@ -97,7 +120,7 @@ class TransactionInfoCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 Text(
-                  'Apr 01, 2021 07:15:20 am (EST)',
+                  transfer.timestamp,
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       color: Theme.of(context).colorScheme.tertiaryContainer),
                 )
@@ -118,43 +141,47 @@ class TransactionInfoCard extends StatelessWidget {
                 'amount'.tr,
                 style: Theme.of(context).textTheme.headline4,
               ),
-              Column(
+              (index == 1
+                  ? Container()
+                  : Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '-50 CSPR'.tr,
+                    '-$amount CSPR'.tr,
                     style: Theme.of(context)
                         .textTheme
                         .headline5
                         ?.copyWith(fontSize: 13),
                   ),
                   Text(
-                    '0.00 USD',
+                    '${(amount * rate).toStringAsFixed(2)} USD',
                     style: Theme.of(context).textTheme.headline5,
                   )
                 ],
-              ),
-              SvgPicture.asset(
-                'assets/svgs/ic-swap-3.svg',
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-                width: 23,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '+50 CSPR'.tr,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline3
-                        ?.copyWith(fontSize: 13),
-                  ),
-                  Text(
-                    '0.00 USD',
-                    style: Theme.of(context).textTheme.headline3,
-                  )
-                ],
-              ),
+              )),
+              if (index == 3)
+                SvgPicture.asset(
+                  'assets/svgs/ic-swap-3.svg',
+                  color: Theme.of(context).colorScheme.tertiaryContainer,
+                  width: 23,
+                ),
+              if (index == 1 || index == 3)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '+$amount CSPR'.tr,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3
+                          ?.copyWith(fontSize: 13),
+                    ),
+                    Text(
+                      '${(amount * rate).toStringAsFixed(2)} USD',
+                      style: Theme.of(context).textTheme.headline3,
+                    )
+                  ],
+                ),
             ],
           ),
           Padding(
@@ -197,7 +224,7 @@ class TransactionInfoCard extends StatelessWidget {
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  '0x9f98e01d2...4ed7 ',
+                  Strings.displayHash(transfer.deployHash),
                   style: Theme.of(context).textTheme.headline4,
                 )
               ],
@@ -207,10 +234,13 @@ class TransactionInfoCard extends StatelessWidget {
             width: 400,
             padding: const EdgeInsets.only(top: 15),
             child: ElevatedButton(
-              onPressed: () => {},
+              onPressed: () => {
+                Urls.launchInWebViewOrVC(
+                    '${env?.deployHashExplorer ?? ''}${transfer.deployHash}')
+              },
               style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all(Colors.transparent),
+                  MaterialStateProperty.all(Colors.transparent),
                   shadowColor: MaterialStateProperty.all(Colors.transparent),
                   foregroundColor: MaterialStateProperty.all(
                       Theme.of(context).colorScheme.background)),

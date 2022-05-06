@@ -29,6 +29,8 @@ class WalletHomeController extends GetxController
   var page = 1.obs;
   var limit = 10.obs;
 
+  Rx<TransferModel>? selectedTransfer;
+
   @override
   void onInit() {
     super.onInit();
@@ -81,6 +83,10 @@ class WalletHomeController extends GetxController
         accountHash, page, limit, orderDirection, withExtendedInfo);
     List<dynamic> data = response.data;
     final _transfers = data.map((val) => TransferModel.fromJson(val)).toList();
-    transfers(_transfers);
+    if (transfers.isEmpty) {
+      transfers(_transfers);
+    } else {
+      transfers.addAll(_transfers);
+    }
   }
 }

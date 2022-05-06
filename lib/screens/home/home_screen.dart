@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:gosuto/services/service.dart';
 
 import 'home.dart';
 
@@ -29,7 +30,11 @@ class HomeScreen extends GetView<HomeController> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
                         child: Tab(
-                            icon: SvgPicture.asset('assets/svgs/ic-menu.svg')),
+                            icon: ThemeService().isDarkMode
+                                ? SvgPicture.asset(
+                                'assets/svgs/dark/ic-menu.svg')
+                                : SvgPicture.asset(
+                                'assets/svgs/light/ic-menu.svg')),
                       ),
                       Expanded(
                         child: TabBar(

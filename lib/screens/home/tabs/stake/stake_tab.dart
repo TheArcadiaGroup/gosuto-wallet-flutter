@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/screens/home/home.dart';
+import 'package:gosuto/utils/utils.dart';
 
 class StakeTab extends GetView<HomeController> {
   StakeTab({Key? key}) : super(key: key);
 
   final StakeController _sController = Get.put(StakeController());
-  final double _heightBottomView = 167;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class StakeTab extends GetView<HomeController> {
             left: 0,
             right: 0,
             bottom: _sController.currentTab.value == StakeTabs.all
-                ? _heightBottomView
+                ? AppConstants.heightBottomView
                 : 10),
         itemCount: _getItemCountListView(_sController.currentTab.value),
         itemBuilder: (context, index) {
@@ -183,7 +183,9 @@ class StakeTab extends GetView<HomeController> {
           ),
         ],
       ),
-      height: _sController.isShowBottom.value ? 550 : _heightBottomView,
+      height: _sController.isShowBottom.value
+          ? 550
+          : AppConstants.heightBottomView,
       width: MediaQuery.of(context).size.width,
       duration: const Duration(milliseconds: 500),
       child: Stack(
@@ -191,21 +193,24 @@ class StakeTab extends GetView<HomeController> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 70, left: 52, right: 52, bottom: 60),
+              padding: EdgeInsets.only(
+                  top: (_sController.isShowBottom.value ? 70 : 40),
+                  left: 52,
+                  right: 52,
+                  bottom: 60),
               child: _sController.isShowBottom.value
                   ? Text(
-                      'select_a_position_to_take_actions'.tr,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.subtitle2,
-                    )
+                'select_a_position_to_take_actions'.tr,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle2,
+              )
                   : Text(
-                    'select_a_position_to_take_actions'.tr,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.subtitle2,
-                  ),
+                'select_a_position_to_take_actions'.tr,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subtitle2,
+              ),
             ),
           ),
           GestureDetector(

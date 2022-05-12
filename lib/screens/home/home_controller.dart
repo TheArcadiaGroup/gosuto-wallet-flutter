@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
 import '../../data/network/network.dart';
+import '../../database/dbhelper.dart';
 import '../../env/env.dart';
 import '../../models/wallet.dart';
 import 'home.dart';
@@ -17,6 +19,8 @@ class HomeController extends GetxController
   var selectedCoin = AppConstants.coins[0].obs;
 
   Rx<Wallet>? selectedWallet;
+
+  Rx<Settings>? setting;
 
   late TabController tabController;
   late AccountSettingTab accountSettingTab;
@@ -44,6 +48,7 @@ class HomeController extends GetxController
     apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
 
     getRate(1);
+    fetchSetting();
   }
 
   void switchTab(index) {
@@ -99,5 +104,15 @@ class HomeController extends GetxController
     final response = await apiClient.rateAmount(rateId);
     final _rate = response.data;
     rate(_rate);
+  }
+
+  Future fetchSetting() async {
+    final _data = await DBHelper().getSettings();
+
+    if (_data.isNotEmpty) {
+      Settings _settings = Settings.fromMap(_data[0]);
+      setting = _settings.obs;
+    }
+    // print(setting?.value.toMap());
   }
 }

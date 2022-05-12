@@ -133,4 +133,11 @@ const Map<String, String> enUs = {
   'current_password': 'Current Password',
   're_enter_new_password': 'Re-Enter New Password',
   'update_wallet_success': 'Update Wallet Success!',
+  'err_current_pass': 'Current Password Invalid',
+  'err_pass_re_pass': 'Re Password needs to be the same as Password',
+  'err_empty_pass': 'Password is not empty',
+  'update_pass_success': 'Update Password Success!',
+  'enter_pass_to_copy_private_key': 'Enter wallet password to copy private key',
+  'password': 'Password',
+  'wallet_key_copied' : 'Wallet Key Copied',
 };

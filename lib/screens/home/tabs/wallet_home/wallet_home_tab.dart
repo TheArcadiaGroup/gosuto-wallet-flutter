@@ -17,13 +17,17 @@ class WalletHomeTab extends GetView<HomeController> {
 
   final WalletHomeController _whController = Get.put(WalletHomeController());
   final RxString _selectedFilter = RxString(AppConstants.historyFilterItems[0]);
-  final double _heightBottomView = 167;
   final RxInt _currentSliderIdx = RxInt(0);
 
   final PanelController _pc = PanelController();
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
+    _whController.setting = controller.setting;
+    _whController.getSeedPhrase();
+
     return Obx(
           () => _buildContent(context),
     );
@@ -40,15 +44,13 @@ class WalletHomeTab extends GetView<HomeController> {
   }
 
   Widget _buildContent(BuildContext context) {
-    // TODO Fake publickey
     final _wallet = controller.selectedWallet?.value;
-    _wallet?.publicKey =
-    '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
     return SlidingUpPanel(
-      minHeight: _heightBottomView,
+      minHeight: AppConstants.heightBottomView,
       maxHeight: 550,
       borderRadius: const BorderRadius.vertical(top: Radius.circular(30.0)),
       controller: _pc,
+      color: Theme.of(context).colorScheme.secondaryContainer,
       collapsed: Center(
         child: Text('bottom_text_note'.tr,
             maxLines: 2,
@@ -143,8 +145,8 @@ class WalletHomeTab extends GetView<HomeController> {
             right: 0,
             bottom:
             _whController.currentTab.value != WalletHomeTabs.walletSettings
-                ? 2 * _heightBottomView
-                : _heightBottomView + 20),
+                ? 2 * AppConstants.heightBottomView
+                : AppConstants.heightBottomView + 20),
         itemCount: _getItemCountListView(_whController.currentTab.value),
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -232,13 +234,19 @@ class WalletHomeTab extends GetView<HomeController> {
                           shadowColor:
                           MaterialStateProperty.all(Colors.transparent),
                         ),
-                        onPressed: () => {},
+                        onPressed: () => {
+                          AppClipboard.copyToClipboard(
+                              controller.selectedWallet?.value.publicKey ?? '')
+                        },
                         child: Row(
                           children: [
                             Text(
-                              '0x9f98e01d2...4ed7 ',
+                              Strings.displayHash(
+                                  controller.selectedWallet?.value.publicKey ??
+                                      ''),
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
+                            const SizedBox(width: 5),
                             SvgPicture.asset('assets/svgs/ic-copy.svg'),
                           ],
                         ),
@@ -372,8 +380,8 @@ class WalletHomeTab extends GetView<HomeController> {
 
     // TODO Fake publickey
     final _wallet = controller.selectedWallet?.value;
-    _wallet?.publicKey =
-    '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
+    // _wallet?.publicKey =
+    //     '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
 
     return Padding(
       padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
@@ -510,16 +518,153 @@ class WalletHomeTab extends GetView<HomeController> {
     _whController.walletName(text);
   }
 
-  // void _changePublicKey(String text) {
-  //   _whController.publicKey(text);
-  // }
-  // void _changePrivateKey(String text) {
-  //   _whController.privateKey(text);
-  // }
+  void _changeOldPass(String text) {
+    _whController.currentPass(text);
+  }
 
-  void _oldPassword(String text) {}
+  void _changePass(String text) {
+    _whController.newPass(text);
+  }
 
-  void _changePassword(String text) {}
+  void _changeRePass(String text) {
+    _whController.rePass(text);
+  }
+
+  void _showAlert(BuildContext context, String text, {String? btnText}) {
+    GosutoDialog().buildDialog(context, [
+      Text(
+        text,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: ThemeService().isDarkMode
+              ? Colors.white
+              : const Color(0xFF121826),
+        ),
+      ),
+      SizedBox(
+        height: getProportionateScreenHeight(30),
+      ),
+      GosutoButton(
+        text: btnText ?? 'confirm'.tr,
+        style: GosutoButtonStyle.fill,
+        onPressed: () {
+          Navigator.of(context, rootNavigator: true).pop();
+        },
+      )
+    ]);
+  }
+
+  void _enterPass(String text) {
+    _whController.pass(text);
+  }
+
+  void _showDialogEnterPass(BuildContext context) {
+    GosutoDialog().buildDialog(context, [
+      Text(
+        'enter_pass_to_copy_private_key'.tr,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: ThemeService().isDarkMode
+              ? Colors.white
+              : const Color(0xFF121826),
+        ),
+      ),
+      SizedBox(
+        height: getProportionateScreenHeight(30),
+      ),
+      CustomWidgets.textField(context, 'password'.tr,
+          // controller: _walletName,
+          onChanged: _enterPass,
+          borderRadius: 12),
+      SizedBox(
+        height: getProportionateScreenHeight(30),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+            height: 51,
+            width: getProportionateScreenWidth(110),
+            child: ElevatedButton(
+              onPressed: () async {
+                bool validPass =
+                await _whController.checkPass(_whController.pass.value);
+                if (!validPass) {
+                  _showAlert(context, 'err_current_pass'.tr);
+                  return;
+                }
+                _whController.pass('');
+                Navigator.of(context, rootNavigator: true).pop();
+                AppClipboard.copyToClipboard(
+                    controller.selectedWallet?.value.privateKey ?? '',
+                    func: () => _showAlert(context, 'wallet_key_copied'.tr));
+              },
+              child: Text(
+                'confirm'.tr,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline2
+                    ?.copyWith(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).colorScheme.background,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 51,
+            width: getProportionateScreenWidth(110),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+              child: Text('cancel'.tr,
+                  style: Theme.of(context).textTheme.headline2?.copyWith(
+                      color: Theme.of(context).colorScheme.background)),
+              style: ElevatedButton.styleFrom(
+                primary: Theme.of(context).colorScheme.primary,
+                side: BorderSide(
+                    width: 1.0,
+                    color: Theme.of(context).colorScheme.background),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ]);
+  }
+
+  Future<void> _changePassword(BuildContext context) async {
+    bool validPass =
+    await _whController.checkPass(_whController.currentPass.value);
+    if (!validPass) {
+      _showAlert(context, 'err_current_pass'.tr);
+      return;
+    }
+
+    if (_whController.newPass.value.trim() == '') {
+      _showAlert(context, 'err_empty_pass'.tr);
+      return;
+    }
+
+    if (_whController.newPass.value != _whController.rePass.value) {
+      _showAlert(context, 'err_pass_re_pass'.tr);
+      return;
+    }
+
+    await _whController.updatePassword();
+    _showAlert(context, 'update_pass_success'.tr);
+  }
 
   void _updateWalletName(BuildContext context) async {
     if (controller.selectedWallet != null) {
@@ -527,29 +672,7 @@ class WalletHomeTab extends GetView<HomeController> {
           _whController.walletName.value;
       controller.selectedWallet?.refresh();
       await _whController.updateWallet(controller.selectedWallet!.value);
-      GosutoDialog().buildDialog(context, [
-        Text(
-          'update_wallet_success'.tr,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: ThemeService().isDarkMode
-                ? Colors.white
-                : const Color(0xFF121826),
-          ),
-        ),
-        SizedBox(
-          height: getProportionateScreenHeight(30),
-        ),
-        GosutoButton(
-          text: 'OK'.tr,
-          style: GosutoButtonStyle.fill,
-          onPressed: () {
-            Navigator.of(context, rootNavigator: true).pop();
-          },
-        )
-      ]);
+      _showAlert(context, 'update_wallet_success'.tr);
     }
   }
 
@@ -603,10 +726,16 @@ class WalletHomeTab extends GetView<HomeController> {
   Widget _buildWalletSettings(BuildContext context, int index) {
     TextEditingController _walletName = TextEditingController(
         text: controller.selectedWallet?.value.walletName);
+    TextEditingController _oldPass =
+    TextEditingController(text: _whController.currentPass.value);
+    TextEditingController _pass =
+    TextEditingController(text: _whController.newPass.value);
+    TextEditingController _rePass =
+    TextEditingController(text: _whController.rePass.value);
     TextEditingController _publicKeyController =
     TextEditingController(text: controller.selectedWallet?.value.publicKey);
-    // TextEditingController _privateKeyController = TextEditingController(
-    //     text: controller.selectedWallet?.value.secretKey.toString());
+    TextEditingController _privateKeyController = TextEditingController(
+        text: controller.selectedWallet?.value.privateKey.toString());
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -633,23 +762,18 @@ class WalletHomeTab extends GetView<HomeController> {
                       width: 1.0,
                     ),
                   ),
-                  child: Wrap(
-                    spacing: 11,
-                    runSpacing: 15,
-                    children: [
-                      _buildMnemonicItem(context, '1', 'Text'),
-                      _buildMnemonicItem(context, '2', 'Text'),
-                      _buildMnemonicItem(context, '3', 'TextTextText'),
-                      _buildMnemonicItem(context, '4', 'Text'),
-                      _buildMnemonicItem(context, '5', 'TextTextText'),
-                      _buildMnemonicItem(context, '6', 'TextText'),
-                      _buildMnemonicItem(context, '7', 'Text'),
-                      _buildMnemonicItem(context, '8', 'Text'),
-                      _buildMnemonicItem(context, '9', 'TextTextText'),
-                      _buildMnemonicItem(context, '10', 'Text'),
-                      _buildMnemonicItem(context, '11', 'TextTextText'),
-                      _buildMnemonicItem(context, '12', 'TextText'),
-                    ],
+                  child: Obx(
+                        () => Wrap(
+                      spacing: 11,
+                      runSpacing: 15,
+                      children: [
+                        for (int i = 0;
+                        i < _whController.seedPhrases.length;
+                        i++)
+                          _buildMnemonicItem(context, '${i + 1}',
+                              _whController.seedPhrases[i]),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -679,19 +803,28 @@ class WalletHomeTab extends GetView<HomeController> {
           ),
           const SizedBox(height: 20),
           CustomWidgets.textField(
-            context,
-            'private_key'.tr,
+            context, 'private_key'.tr,
             borderRadius: 12,
-            controller: _publicKeyController,
-            enable: false,
+            controller: _privateKeyController,
+            // enable: false,
+            enableInteractiveSelection: false,
+            readOnly: true,
             obscureText: true,
-            suffixIcon: Padding(
-              padding: const EdgeInsets.only(right: 10, top: 15, bottom: 15),
-              child: SvgPicture.asset(
+
+            suffixIcon: IconButton(
+              onPressed: () => {_showDialogEnterPass(context)},
+              icon: SvgPicture.asset(
                 'assets/svgs/ic-copy.svg',
                 color: Theme.of(context).colorScheme.background,
               ),
             ),
+            // Padding(
+            //   padding: const EdgeInsets.only(right: 10, top: 15, bottom: 15),
+            //   child: SvgPicture.asset(
+            //     'assets/svgs/ic-copy.svg',
+            //     color: Theme.of(context).colorScheme.background,
+            //   ),
+            // ),
           ),
           const SizedBox(height: 20),
           Text(
@@ -702,7 +835,8 @@ class WalletHomeTab extends GetView<HomeController> {
           CustomWidgets.textField(
             context,
             'current_password'.tr,
-            onChanged: _changeWalletName,
+            onChanged: _changeOldPass,
+            controller: _oldPass,
             borderRadius: 12,
             obscureText: true,
           ),
@@ -710,7 +844,8 @@ class WalletHomeTab extends GetView<HomeController> {
           CustomWidgets.textField(
             context,
             'new_password'.tr,
-            onChanged: _changeWalletName,
+            onChanged: _changePass,
+            controller: _pass,
             borderRadius: 12,
             obscureText: true,
           ),
@@ -718,13 +853,19 @@ class WalletHomeTab extends GetView<HomeController> {
           CustomWidgets.textField(
             context,
             're_enter_new_password'.tr,
-            onChanged: _changeWalletName,
+            onChanged: _changeRePass,
+            controller: _rePass,
             borderRadius: 12,
             obscureText: true,
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              _oldPass.clear();
+              _pass.clear();
+              _rePass.clear();
+              _changePassword(context);
+            },
             child: Text('change_password'.tr,
                 style: Theme.of(context)
                     .textTheme
@@ -810,7 +951,7 @@ class WalletHomeTab extends GetView<HomeController> {
   //             ),
   //           ],
   //         ),
-  //         height: _whController.isShowBottom.value ? 550 : _heightBottomView,
+  //         height: _whController.isShowBottom.value ? 550 : AppConstants.heightBottomView,
   //         width: MediaQuery.of(context).size.width,
   //         duration: const Duration(milliseconds: 500),
   //         child: Stack(

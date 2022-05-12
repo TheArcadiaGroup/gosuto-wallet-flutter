@@ -7,7 +7,7 @@ class ChooseWalletController extends GetxController {
 
   Future fetchData() async {
     final _wallets = await DBHelper().getWallets();
-    print(_wallets[0].toMap());
+    // print(_wallets[0].toMap());
     wallets.assignAll(_wallets);
   }
 }

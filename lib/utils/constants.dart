@@ -64,4 +64,6 @@ class AppConstants {
       ),
     );
   }
+
+  static const double heightBottomView = 90;
 }

@@ -1,34 +1,36 @@
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:cryptography/cryptography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/data/network/api_client.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/env/env.dart';
+import 'package:gosuto/models/settings.dart';
+import 'package:convert/convert.dart';
 
 import '../../../../models/models.dart';
+import '../../../../utils/utils.dart';
 import 'wallet_home.dart';
 
 class WalletHomeController extends GetxController
     with GetSingleTickerProviderStateMixin {
   late TabController tabController;
-  var currentTab = WalletHomeTabs.history.obs;
-  var isShowBottom = false.obs;
   late CarouselController carouselController;
-
   late ApiClient apiClient;
 
+  var currentTab = WalletHomeTabs.history.obs;
+  var isShowBottom = false.obs;
   var walletName = ''.obs;
-
-  // var publicKey = ''.obs;
-  // var privateKey = ''.obs;
-  var oldPassword = ''.obs;
-  var password = ''.obs;
-  var rePassword = ''.obs;
-  RxList<TransferModel> transfers = RxList<TransferModel>();
-
+  var currentPass = ''.obs;
+  var newPass = ''.obs;
+  var rePass = ''.obs;
+  var pass = ''.obs;
   var page = 1.obs;
   var limit = 10.obs;
 
+  RxList<TransferModel> transfers = RxList<TransferModel>();
+  RxList<String> seedPhrases = RxList<String>();
+  Rx<Settings>? setting;
   Rx<TransferModel>? selectedTransfer;
 
   @override
@@ -39,7 +41,6 @@ class WalletHomeController extends GetxController
     carouselController = CarouselController();
 
     apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
-
     // TODO: Fake
     // accountHash = '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b'
     // page=1&limit=10&order_direction=DESC&with_extended_info=1
@@ -88,5 +89,34 @@ class WalletHomeController extends GetxController
     } else {
       transfers.addAll(_transfers);
     }
+  }
+
+  Future<void> getSeedPhrase() async {
+    String decryptedSeedPhrase = await GosutoAes256Gcm.decrypt(
+        setting?.value.seedPhrase ?? '', setting?.value.password ?? '');
+    List<String> _seedPhrases = decryptedSeedPhrase.split(' ');
+    seedPhrases(_seedPhrases);
+  }
+
+  Future<bool> checkPass(String pass) async {
+    Hash hashedPasswordBytes = await Sha1().hash(pass.codeUnits);
+    String hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+    return hashedPassword == setting?.value.password;
+  }
+
+  Future<void> updatePassword() async {
+    Hash hashedPasswordBytes = await Sha1().hash(newPass.value.codeUnits);
+    String hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+    setting?.value.password = hashedPassword;
+    setting?.refresh();
+
+    await DBHelper().updateSettings(
+      setting!.value,
+      'password',
+    );
+
+    newPass('');
+    currentPass('');
+    rePass('');
   }
 }

@@ -5,6 +5,7 @@ import 'package:gosuto/components/components.dart';
 import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:gosuto/routes/routes.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../../models/models.dart';
 import 'history.dart';
@@ -14,7 +15,8 @@ class HistoryTab extends GetView<HomeController> {
 
   final HistoryController _hController = Get.put(HistoryController());
   final RxString _selectedFilter = RxString(AppConstants.historyFilterItems[0]);
-  final double _heightBottomView = 167;
+
+  final PanelController _pc = PanelController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +29,8 @@ class HistoryTab extends GetView<HomeController> {
     double horizontalPadding = (MediaQuery.of(context).size.width - 97) / 2;
     return Obx(
           () => ListView.builder(
-        padding: EdgeInsets.only(
-            top: 10, left: 0, right: 0, bottom: _heightBottomView),
+        padding: const EdgeInsets.only(
+            top: 10, left: 0, right: 0, bottom: AppConstants.heightBottomView),
         itemCount: _hController.transfers.length + 3,
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -137,8 +139,8 @@ class HistoryTab extends GetView<HomeController> {
 
           // TODO Fake publickey
           final _wallet = controller.selectedWallet?.value;
-          _wallet?.publicKey =
-          '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
+          // _wallet?.publicKey =
+          // '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
 
           return Padding(
             padding: const EdgeInsets.only(top: 12.0, left: 10, right: 10),
@@ -194,8 +196,8 @@ class HistoryTab extends GetView<HomeController> {
   Widget _buildBottomView(BuildContext context) {
     // TODO Fake publickey
     final _wallet = controller.selectedWallet?.value;
-    _wallet?.publicKey =
-    '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
+    // _wallet?.publicKey =
+    // '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
 
     return Obx(() => AnimatedContainer(
       decoration: BoxDecoration(
@@ -211,7 +213,9 @@ class HistoryTab extends GetView<HomeController> {
           ),
         ],
       ),
-      height: _hController.isShowBottom.value ? 550 : _heightBottomView,
+      height: _hController.isShowBottom.value
+          ? 550
+          : AppConstants.heightBottomView,
       width: MediaQuery.of(context).size.width,
       duration: const Duration(milliseconds: 500),
       child: Stack(
@@ -219,8 +223,11 @@ class HistoryTab extends GetView<HomeController> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 70, left: 52, right: 52, bottom: 60),
+              padding: EdgeInsets.only(
+                  top: (_hController.isShowBottom.value ? 70 : 25),
+                  left: 52,
+                  right: 52,
+                  bottom: 60),
               child: _hController.isShowBottom.value
                   ? TransactionInfoCard(
                 rate: controller.rate.value,
@@ -236,8 +243,7 @@ class HistoryTab extends GetView<HomeController> {
             ),
           ),
           GestureDetector(
-            onTap: () =>
-            {_showHideBottomView(false)},
+            onTap: () => {_showHideBottomView(false)},
             child: Container(
               width: 155,
               height: 8,

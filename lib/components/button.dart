@@ -9,6 +9,7 @@ class GosutoButton extends StatefulWidget {
   final bool? disabled;
   final GosutoButtonStyle? style;
   final Function? onPressed;
+  final double? width;
 
   const GosutoButton({
     Key? key,
@@ -16,6 +17,7 @@ class GosutoButton extends StatefulWidget {
     this.disabled,
     this.style,
     this.onPressed,
+    this.width,
   }) : super(key: key);
 
   bool get _disabled => disabled == null ? false : disabled!;
@@ -28,7 +30,7 @@ class _ButtonState extends State<GosutoButton> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: double.infinity,
+      width: widget.width ?? double.infinity,
       height: widget.style == GosutoButtonStyle.fill ? 54 : 20,
       child: TextButton(
         style: TextButton.styleFrom(

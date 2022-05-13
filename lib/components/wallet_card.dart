@@ -81,7 +81,13 @@ class WalletCard extends StatelessWidget {
                     color: Colors.black.withOpacity(0.1),
                   ),
                   const SizedBox(height: 10),
-                  Text('stacked'.tr.toUpperCase()),
+                  Text(
+                    'staked'.tr.toUpperCase(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
                   RichText(
                       text: TextSpan(
                           text: '250.510 CSPR ≈ ',

@@ -27,6 +27,12 @@ class WalletHomeTab extends GetView<HomeController> {
 
     _whController.setting = controller.setting;
     _whController.getSeedPhrase();
+    _whController.getTransfers(
+        controller.selectedWallet?.value.accountHash ?? '',
+        _whController.page.value,
+        _whController.limit.value,
+        'DESC',
+        1);
 
     return Obx(
           () => _buildContent(context),
@@ -226,7 +232,7 @@ class WalletHomeTab extends GetView<HomeController> {
                       ),
                     ),
                     SizedBox(
-                      width: 180,
+                      // width: 180,
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
@@ -378,10 +384,7 @@ class WalletHomeTab extends GetView<HomeController> {
       );
     }
 
-    // TODO Fake publickey
     final _wallet = controller.selectedWallet?.value;
-    // _wallet?.publicKey =
-    //     '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
 
     return Padding(
       padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),

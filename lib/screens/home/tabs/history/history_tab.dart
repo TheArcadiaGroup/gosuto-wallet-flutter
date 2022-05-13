@@ -20,6 +20,12 @@ class HistoryTab extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    _hController.getTransfers(
+        controller.selectedWallet?.value.accountHash ?? '',
+        _hController.page.value,
+        _hController.limit.value,
+        'DESC',
+        1);
     return Stack(
         alignment: AlignmentDirectional.bottomEnd,
         children: [_listViewBuilder(context), _buildBottomView(context)]);
@@ -137,10 +143,7 @@ class HistoryTab extends GetView<HomeController> {
             );
           }
 
-          // TODO Fake publickey
           final _wallet = controller.selectedWallet?.value;
-          // _wallet?.publicKey =
-          // '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
 
           return Padding(
             padding: const EdgeInsets.only(top: 12.0, left: 10, right: 10),
@@ -194,10 +197,7 @@ class HistoryTab extends GetView<HomeController> {
   }
 
   Widget _buildBottomView(BuildContext context) {
-    // TODO Fake publickey
     final _wallet = controller.selectedWallet?.value;
-    // _wallet?.publicKey =
-    // '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
 
     return Obx(() => AnimatedContainer(
       decoration: BoxDecoration(

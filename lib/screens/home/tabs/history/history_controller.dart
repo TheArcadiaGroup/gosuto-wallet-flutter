@@ -14,6 +14,7 @@ class HistoryController extends GetxController {
   var limit = 10.obs;
 
   Rx<TransferModel>? selectedTransfer;
+  // Rx<Wallet>? wallet;
 
   @override
   void onInit() {
@@ -23,12 +24,12 @@ class HistoryController extends GetxController {
     // TODO: Fake
     // accountHash = '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b'
     // page=1&limit=10&order_direction=DESC&with_extended_info=1
-    getTransfers(
-        '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
-        page.value,
-        limit.value,
-        'DESC',
-        1);
+    // getTransfers(
+    //     '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
+    //     page.value,
+    //     limit.value,
+    //     'DESC',
+    //     1);
   }
 
   Future<void> getTransfers(String accountHash, int page, int limit,

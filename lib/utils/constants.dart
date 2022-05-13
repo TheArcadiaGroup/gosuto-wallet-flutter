@@ -66,4 +66,5 @@ class AppConstants {
   }
 
   static const double heightBottomView = 90;
+  static const double maxHeightSlidingUpPanel = 650;
 }

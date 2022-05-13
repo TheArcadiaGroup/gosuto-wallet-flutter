@@ -53,7 +53,7 @@ class WalletHomeTab extends GetView<HomeController> {
     final _wallet = controller.selectedWallet?.value;
     return SlidingUpPanel(
       minHeight: AppConstants.heightBottomView,
-      maxHeight: 550,
+      maxHeight: AppConstants.maxHeightSlidingUpPanel,
       borderRadius: const BorderRadius.vertical(top: Radius.circular(30.0)),
       controller: _pc,
       color: Theme.of(context).colorScheme.secondaryContainer,
@@ -83,18 +83,16 @@ class WalletHomeTab extends GetView<HomeController> {
       isDraggable: _whController.selectedTransfer != null,
       onPanelClosed: () => {_showHideBottomView(false)},
       onPanelOpened: () => {_showHideBottomView(true)},
-      panel: SingleChildScrollView(
-        child: Padding(
-          padding:
-          const EdgeInsets.only(top: 70, left: 52, right: 52, bottom: 60),
-          child: _whController.isShowBottom.value
-              ? TransactionInfoCard(
-            rate: controller.rate.value,
-            transfer: _whController.selectedTransfer!.value,
-            wallet: _wallet!,
-          )
-              : Container(),
-        ),
+      panel: Padding(
+        padding:
+        const EdgeInsets.only(top: 70, left: 52, right: 52, bottom: 60),
+        child: _whController.isShowBottom.value
+            ? TransactionInfoCard(
+          rate: controller.rate.value,
+          transfer: _whController.selectedTransfer!.value,
+          wallet: _wallet!,
+        )
+            : Container(),
       ),
       body: _listViewBuilder(context),
     );

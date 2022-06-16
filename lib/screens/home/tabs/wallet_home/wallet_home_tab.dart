@@ -240,8 +240,9 @@ class WalletHomeTab extends GetView<HomeController> {
                         ),
                         onPressed: () => {
                           AppClipboard.copyToClipboard(
-                              controller.selectedWallet?.value.publicKey ?? '')
+                              controller.selectedWallet?.value.publicKey != null ? '02' + controller.selectedWallet!.value.publicKey : '')
                         },
+
                         child: Row(
                           children: [
                             Text(

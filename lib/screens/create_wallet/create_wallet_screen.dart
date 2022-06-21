@@ -192,7 +192,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                   ),
                 ),
                 SizedBox(
-                  height: 100,
+                  height: 110,
                   child: Column(
                     children: [
                       // Obx(
@@ -276,7 +276,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                       ),
                       // ),
                       SizedBox(
-                        height: getProportionateScreenHeight(10),
+                        height: getProportionateScreenHeight(20),
                       ),
                       GosutoButton(
                         text: 'back'.tr,

@@ -473,12 +473,9 @@ class ImportFileScreen extends GetView<ImportFileController> {
                   ),
                 ),
                 SizedBox(
-                  height: 130,
+                  height: 110,
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: getProportionateScreenHeight(40),
-                      ),
                       // Obx(
                       //   () =>
                       GosutoButton(
@@ -491,7 +488,7 @@ class ImportFileScreen extends GetView<ImportFileController> {
                       ),
                       // ),
                       SizedBox(
-                        height: getProportionateScreenHeight(10),
+                        height: getProportionateScreenHeight(20),
                       ),
                       GosutoButton(
                         text: 'back'.tr,
@@ -499,6 +496,9 @@ class ImportFileScreen extends GetView<ImportFileController> {
                         onPressed: () {
                           Get.back();
                         },
+                      ),
+                      SizedBox(
+                        height: getProportionateScreenHeight(15),
                       ),
                     ],
                   ),

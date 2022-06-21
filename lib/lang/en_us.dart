@@ -73,7 +73,7 @@ const Map<String, String> enUs = {
   // Import File Screen
   'import_from_file': 'Import from File',
   'upload_seed_file': 'Upload Seed Phrase File',
-  'upload_privatekey_file': 'Upload Private Key File',
+  'upload_private_key_file': 'Upload Private Key File',
   'import_invalid_json': 'Invalid JSON Format',
   'private_key_invalid': 'Invalid private key',
 

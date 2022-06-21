@@ -156,115 +156,92 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
       ),
     ];
 
+    widgets.addAll([
+      Obx(
+            () => TextFormField(
+          obscureText: controller.hidePassword.value,
+          controller: controller.passwordController,
+          cursorColor: Theme.of(context).colorScheme.onSurface,
+          style: Theme.of(context).textTheme.bodyText1,
+          decoration: _inputDecoration.copyWith(
+            labelText: 'wallet_password'.tr,
+            prefixIcon: IconButton(
+              icon: ThemeService().isDarkMode
+                  ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                  : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+              onPressed: null,
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(controller.hidePassword.value
+                  ? Icons.visibility
+                  : Icons.visibility_off),
+              onPressed: () => controller.togglePassword(),
+              color: ThemeService().isDarkMode
+                  ? Colors.white.withOpacity(0.4)
+                  : Colors.black.withOpacity(0.4),
+            ),
+          ),
+          onChanged: (value) {
+            controller.password.value = value;
+          },
+          onSaved: (value) {
+            controller.password.value = value!;
+          },
+          validator: (value) {
+            return controller.validatePassword(value!);
+          },
+        ),
+      ),
+      SizedBox(
+        height: getProportionateScreenHeight(30),
+      ),
+      Obx(
+        () => TextFormField(
+          obscureText: controller.hideRePassword.value,
+          controller: controller.password2Controller,
+          cursorColor: Theme.of(context).colorScheme.onSurface,
+          style: Theme.of(context).textTheme.bodyText1,
+          decoration: _inputDecoration.copyWith(
+            labelText: 'wallet_password2'.tr,
+            prefixIcon: IconButton(
+              icon: ThemeService().isDarkMode
+                  ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                  : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+              onPressed: null,
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(controller.hideRePassword.value
+                  ? Icons.visibility
+                  : Icons.visibility_off),
+              onPressed: () => controller.toggleRePassword(),
+              color: ThemeService().isDarkMode
+                  ? Colors.white.withOpacity(0.4)
+                  : Colors.black.withOpacity(0.4),
+            ),
+          ),
+          onChanged: (value) {
+            controller.password2.value = value;
+          },
+          onSaved: (value) {
+            controller.password2.value = value!;
+          },
+          validator: (value) {
+            return controller.validateConfirmPassword(value!);
+          },
+        ),
+      ),
+      SizedBox(
+        height: getProportionateScreenHeight(20),
+      ),
+    ]);
+
     return Form(
         key: controller.formKey,
         autovalidateMode: AutovalidateMode.always,
-        child: FutureBuilder<String>(
-          future: DBHelper().getPassword(),
-          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              // add password fields
-              if (snapshot.hasData &&
-                  (snapshot.data == null || snapshot.data == '')) {
-                widgets.addAll([
-                  Obx(
-                    () => TextFormField(
-                      obscureText: controller.hidePassword.value,
-                      controller: controller.passwordController,
-                      cursorColor: Theme.of(context).colorScheme.onSurface,
-                      style: Theme.of(context).textTheme.bodyText1,
-                      decoration: _inputDecoration.copyWith(
-                        labelText: 'wallet_password'.tr,
-                        prefixIcon: IconButton(
-                          icon: ThemeService().isDarkMode
-                              ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
-                              : SvgPicture.asset(
-                                  'assets/svgs/light/ic-lock.svg'),
-                          onPressed: null,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(controller.hidePassword.value
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () => controller.togglePassword(),
-                          color: ThemeService().isDarkMode
-                              ? Colors.white.withOpacity(0.4)
-                              : Colors.black.withOpacity(0.4),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        controller.password.value = value;
-                      },
-                      onSaved: (value) {
-                        controller.password.value = value!;
-                      },
-                      validator: (value) {
-                        return controller.validatePassword(value!);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: getProportionateScreenHeight(30),
-                  ),
-                  Obx(
-                    () => TextFormField(
-                      obscureText: controller.hideRePassword.value,
-                      controller: controller.password2Controller,
-                      cursorColor: Theme.of(context).colorScheme.onSurface,
-                      style: Theme.of(context).textTheme.bodyText1,
-                      decoration: _inputDecoration.copyWith(
-                        labelText: 'wallet_password2'.tr,
-                        prefixIcon: IconButton(
-                          icon: ThemeService().isDarkMode
-                              ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
-                              : SvgPicture.asset(
-                                  'assets/svgs/light/ic-lock.svg'),
-                          onPressed: null,
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(controller.hideRePassword.value
-                              ? Icons.visibility
-                              : Icons.visibility_off),
-                          onPressed: () => controller.toggleRePassword(),
-                          color: ThemeService().isDarkMode
-                              ? Colors.white.withOpacity(0.4)
-                              : Colors.black.withOpacity(0.4),
-                        ),
-                      ),
-                      onChanged: (value) {
-                        controller.password2.value = value;
-                      },
-                      onSaved: (value) {
-                        controller.password2.value = value!;
-                      },
-                      validator: (value) {
-                        return controller.validateConfirmPassword(value!);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    height: getProportionateScreenHeight(20),
-                  ),
-                ]);
-              }
-
-              // add checkbox
-              // widgets.add(
-              //   Obx(
-              //     () => GosutoCheckbox(
-              //       label: 'confirm_text'.tr,
-              //       isChecked: controller.agreed.value,
-              //       onChanged: (value) => controller.toggleAgreed(),
-              //     ),
-              //   ),
-              // );
-            }
-
-            return Column(
-              children: widgets,
-            );
-          },
-        ));
+        child: Column(
+          children: widgets,
+        ),
+    );
   }
 
   @override
@@ -328,8 +305,8 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                     ],
                   ),
                 ),
-                Expanded(
-                  flex: 1,
+                SizedBox(
+                  height: 130,
                   child: Column(
                     children: [
                       SizedBox(

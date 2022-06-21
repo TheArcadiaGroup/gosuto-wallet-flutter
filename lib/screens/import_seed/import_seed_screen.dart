@@ -174,7 +174,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                       cursorColor: Theme.of(context).colorScheme.onSurface,
                       style: Theme.of(context).textTheme.bodyText1,
                       decoration: _inputDecoration.copyWith(
-                        labelText: 'wallet_paddword'.tr,
+                        labelText: 'wallet_password'.tr,
                         prefixIcon: IconButton(
                           icon: ThemeService().isDarkMode
                               ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
@@ -213,7 +213,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                       cursorColor: Theme.of(context).colorScheme.onSurface,
                       style: Theme.of(context).textTheme.bodyText1,
                       decoration: _inputDecoration.copyWith(
-                        labelText: 'wallet_paddword2'.tr,
+                        labelText: 'wallet_password2'.tr,
                         prefixIcon: IconButton(
                           icon: ThemeService().isDarkMode
                               ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')

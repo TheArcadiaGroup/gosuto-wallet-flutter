@@ -16,17 +16,21 @@ class CreateWalletController extends GetxController {
   var password = ''.obs;
   var password2 = ''.obs;
 
+  var snapshotPass = ''.obs;
+
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
   var agreed = true.obs; // false.obs;
 
   @override
   void onInit() {
-    super.onInit();
     walletNameController = TextEditingController(
         text: 'Gosuto ' + data[0]['walletIndex'].toString());
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
+
+    getSnapshotData();
+    super.onInit();
   }
 
   @override
@@ -34,6 +38,7 @@ class CreateWalletController extends GetxController {
     walletNameController.dispose();
     passwordController.dispose();
     password2Controller.dispose();
+    super.onClose();
   }
 
   void togglePassword() {
@@ -87,8 +92,17 @@ class CreateWalletController extends GetxController {
     return '';
   }
 
+  Future<void> getSnapshotData() async {
+    String password = await DBHelper().getPassword();
+    snapshotPass(password);
+  }
+
   Future<bool> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
+    // TODO: Need show error if form is invalid
+    // if (!isValid) {
+    //   return isValid;
+    // }
     bool walletIsExist = await DBHelper().isWalletNameExist(walletName.value);
     isValid = !walletIsExist;
     return isValid;

@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
 // import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
-import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/routes/routes.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
@@ -43,114 +42,93 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
       ),
     ];
 
+    if (controller.snapshotPass.value == '') {
+      widgets.addAll([
+        Obx(
+              () => TextFormField(
+            obscureText: controller.hidePassword.value,
+            controller: controller.passwordController,
+            cursorColor: Theme.of(context).colorScheme.onSurface,
+            style: Theme.of(context).textTheme.bodyText1,
+            decoration: _inputDecoration.copyWith(
+              labelText: 'wallet_password'.tr,
+              prefixIcon: IconButton(
+                icon: ThemeService().isDarkMode
+                    ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                    : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+                onPressed: null,
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(controller.hidePassword.value
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+                onPressed: () => controller.togglePassword(),
+                color: ThemeService().isDarkMode
+                    ? Colors.white.withOpacity(0.4)
+                    : Colors.black.withOpacity(0.4),
+              ),
+            ),
+            onChanged: (value) {
+              controller.password.value = value;
+            },
+            onSaved: (value) {
+              controller.password.value = value!;
+            },
+            validator: (value) {
+              return controller.validatePassword(value!);
+            },
+          ),
+        ),
+        SizedBox(
+          height: getProportionateScreenHeight(30),
+        ),
+        Obx(
+              () => TextFormField(
+            obscureText: controller.hideRePassword.value,
+            controller: controller.password2Controller,
+            cursorColor: Theme.of(context).colorScheme.onSurface,
+            style: Theme.of(context).textTheme.bodyText1,
+            decoration: _inputDecoration.copyWith(
+              labelText: 'wallet_password2'.tr,
+              prefixIcon: IconButton(
+                icon: ThemeService().isDarkMode
+                    ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                    : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+                onPressed: null,
+              ),
+              suffixIcon: IconButton(
+                icon: Icon(controller.hideRePassword.value
+                    ? Icons.visibility
+                    : Icons.visibility_off),
+                onPressed: () => controller.toggleRePassword(),
+                color: ThemeService().isDarkMode
+                    ? Colors.white.withOpacity(0.4)
+                    : Colors.black.withOpacity(0.4),
+              ),
+            ),
+            onChanged: (value) {
+              controller.password2.value = value;
+            },
+            onSaved: (value) {
+              controller.password2.value = value!;
+            },
+            validator: (value) {
+              return controller.validateConfirmPassword(value!);
+            },
+          ),
+        ),
+        SizedBox(
+          height: getProportionateScreenHeight(20),
+        ),
+      ]);
+    }
+
     return Form(
-      key: controller.formKey,
-      autovalidateMode: AutovalidateMode.always,
-      child: FutureBuilder<String>(
-        future: DBHelper().getPassword(),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // add password fields
-            if (snapshot.hasData &&
-                (snapshot.data == null || snapshot.data == '')) {
-              widgets.addAll([
-                Obx(
-                  () => TextFormField(
-                    obscureText: controller.hidePassword.value,
-                    controller: controller.passwordController,
-                    cursorColor: Theme.of(context).colorScheme.onSurface,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: _inputDecoration.copyWith(
-                      labelText: 'wallet_paddword'.tr,
-                      prefixIcon: IconButton(
-                        icon: ThemeService().isDarkMode
-                            ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
-                            : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
-                        onPressed: null,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(controller.hidePassword.value
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () => controller.togglePassword(),
-                        color: ThemeService().isDarkMode
-                            ? Colors.white.withOpacity(0.4)
-                            : Colors.black.withOpacity(0.4),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      controller.password.value = value;
-                    },
-                    onSaved: (value) {
-                      controller.password.value = value!;
-                    },
-                    validator: (value) {
-                      return controller.validatePassword(value!);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(30),
-                ),
-                Obx(
-                  () => TextFormField(
-                    obscureText: controller.hideRePassword.value,
-                    controller: controller.password2Controller,
-                    cursorColor: Theme.of(context).colorScheme.onSurface,
-                    style: Theme.of(context).textTheme.bodyText1,
-                    decoration: _inputDecoration.copyWith(
-                      labelText: 'wallet_paddword2'.tr,
-                      prefixIcon: IconButton(
-                        icon: ThemeService().isDarkMode
-                            ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
-                            : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
-                        onPressed: null,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(controller.hideRePassword.value
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                        onPressed: () => controller.toggleRePassword(),
-                        color: ThemeService().isDarkMode
-                            ? Colors.white.withOpacity(0.4)
-                            : Colors.black.withOpacity(0.4),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      controller.password2.value = value;
-                    },
-                    onSaved: (value) {
-                      controller.password2.value = value!;
-                    },
-                    validator: (value) {
-                      return controller.validateConfirmPassword(value!);
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: getProportionateScreenHeight(20),
-                ),
-              ]);
-            }
-
-            // add checkbox
-            // widgets.add(
-            //   Obx(
-            //     () => GosutoCheckbox(
-            //       label: 'confirm_text'.tr,
-            //       isChecked: controller.agreed.value,
-            //       onChanged: (value) => controller.toggleAgreed(),
-            //     ),
-            //   ),
-            // );
-          }
-
-          return Column(
-            children: widgets,
-          );
-        },
-      ),
-    );
+        key: controller.formKey,
+        autovalidateMode: AutovalidateMode.always,
+        child: Column(
+          children: widgets,
+        ));
   }
 
   @override
@@ -177,9 +155,9 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                 Text(
                   'create_a_new_wallet'.tr,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Expanded(
                   flex: 4,
@@ -213,8 +191,8 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                     ],
                   ),
                 ),
-                Expanded(
-                  flex: 1,
+                SizedBox(
+                  height: 100,
                   child: Column(
                     children: [
                       // Obx(
@@ -225,11 +203,10 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                         // disabled: !controller.agreed.value,
                         onPressed: () async {
                           bool isValid = await controller.checkValidate();
-
                           if (isValid && controller.agreed.value) {
                             controller.formKey.currentState?.save();
                             String seedPhrase =
-                                await controller.getSeedPhrase();
+                            await controller.getSeedPhrase();
 
                             if (seedPhrase == '') {
                               // Create seedphrase

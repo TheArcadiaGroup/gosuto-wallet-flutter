@@ -33,8 +33,8 @@ const Map<String, String> enUs = {
   'create_a_password_text2':
       '• This password will be used to unlock the mobile wallet.',
   'wallet_name': 'Wallet Name',
-  'wallet_paddword': 'New Password',
-  'wallet_paddword2': 'Confirm Password',
+  'wallet_password': 'New Password',
+  'wallet_password2': 'Confirm Password',
   'confirm_text': 'I have read and agree to the terms of service',
   'wallet_name_empty': 'Please enter wallet name',
   'wallet_name_exist': 'This wallet name already exists',

@@ -174,6 +174,9 @@ class AddWalletScreen extends GetView<AddWalletController> {
                   ),
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ),

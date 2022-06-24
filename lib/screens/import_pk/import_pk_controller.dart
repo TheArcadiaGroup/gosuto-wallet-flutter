@@ -57,7 +57,7 @@ class ImportPkController extends GetxController {
       return 'seed_phrase_empty'.tr;
     }
 
-    if (value.length != 64) {
+    if (value.length != 128) {
       return 'invalid_private_key'.tr;
     }
 
@@ -99,9 +99,10 @@ class ImportPkController extends GetxController {
       }
     }
 
-    if (privateKey.value.length != 64) {
+    if (privateKey.value.length != 128) {
       errorMessage = 'invalid_private_key'.tr;
       isValid = false;
+      print(privateKey.value.length);
     }
 
     map['isValid'] = isValid;

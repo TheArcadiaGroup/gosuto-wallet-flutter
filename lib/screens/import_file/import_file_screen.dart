@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
+
 // import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/database/dbhelper.dart';
@@ -86,7 +87,7 @@ class ImportFileScreen extends GetView<ImportFileController> {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
-        allowedExtensions: ['txt', 'json'],
+        allowedExtensions: ['txt', 'json', 'pem'],
       );
 
       if (result != null) {
@@ -153,7 +154,7 @@ class ImportFileScreen extends GetView<ImportFileController> {
 
     Widget _buildForm(context) {
       InputDecoration _inputDecoration =
-      AppConstants.getInputDecoration(context);
+          AppConstants.getInputDecoration(context);
 
       List<Widget> widgets = [
         SizedBox(
@@ -189,7 +190,7 @@ class ImportFileScreen extends GetView<ImportFileController> {
             label: Text(
               controller.fileName.value != ''
                   ? controller.fileName.value
-              // : (snapshot.data == ''
+                  // : (snapshot.data == ''
                   : 'upload_seed_file'.tr,
               // : 'upload_private_key_file'.tr
 
@@ -208,92 +209,90 @@ class ImportFileScreen extends GetView<ImportFileController> {
         ),
       ]);
 
-      widgets.addAll([
-        Obx(
-          () => TextFormField(
-            obscureText: controller.hidePassword.value,
-            controller: controller.passwordController,
-            cursorColor: Theme.of(context).colorScheme.onSurface,
-            style: Theme.of(context).textTheme.bodyText1,
-            decoration: _inputDecoration.copyWith(
-              labelText: 'wallet_password'.tr,
-              prefixIcon: IconButton(
-                icon: ThemeService().isDarkMode
-                    ? SvgPicture.asset(
-                    'assets/svgs/dark/ic-lock.svg')
-                    : SvgPicture.asset(
-                    'assets/svgs/light/ic-lock.svg'),
-                onPressed: null,
+      if (controller.snapshotPass.value == '') {
+        widgets.addAll([
+          Obx(
+            () => TextFormField(
+              obscureText: controller.hidePassword.value,
+              controller: controller.passwordController,
+              cursorColor: Theme.of(context).colorScheme.onSurface,
+              style: Theme.of(context).textTheme.bodyText1,
+              decoration: _inputDecoration.copyWith(
+                labelText: 'wallet_password'.tr,
+                prefixIcon: IconButton(
+                  icon: ThemeService().isDarkMode
+                      ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                      : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+                  onPressed: null,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(controller.hidePassword.value
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                  onPressed: () => controller.togglePassword(),
+                  color: ThemeService().isDarkMode
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black.withOpacity(0.4),
+                ),
               ),
-              suffixIcon: IconButton(
-                icon: Icon(controller.hidePassword.value
-                    ? Icons.visibility
-                    : Icons.visibility_off),
-                onPressed: () => controller.togglePassword(),
-                color: ThemeService().isDarkMode
-                    ? Colors.white.withOpacity(0.4)
-                    : Colors.black.withOpacity(0.4),
-              ),
+              onChanged: (value) {
+                controller.password.value = value;
+              },
+              onSaved: (value) {
+                controller.password.value = value!;
+              },
+              validator: (value) {
+                return controller.validatePassword(value!);
+              },
             ),
-            onChanged: (value) {
-              controller.password.value = value;
-            },
-            onSaved: (value) {
-              controller.password.value = value!;
-            },
-            validator: (value) {
-              return controller.validatePassword(value!);
-            },
           ),
-        ),
-        SizedBox(
-          height: getProportionateScreenHeight(30),
-        ),
-        Obx(
-          () => TextFormField(
-            obscureText: controller.hideRePassword.value,
-            controller: controller.password2Controller,
-            cursorColor: Theme.of(context).colorScheme.onSurface,
-            style: Theme.of(context).textTheme.bodyText1,
-            decoration: _inputDecoration.copyWith(
-              labelText: 'wallet_password2'.tr,
-              prefixIcon: IconButton(
-                icon: ThemeService().isDarkMode
-                    ? SvgPicture.asset(
-                    'assets/svgs/dark/ic-lock.svg')
-                    : SvgPicture.asset(
-                    'assets/svgs/light/ic-lock.svg'),
-                onPressed: null,
+          SizedBox(
+            height: getProportionateScreenHeight(30),
+          ),
+          Obx(
+            () => TextFormField(
+              obscureText: controller.hideRePassword.value,
+              controller: controller.password2Controller,
+              cursorColor: Theme.of(context).colorScheme.onSurface,
+              style: Theme.of(context).textTheme.bodyText1,
+              decoration: _inputDecoration.copyWith(
+                labelText: 'wallet_password2'.tr,
+                prefixIcon: IconButton(
+                  icon: ThemeService().isDarkMode
+                      ? SvgPicture.asset('assets/svgs/dark/ic-lock.svg')
+                      : SvgPicture.asset('assets/svgs/light/ic-lock.svg'),
+                  onPressed: null,
+                ),
+                suffixIcon: IconButton(
+                  icon: Icon(controller.hideRePassword.value
+                      ? Icons.visibility
+                      : Icons.visibility_off),
+                  onPressed: () => controller.toggleRePassword(),
+                  color: ThemeService().isDarkMode
+                      ? Colors.white.withOpacity(0.4)
+                      : Colors.black.withOpacity(0.4),
+                ),
               ),
-              suffixIcon: IconButton(
-                icon: Icon(controller.hideRePassword.value
-                    ? Icons.visibility
-                    : Icons.visibility_off),
-                onPressed: () => controller.toggleRePassword(),
-                color: ThemeService().isDarkMode
-                    ? Colors.white.withOpacity(0.4)
-                    : Colors.black.withOpacity(0.4),
-              ),
+              onChanged: (value) {
+                controller.password2.value = value;
+              },
+              onSaved: (value) {
+                controller.password2.value = value!;
+              },
+              validator: (value) {
+                return controller.validateConfirmPassword(value!);
+              },
             ),
-            onChanged: (value) {
-              controller.password2.value = value;
-            },
-            onSaved: (value) {
-              controller.password2.value = value!;
-            },
-            validator: (value) {
-              return controller.validateConfirmPassword(value!);
-            },
           ),
-        ),
-        SizedBox(
-          height: getProportionateScreenHeight(20),
-        ),
-      ]);
+          SizedBox(
+            height: getProportionateScreenHeight(20),
+          ),
+        ]);
+      }
 
       return Form(
           key: controller.formKey,
-          autovalidateMode: AutovalidateMode.always,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: widgets,
           ));
@@ -307,15 +306,15 @@ class ImportFileScreen extends GetView<ImportFileController> {
               if (snapshot.connectionState == ConnectionState.done) {
                 widgets.addAll([
                   Obx(
-                        () => TextButton.icon(
+                    () => TextButton.icon(
                       onPressed: () => onPickFile(context),
                       icon: SvgPicture.asset('assets/svgs/import.svg'),
                       label: Text(
                         controller.fileName.value != ''
                             ? controller.fileName.value
                             : (snapshot.data == ''
-                            ? 'upload_seed_file'.tr
-                            : 'upload_privatekey_file'.tr),
+                                ? 'upload_seed_file'.tr
+                                : 'upload_privatekey_file'.tr),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -335,7 +334,7 @@ class ImportFileScreen extends GetView<ImportFileController> {
                     (snapshot.data == null || snapshot.data == '')) {
                   widgets.addAll([
                     Obx(
-                          () => TextFormField(
+                      () => TextFormField(
                         obscureText: controller.hidePassword.value,
                         controller: controller.passwordController,
                         cursorColor: Theme.of(context).colorScheme.onSurface,
@@ -345,9 +344,9 @@ class ImportFileScreen extends GetView<ImportFileController> {
                           prefixIcon: IconButton(
                             icon: ThemeService().isDarkMode
                                 ? SvgPicture.asset(
-                                'assets/svgs/dark/ic-lock.svg')
+                                    'assets/svgs/dark/ic-lock.svg')
                                 : SvgPicture.asset(
-                                'assets/svgs/light/ic-lock.svg'),
+                                    'assets/svgs/light/ic-lock.svg'),
                             onPressed: null,
                           ),
                           suffixIcon: IconButton(
@@ -375,7 +374,7 @@ class ImportFileScreen extends GetView<ImportFileController> {
                       height: getProportionateScreenHeight(30),
                     ),
                     Obx(
-                          () => TextFormField(
+                      () => TextFormField(
                         obscureText: controller.hideRePassword.value,
                         controller: controller.password2Controller,
                         cursorColor: Theme.of(context).colorScheme.onSurface,
@@ -385,9 +384,9 @@ class ImportFileScreen extends GetView<ImportFileController> {
                           prefixIcon: IconButton(
                             icon: ThemeService().isDarkMode
                                 ? SvgPicture.asset(
-                                'assets/svgs/dark/ic-lock.svg')
+                                    'assets/svgs/dark/ic-lock.svg')
                                 : SvgPicture.asset(
-                                'assets/svgs/light/ic-lock.svg'),
+                                    'assets/svgs/light/ic-lock.svg'),
                             onPressed: null,
                           ),
                           suffixIcon: IconButton(
@@ -456,9 +455,9 @@ class ImportFileScreen extends GetView<ImportFileController> {
                 Text(
                   'import_from_file'.tr,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 Expanded(
@@ -468,7 +467,7 @@ class ImportFileScreen extends GetView<ImportFileController> {
                       SizedBox(
                         height: getProportionateScreenHeight(25),
                       ),
-                      _buildForm(context),
+                      Obx(() => _buildForm(context)),
                     ],
                   ),
                 ),
@@ -496,9 +495,6 @@ class ImportFileScreen extends GetView<ImportFileController> {
                         onPressed: () {
                           Get.back();
                         },
-                      ),
-                      SizedBox(
-                        height: getProportionateScreenHeight(15),
                       ),
                     ],
                   ),

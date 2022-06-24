@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
+
 // import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/routes/routes.dart';
@@ -45,7 +46,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
     if (controller.snapshotPass.value == '') {
       widgets.addAll([
         Obx(
-              () => TextFormField(
+          () => TextFormField(
             obscureText: controller.hidePassword.value,
             controller: controller.passwordController,
             cursorColor: Theme.of(context).colorScheme.onSurface,
@@ -83,7 +84,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
           height: getProportionateScreenHeight(30),
         ),
         Obx(
-              () => TextFormField(
+          () => TextFormField(
             obscureText: controller.hideRePassword.value,
             controller: controller.password2Controller,
             cursorColor: Theme.of(context).colorScheme.onSurface,
@@ -125,7 +126,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
 
     return Form(
         key: controller.formKey,
-        autovalidateMode: AutovalidateMode.always,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
           children: widgets,
         ));
@@ -155,9 +156,9 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                 Text(
                   'create_a_new_wallet'.tr,
                   style: Theme.of(context).textTheme.bodyText1?.copyWith(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 Expanded(
                   flex: 4,
@@ -187,7 +188,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                           ),
                         ],
                       ),
-                      _buildForm(context),
+                      Obx(() => _buildForm(context)),
                     ],
                   ),
                 ),
@@ -206,7 +207,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                           if (isValid && controller.agreed.value) {
                             controller.formKey.currentState?.save();
                             String seedPhrase =
-                            await controller.getSeedPhrase();
+                                await controller.getSeedPhrase();
 
                             if (seedPhrase == '') {
                               // Create seedphrase

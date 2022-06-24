@@ -28,7 +28,6 @@ class CreateWalletController extends GetxController {
         text: 'Gosuto ' + data[0]['walletIndex'].toString());
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
-
     getSnapshotData();
     super.onInit();
   }

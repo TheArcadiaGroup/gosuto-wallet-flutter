@@ -32,9 +32,9 @@ class HomeScreen extends GetView<HomeController> {
                         child: Tab(
                             icon: ThemeService().isDarkMode
                                 ? SvgPicture.asset(
-                                'assets/svgs/dark/ic-menu.svg')
+                                    'assets/svgs/dark/ic-menu.svg')
                                 : SvgPicture.asset(
-                                'assets/svgs/light/ic-menu.svg')),
+                                    'assets/svgs/light/ic-menu.svg')),
                       ),
                       Expanded(
                         child: TabBar(

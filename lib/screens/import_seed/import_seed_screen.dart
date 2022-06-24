@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
+
 // import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/database/dbhelper.dart';
@@ -158,7 +159,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
 
     widgets.addAll([
       Obx(
-            () => TextFormField(
+        () => TextFormField(
           obscureText: controller.hidePassword.value,
           controller: controller.passwordController,
           cursorColor: Theme.of(context).colorScheme.onSurface,
@@ -236,11 +237,11 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
     ]);
 
     return Form(
-        key: controller.formKey,
-        autovalidateMode: AutovalidateMode.always,
-        child: Column(
-          children: widgets,
-        ),
+      key: controller.formKey,
+      autovalidateMode: AutovalidateMode.always,
+      child: Column(
+        children: widgets,
+      ),
     );
   }
 
@@ -301,7 +302,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                           ),
                         ],
                       ),
-                      _buildForm(context),
+                      Obx(() => _buildForm(context)),
                     ],
                   ),
                 ),

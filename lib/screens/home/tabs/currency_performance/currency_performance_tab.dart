@@ -14,7 +14,7 @@ class CurrencyPerformanceTab extends GetView<HomeController> {
   Widget _listViewBuilder() {
     return ListView.builder(
       padding: const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 22),
-      itemCount: 10,
+      itemCount: 5,
       itemBuilder: (context, index) {
         if (index == 0) {
           return Stack(alignment: AlignmentDirectional.bottomEnd, children: [

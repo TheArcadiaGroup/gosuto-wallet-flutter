@@ -19,6 +19,9 @@ class ImportFileController extends GetxController {
   var seedPhrase = ''.obs;
   var password = ''.obs;
   var password2 = ''.obs;
+
+  var snapshotPass = ''.obs;
+
   var fileName = ''.obs;
 
   var hidePassword = true.obs;
@@ -27,12 +30,13 @@ class ImportFileController extends GetxController {
 
   @override
   void onInit() {
-    super.onInit();
     walletNameController = TextEditingController(
         text: 'Gosuto ' + data[0]['walletIndex'].toString());
     seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
+    getSnapshotData();
+    super.onInit();
   }
 
   @override
@@ -81,6 +85,16 @@ class ImportFileController extends GetxController {
     }
 
     return null;
+  }
+
+  // Future<void> getSnapshotData() async {
+  //   String password = await DBHelper().getPassword();
+  //   snapshotPass(password);
+  // }
+
+  Future<void> getSnapshotData() async {
+    String password = await DBHelper().getPassword();
+    snapshotPass(password);
   }
 
   Future<Map> checkValidate() async {

@@ -148,13 +148,6 @@ class ImportPkScreen extends GetView<ImportPkController> {
       SizedBox(
         height: getProportionateScreenHeight(30),
       ),
-      // Obx(
-      //   () => GosutoCheckbox(
-      //     label: 'confirm_text'.tr,
-      //     isChecked: controller.agreed.value,
-      //     onChanged: (value) => controller.toggleAgreed(),
-      //   ),
-      // )
     ];
 
     return Form(
@@ -206,15 +199,10 @@ class ImportPkScreen extends GetView<ImportPkController> {
                     ],
                   ),
                 ),
-                Expanded(
-                  flex: 1,
+                SizedBox(
+                  height: 110,
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: getProportionateScreenHeight(40),
-                      ),
-                      // Obx(
-                      //   () =>
                       GosutoButton(
                         text: 'continue'.tr,
                         style: GosutoButtonStyle.fill,
@@ -225,7 +213,7 @@ class ImportPkScreen extends GetView<ImportPkController> {
                       ),
                       // ),
                       SizedBox(
-                        height: getProportionateScreenHeight(10),
+                        height: getProportionateScreenHeight(20),
                       ),
                       GosutoButton(
                         text: 'back'.tr,

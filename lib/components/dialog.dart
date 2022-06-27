@@ -5,7 +5,7 @@ import '../utils/size_config.dart';
 
 class GosutoDialog extends YYDialog {
   EdgeInsets padding = EdgeInsets.symmetric(
-    horizontal: getProportionateScreenWidth(60),
+    horizontal: getProportionateScreenWidth(20),
     vertical: 30,
   );
 

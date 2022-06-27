@@ -4,4 +4,8 @@ class APIConstants {
   static const accountsTransfers = 'accounts/{accountHash}/transfers';
 
   static const rateAmount = 'rates/{rateId}/amount';
+
+  static const marketChart = 'coins/casper-network/market_chart';
+
+  static const casperNetwork = 'coins/casper-network';
 }

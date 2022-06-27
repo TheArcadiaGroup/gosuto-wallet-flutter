@@ -302,7 +302,7 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                           ),
                         ],
                       ),
-                      Obx(() => _buildForm(context)),
+                      _buildForm(context),
                     ],
                   ),
                 ),

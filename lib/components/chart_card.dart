@@ -7,14 +7,18 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:intl/intl.dart';
 
 class ChartCard extends StatefulWidget {
-  const ChartCard({Key? key}) : super(key: key);
+  const ChartCard({Key? key, required this.data, required this.onUpdateFilter})
+      : super(key: key);
+  final List data;
+
+  final Function(int value) onUpdateFilter;
 
   @override
   State<StatefulWidget> createState() => _ChatCardState();
 }
 
 class _ChatCardState extends State<ChartCard> {
-  final RxString _selectedFilter = RxString(AppConstants.chartFilterItems[0]);
+  final RxInt _selectedFilter = RxInt(ChartFilterEnum.day_1.value);
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +26,21 @@ class _ChatCardState extends State<ChartCard> {
   }
 
   Widget _buildWidget(BuildContext context) {
+    double maxPrice = 0;
+    double delta = 1;
+
+    for (var element in widget.data) {
+      if (maxPrice < element[1]) {
+        maxPrice = element[1];
+      }
+    }
+    if (maxPrice < 1) {
+      delta = 1 / maxPrice;
+    }
+    final formatCurrency = NumberFormat.simpleCurrency(decimalDigits: 6);
+    final customTickFormatter = charts.BasicNumericTickFormatterSpec(
+        (value) => formatCurrency.format(value != null ? value / delta : 0));
+
     return Container(
       margin: const EdgeInsets.all(10),
       // padding: const EdgeInsets.all(20),
@@ -108,9 +127,10 @@ class _ChatCardState extends State<ChartCard> {
             height: 200,
             padding: const EdgeInsets.all(10),
             child: charts.TimeSeriesChart(
-              _createSampleData(),
+              _createData(delta),
               animate: true,
-              domainAxis: charts.DateTimeAxisSpec(
+              // domainAxis: charts.EndPointsTimeAxisSpec(),
+              domainAxis: charts.EndPointsTimeAxisSpec(
                 renderSpec: charts.GridlineRendererSpec(
                   lineStyle: charts.LineStyleSpec(
                     color: charts.ColorUtil.fromDartColor(Colors.transparent),
@@ -134,10 +154,10 @@ class _ChatCardState extends State<ChartCard> {
                     // fontWeight: FontWeight.bold.toString()
                   ),
                 ),
-                tickFormatterSpec:
-                    charts.BasicNumericTickFormatterSpec.fromNumberFormat(
-                  NumberFormat.compactSimpleCurrency(),
-                ),
+                tickFormatterSpec: customTickFormatter,
+                //   charts.BasicNumericTickFormatterSpec.fromNumberFormat(
+                // NumberFormat.compactSimpleCurrency(),
+                // ),
               ),
             ),
           )
@@ -148,50 +168,41 @@ class _ChatCardState extends State<ChartCard> {
 
   void _changeFilter(value) {
     _selectedFilter(value);
+    widget.onUpdateFilter(value);
   }
 
-  List<DropdownMenuItem<String>> _buildDropDownMenuItems() {
-    return AppConstants.chartFilterItems.map((String items) {
-      return DropdownMenuItem(
-        value: items,
-        child: Text(items),
-      );
-    }).toList();
+  List<DropdownMenuItem<Object>> _buildDropDownMenuItems() {
+    return ChartFilterEnum.values
+        .map((val) => DropdownMenuItem(
+              value: val.value,
+              child: Text(val.key),
+            ))
+        .toList();
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<MyRow, DateTime>> _createSampleData() {
-    final data = [
-      MyRow(DateTime(2017, 9, 25), 600),
-      MyRow(DateTime(2017, 9, 26), 800),
-      MyRow(DateTime(2017, 9, 27), 6000),
-      MyRow(DateTime(2017, 9, 28), 9000),
-      MyRow(DateTime(2017, 9, 29), 11000),
-      MyRow(DateTime(2017, 9, 30), 15000),
-      MyRow(DateTime(2017, 10, 01), 25000),
-      MyRow(DateTime(2017, 10, 02), 33000),
-      MyRow(DateTime(2017, 10, 03), 27000),
-      MyRow(DateTime(2017, 10, 04), 31000),
-      MyRow(DateTime(2017, 10, 05), 23000),
-    ];
+  List<charts.Series<ChartRow, DateTime>> _createData(double delta) {
+    final _data = widget.data
+        .map((element) => ChartRow(
+            DateTime.fromMillisecondsSinceEpoch(element[0]), element[1]))
+        .toList();
 
     return [
-      charts.Series<MyRow, DateTime>(
-        id: 'Cost',
-        colorFn: (_, __) =>
-            charts.ColorUtil.fromDartColor(AppColors.lineChart),
-        domainFn: (MyRow row, _) => row.timeStamp,
-        measureFn: (MyRow row, _) => row.cost,
-        data: data,
+      charts.Series<ChartRow, DateTime>(
+        id: 'prices',
+        colorFn: (_, __) => charts.ColorUtil.fromDartColor(AppColors.lineChart),
+        domainFn: (ChartRow row, _) => row.timeStamp,
+        measureFn: (ChartRow row, _) => row.price * delta,
+        data: _data,
       )
     ];
   }
 }
 
 /// Sample time series data type.
-class MyRow {
+class ChartRow {
   final DateTime timeStamp;
-  final int cost;
+  final double price;
 
-  MyRow(this.timeStamp, this.cost);
+  ChartRow(this.timeStamp, this.price);
 }

@@ -25,7 +25,7 @@ class _ApiClient implements ApiClient {
         _setStreamType<ServerResponseModel>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'rates/${rateId}/amount',
-                queryParameters: queryParameters, data: _data)
+                    queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ServerResponseModel.fromJson(_result.data!);
     return value;
@@ -47,9 +47,44 @@ class _ApiClient implements ApiClient {
         _setStreamType<ServerResponseModel>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'accounts/${accountHash}/transfers',
-                queryParameters: queryParameters, data: _data)
+                    queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ServerResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CoingeckoResponseModel> marketChart(vsCurrency, days) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'vs_currency': vsCurrency,
+      r'days': days
+    };
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CoingeckoResponseModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'coins/casper-network/market_chart',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CoingeckoResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CoingeckoResponseModel> casperNetwork() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CoingeckoResponseModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'coins/casper-network',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CoingeckoResponseModel.fromJson(_result.data!);
     return value;
   }
 

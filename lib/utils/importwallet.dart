@@ -73,6 +73,8 @@ class WalletUtils {
     // Get current index
     int walletIndex = await DBHelper().getTheLastestWalletId();
 
+    print("walletIndex $walletIndex");
+
     HDKey hdKey = HDKey.fromMnemonic(decryptedSeedPhrase);
     CasperHDKey cHDkey = CasperHDKey(hdKey);
     HDKey childKey = cHDkey.deriveIndex(walletIndex);

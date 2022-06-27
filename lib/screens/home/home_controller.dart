@@ -38,7 +38,7 @@ class HomeController extends GetxController
   void onInit() {
     super.onInit();
     accountSettingTab = AccountSettingTab();
-    currencyPerformanceTab = const CurrencyPerformanceTab();
+    currencyPerformanceTab = CurrencyPerformanceTab();
     chooseWalletTab = ChooseWalletTab();
     walletHomeTab = WalletHomeTab();
     historyTab = HistoryTab();

@@ -4,14 +4,28 @@ import 'package:gosuto/components/components.dart';
 import 'package:gosuto/screens/home/home.dart';
 
 class CurrencyPerformanceTab extends GetView<HomeController> {
-  const CurrencyPerformanceTab({Key? key}) : super(key: key);
+  CurrencyPerformanceTab({Key? key}) : super(key: key);
+
+  final CurrencyPerformanceController _cpController =
+      Get.put(CurrencyPerformanceController());
 
   @override
   Widget build(BuildContext context) {
-    return _listViewBuilder();
+    _cpController.getMarketCharts(
+        _cpController.vsCurrency.value, _cpController.days.value);
+
+    return _listViewBuilder(context);
+    // return Obx(
+    //   () => _listViewBuilder(context),
+    // );
   }
 
-  Widget _listViewBuilder() {
+  void _updateFilter(int value) {
+    _cpController.days(value);
+    _cpController.getMarketCharts(_cpController.vsCurrency.value, value);
+  }
+
+  Widget _listViewBuilder(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.only(top: 20, left: 10, right: 10, bottom: 22),
       itemCount: 5,
@@ -32,7 +46,8 @@ class CurrencyPerformanceTab extends GetView<HomeController> {
               child: Text('currencies_own'.tr,
                   style: Theme.of(context).textTheme.headline1));
         }
-        return const ChartCard();
+        return Obx(() => ChartCard(
+            data: _cpController.prices.value, onUpdateFilter: _updateFilter));
       },
     );
   }

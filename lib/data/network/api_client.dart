@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:gosuto/data/network/api_constants.dart';
+import 'package:gosuto/models/coingecko_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../models/models.dart';
@@ -16,10 +17,17 @@ abstract class ApiClient {
   // page=1&limit=10&order_direction=DESC&with_extended_info=1
   @GET(APIConstants.accountsTransfers)
   Future<ServerResponseModel> accountsTransfers(
-      @Path('accountHash') String accountHash,
-      @Query('page') int page,
-      @Query('limit') int limit,
-      @Query('order_direction') String orderDirection,
-      @Query('with_extended_info') int withExtendedInfo,
-      );
+    @Path('accountHash') String accountHash,
+    @Query('page') int page,
+    @Query('limit') int limit,
+    @Query('order_direction') String orderDirection,
+    @Query('with_extended_info') int withExtendedInfo,
+  );
+
+  @GET(APIConstants.marketChart)
+  Future<CoingeckoResponseModel> marketChart(
+      @Query('vs_currency') String vsCurrency, @Query('days') int days);
+
+  @GET(APIConstants.casperNetwork)
+  Future<CoingeckoResponseModel> casperNetwork();
 }

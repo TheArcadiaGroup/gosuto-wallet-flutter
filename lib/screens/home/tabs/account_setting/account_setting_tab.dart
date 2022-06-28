@@ -51,6 +51,7 @@ class AccountSettingTab extends GetView<HomeController> {
 
   void _changeCoin(value) {
     controller.selectedCoin(value);
+    CoinService().switchCoin(value);
   }
 
   Widget _buildWidget(BuildContext context) {
@@ -285,36 +286,7 @@ class AccountSettingTab extends GetView<HomeController> {
     );
   }
 
-  // Widget _buildTextField(BuildContext context, String label) {
-  //   return TextField(
-  //     cursorColor: Theme.of(context).colorScheme.onSurface,
-  //     style: Theme.of(context).textTheme.bodyText1,
-  //     decoration: InputDecoration(
-  //         focusedBorder: OutlineInputBorder(
-  //             borderSide: BorderSide(
-  //                 color: Theme.of(context).colorScheme.onSecondary, width: 1.0),
-  //             borderRadius: const BorderRadius.all(Radius.circular(18.0))),
-  //         enabledBorder: OutlineInputBorder(
-  //             borderSide: BorderSide(
-  //                 color: Theme.of(context).colorScheme.onSecondary, width: 1.0),
-  //             borderRadius: const BorderRadius.all(Radius.circular(18.0))),
-  //         contentPadding: const EdgeInsets.only(left: 20, right: 20),
-  //         border: const OutlineInputBorder(
-  //             borderRadius: BorderRadius.all(Radius.circular(18.0))),
-  //         floatingLabelBehavior: FloatingLabelBehavior.always,
-  //         labelText: label,
-  //         labelStyle: Theme.of(context).textTheme.bodyText1,
-  //         hintText: label,
-  //         hintStyle: Theme.of(context).textTheme.bodyText2),
-  //   );
-  // }
-
   List<DropdownMenuItem<String>> _buildDropDownMenuLanguageItems() {
-    // var list = <DropdownMenuItem<String>>[];
-    // TranslationService.langs.forEach((key, value) {
-    //   list.add(DropdownMenuItem(value: key, child: Text(key)));
-    // });
-    // return list;
     return TranslationService.langCodes.map((String items) {
       return DropdownMenuItem(
         value: items,

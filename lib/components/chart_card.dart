@@ -1,17 +1,29 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gosuto/services/coin_service.dart';
 import 'package:gosuto/themes/colors.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:intl/intl.dart';
 
+import '../models/casper_network_model.dart';
+
 class ChartCard extends StatefulWidget {
-  const ChartCard({Key? key, required this.data, required this.onUpdateFilter})
+  const ChartCard(
+      {Key? key,
+      required this.data,
+      required this.onUpdateFilter,
+      // required this.percentChanged,
+      // required this.currentPrice,
+      this.casperNetwork})
       : super(key: key);
   final List data;
 
+  // final double percentChanged;
+  // final double currentPrice;
   final Function(int value) onUpdateFilter;
+  final CasperNetworkModel? casperNetwork;
 
   @override
   State<StatefulWidget> createState() => _ChatCardState();
@@ -19,6 +31,7 @@ class ChartCard extends StatefulWidget {
 
 class _ChatCardState extends State<ChartCard> {
   final RxInt _selectedFilter = RxInt(ChartFilterEnum.day_1.value);
+  final formatCurrency = NumberFormat.simpleCurrency(decimalDigits: 6);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +50,43 @@ class _ChatCardState extends State<ChartCard> {
     if (maxPrice < 1) {
       delta = 1 / maxPrice;
     }
-    final formatCurrency = NumberFormat.simpleCurrency(decimalDigits: 6);
     final customTickFormatter = charts.BasicNumericTickFormatterSpec(
         (value) => formatCurrency.format(value != null ? value / delta : 0));
+
+    // final customeDateTickFormater = cha
+
+    final currentPrice = CoinService().coin == 'USD'
+        ? widget.casperNetwork?.marketData.currentPrice.usd
+        : widget.casperNetwork?.marketData.currentPrice.eur;
+    double percent = 0;
+    switch (_selectedFilter.value) {
+      case 1:
+        percent =
+            widget.casperNetwork?.marketData.priceChangePercentage24h ?? 0;
+        break;
+      case 7:
+        percent = widget.casperNetwork?.marketData.priceChangePercentage7d ?? 0;
+        break;
+      case 14:
+        percent =
+            widget.casperNetwork?.marketData.priceChangePercentage14d ?? 0;
+        break;
+      case 30:
+        percent =
+            widget.casperNetwork?.marketData.priceChangePercentage30d ?? 0;
+        break;
+      case 60:
+        percent =
+            widget.casperNetwork?.marketData.priceChangePercentage60d ?? 0;
+        break;
+      case 200:
+        percent =
+            widget.casperNetwork?.marketData.priceChangePercentage200d ?? 0;
+        break;
+      case 365:
+        percent = widget.casperNetwork?.marketData.priceChangePercentage1y ?? 0;
+        break;
+    }
 
     return Container(
       margin: const EdgeInsets.all(10),
@@ -77,15 +124,19 @@ class _ChatCardState extends State<ChartCard> {
                     ),
                     RichText(
                         text: TextSpan(
-                            text: '\$26.234 USD ',
+                            // text: '\$26.234 USD ',
+                            text:
+                                '${formatCurrency.format(currentPrice)} ${CoinService().coin} ',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1
                                 ?.copyWith(fontWeight: FontWeight.bold),
                             children: [
                           TextSpan(
-                              text: '+2.5% USD',
-                              style: Theme.of(context).textTheme.headline3)
+                              text: percent > 0 ? '+$percent%' : '$percent%',
+                              style: percent > 0
+                                  ? Theme.of(context).textTheme.headline3
+                                  : Theme.of(context).textTheme.headline5)
                         ])),
                   ],
                 ),
@@ -129,8 +180,8 @@ class _ChatCardState extends State<ChartCard> {
             child: charts.TimeSeriesChart(
               _createData(delta),
               animate: true,
-              // domainAxis: charts.EndPointsTimeAxisSpec(),
-              domainAxis: charts.EndPointsTimeAxisSpec(
+              domainAxis: charts.DateTimeAxisSpec(
+                tickProviderSpec: const charts.AutoDateTimeTickProviderSpec(),
                 renderSpec: charts.GridlineRendererSpec(
                   lineStyle: charts.LineStyleSpec(
                     color: charts.ColorUtil.fromDartColor(Colors.transparent),

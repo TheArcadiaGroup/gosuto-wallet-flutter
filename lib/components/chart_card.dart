@@ -14,14 +14,10 @@ class ChartCard extends StatefulWidget {
       {Key? key,
       required this.data,
       required this.onUpdateFilter,
-      // required this.percentChanged,
-      // required this.currentPrice,
       this.casperNetwork})
       : super(key: key);
   final List data;
 
-  // final double percentChanged;
-  // final double currentPrice;
   final Function(int value) onUpdateFilter;
   final CasperNetworkModel? casperNetwork;
 
@@ -39,19 +35,20 @@ class _ChatCardState extends State<ChartCard> {
   }
 
   Widget _buildWidget(BuildContext context) {
-    double maxPrice = 0;
     double delta = 1;
+    double minPrice = widget.data
+        .map((e) => e[1])
+        .reduce((value, element) => value < element ? value : element);
+    double maxPrice = widget.data
+        .map((e) => e[1])
+        .reduce((value, element) => value > element ? value : element);
 
-    for (var element in widget.data) {
-      if (maxPrice < element[1]) {
-        maxPrice = element[1];
-      }
-    }
     if (maxPrice < 1) {
-      delta = 1 / maxPrice;
+      delta = 1 / (maxPrice - minPrice);
     }
-    final customTickFormatter = charts.BasicNumericTickFormatterSpec(
-        (value) => formatCurrency.format(value != null ? value / delta : 0));
+
+    final customTickFormatter = charts.BasicNumericTickFormatterSpec((value) =>
+        formatCurrency.format(value != null ? (value / delta) + minPrice : 0));
 
     // final customeDateTickFormater = cha
 
@@ -178,7 +175,7 @@ class _ChatCardState extends State<ChartCard> {
             height: 200,
             padding: const EdgeInsets.all(10),
             child: charts.TimeSeriesChart(
-              _createData(delta),
+              _createData(delta, minPrice),
               animate: true,
               domainAxis: charts.DateTimeAxisSpec(
                 tickProviderSpec: const charts.AutoDateTimeTickProviderSpec(),
@@ -232,7 +229,8 @@ class _ChatCardState extends State<ChartCard> {
   }
 
   /// Create one series with sample hard coded data.
-  List<charts.Series<ChartRow, DateTime>> _createData(double delta) {
+  List<charts.Series<ChartRow, DateTime>> _createData(
+      double delta, double minPrice) {
     final _data = widget.data
         .map((element) => ChartRow(
             DateTime.fromMillisecondsSinceEpoch(element[0]), element[1]))
@@ -243,7 +241,7 @@ class _ChatCardState extends State<ChartCard> {
         id: 'prices',
         colorFn: (_, __) => charts.ColorUtil.fromDartColor(AppColors.lineChart),
         domainFn: (ChartRow row, _) => row.timeStamp,
-        measureFn: (ChartRow row, _) => row.price * delta,
+        measureFn: (ChartRow row, _) => (row.price - minPrice) * delta,
         data: _data,
       )
     ];

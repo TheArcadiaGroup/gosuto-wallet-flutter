@@ -34,6 +34,5 @@ class CurrencyPerformanceController extends GetxController {
     final response = await apiClient.casperNetwork();
     final _data = CasperNetworkModel.fromJson(response.data);
     casperNetwork ??= _data.obs;
-    print(casperNetwork?.value.marketData.priceChangePercentage24h);
   }
 }

@@ -14,6 +14,76 @@ import 'create_wallet_controller.dart';
 class CreateWalletScreen extends GetView<CreateWalletController> {
   const CreateWalletScreen({Key? key}) : super(key: key);
 
+  void _onContinue(context) async {
+    bool isValid = await controller.checkValidate();
+    if (isValid && controller.agreed.value) {
+      controller.formKey.currentState?.save();
+      String seedPhrase = await controller.getSeedPhrase();
+
+      if (seedPhrase == '') {
+        // Create seedphrase
+        Get.toNamed(Routes.seedPhrase, arguments: [
+          {'walletName': controller.walletName.value},
+          {'password': controller.password.value},
+        ]);
+      } else {
+        int walletId = await controller.createWallet();
+
+        if (walletId > 0) {
+          Get.offAllNamed(Routes.home);
+        } else {
+          GosutoDialog().buildDialog(context, [
+            Text(
+              'create_wallet_failed'.tr,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: ThemeService().isDarkMode
+                    ? Colors.white
+                    : const Color(0xFF121826),
+              ),
+            ),
+            SizedBox(
+              height: getProportionateScreenHeight(30),
+            ),
+            GosutoButton(
+              text: 'confirm'.tr,
+              style: GosutoButtonStyle.fill,
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pop();
+              },
+            )
+          ]);
+        }
+      }
+    } else {
+      GosutoDialog().buildDialog(context, [
+        Text(
+          'wallet_name_exist'.tr,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: ThemeService().isDarkMode
+                ? Colors.white
+                : const Color(0xFF121826),
+          ),
+        ),
+        SizedBox(
+          height: getProportionateScreenHeight(30),
+        ),
+        GosutoButton(
+          text: 'confirm'.tr,
+          style: GosutoButtonStyle.fill,
+          onPressed: () {
+            Navigator.of(context, rootNavigator: true).pop();
+          },
+        )
+      ]);
+    }
+  }
+
   Widget _buildForm(context) {
     InputDecoration _inputDecoration = AppConstants.getInputDecoration(context);
 
@@ -196,86 +266,14 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                   height: 110,
                   child: Column(
                     children: [
-                      // Obx(
-                      //   () =>
                       GosutoButton(
                         text: 'continue'.tr,
                         style: GosutoButtonStyle.fill,
                         // disabled: !controller.agreed.value,
-                        onPressed: () async {
-                          bool isValid = await controller.checkValidate();
-                          if (isValid && controller.agreed.value) {
-                            controller.formKey.currentState?.save();
-                            String seedPhrase =
-                                await controller.getSeedPhrase();
-
-                            if (seedPhrase == '') {
-                              // Create seedphrase
-                              Get.toNamed(Routes.seedPhrase, arguments: [
-                                {'walletName': controller.walletName.value},
-                                {'password': controller.password.value},
-                              ]);
-                            } else {
-                              int walletId = await controller.createWallet();
-
-                              if (walletId > 0) {
-                                Get.offAllNamed(Routes.home);
-                              } else {
-                                GosutoDialog().buildDialog(context, [
-                                  Text(
-                                    'create_wallet_failed'.tr,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: ThemeService().isDarkMode
-                                          ? Colors.white
-                                          : const Color(0xFF121826),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(30),
-                                  ),
-                                  GosutoButton(
-                                    text: 'confirm'.tr,
-                                    style: GosutoButtonStyle.fill,
-                                    onPressed: () {
-                                      Navigator.of(context, rootNavigator: true)
-                                          .pop();
-                                    },
-                                  )
-                                ]);
-                              }
-                            }
-                          } else {
-                            GosutoDialog().buildDialog(context, [
-                              Text(
-                                'wallet_name_exist'.tr,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: ThemeService().isDarkMode
-                                      ? Colors.white
-                                      : const Color(0xFF121826),
-                                ),
-                              ),
-                              SizedBox(
-                                height: getProportionateScreenHeight(30),
-                              ),
-                              GosutoButton(
-                                text: 'confirm'.tr,
-                                style: GosutoButtonStyle.fill,
-                                onPressed: () {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pop();
-                                },
-                              )
-                            ]);
-                          }
+                        onPressed: () {
+                          _onContinue(context);
                         },
                       ),
-                      // ),
                       SizedBox(
                         height: getProportionateScreenHeight(20),
                       ),

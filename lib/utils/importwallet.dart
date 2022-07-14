@@ -1,11 +1,12 @@
 import 'dart:typed_data';
 
 import 'package:blake2b/blake2b_hash.dart';
+import 'package:casper_dart_sdk/classes/casper_hdkey.dart';
+import 'package:casper_dart_sdk/classes/conversions.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/models/wallet.dart';
-import 'package:gosuto/utils/casper_hdkey.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:convert/convert.dart';
 import 'package:hdkey/hdkey.dart';
@@ -73,30 +74,19 @@ class WalletUtils {
     // Get current index
     int walletIndex = await DBHelper().getTheLastestWalletId();
 
-    print("walletIndex $walletIndex");
+    // print("walletIndex $walletIndex");
 
     HDKey hdKey = HDKey.fromMnemonic(decryptedSeedPhrase);
-    CasperHDKey cHDkey = CasperHDKey(hdKey);
-    HDKey childKey = cHDkey.deriveIndex(walletIndex);
-    String privateKey = hex.encode(childKey.privateKey!.toList());
-    String publicKey = hex.encode(childKey.publicKey!.toList());
+    var casperHDKey = CasperHDKey(hdKey);
+    var key = casperHDKey.deriveIndex(walletIndex);
 
     String hashedPrivateKey =
-        await GosutoAes256Gcm.encrypt(privateKey, passwordDB);
-
-    List<int> signature = 'secp256k1'.codeUnits;
-    List<int> bytes = [...signature, 0, ...hex.decode(publicKey)];
-
-    // Calculate Account Hash
-    Uint8List hashedBytes =
-        Blake2bHash.hash(Uint8List.fromList(bytes), 0, bytes.length);
-    String accountHash = hex.encode(hashedBytes);
-
+        await GosutoAes256Gcm.encrypt(encodeBase16(key.privateKey), passwordDB);
     int walletId = await DBHelper().insertWallet(
       Wallet(
         walletName: walletName,
-        publicKey: publicKey,
-        accountHash: accountHash,
+        publicKey: key.publicKey.toHex(),
+        accountHash: key.publicKey.toAccountHashStr(),
         privateKey: hashedPrivateKey,
       ),
     );

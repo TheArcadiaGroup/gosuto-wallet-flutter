@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
-// import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/services/theme_service.dart';
@@ -105,45 +104,51 @@ class ImportPkScreen extends GetView<ImportPkController> {
       SizedBox(
         height: getProportionateScreenHeight(30),
       ),
-      TextFormField(
-        controller: controller.privateKeyController,
-        cursorColor: Theme.of(context).colorScheme.onSurface,
-        style: Theme.of(context).textTheme.bodyText1,
-        decoration: _inputDecoration.copyWith(
-            labelText: 'private_key'.tr,
-            suffixIcon: Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      var clipboardData =
-                          await Clipboard.getData(Clipboard.kTextPlain);
-                      controller.privateKey.value = clipboardData!.text!;
-                      controller.privateKeyController.text =
-                          clipboardData.text!;
-                    },
-                    child: Text(
-                      'paste'.tr,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: AppDarkColors.orangeColor,
+      SizedBox(
+        height: 5 * 30,
+        child: TextFormField(
+          maxLines: 5,
+          minLines: 5,
+          controller: controller.privateKeyController,
+          cursorColor: Theme.of(context).colorScheme.onSurface,
+          style: Theme.of(context).textTheme.bodyText1,
+          decoration: _inputDecoration.copyWith(
+              labelText: 'private_key'.tr,
+              suffixIcon: Padding(
+                padding: const EdgeInsets.only(bottom: 22, right: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        var clipboardData =
+                            await Clipboard.getData(Clipboard.kTextPlain);
+                        controller.privateKey.value =
+                            clipboardData != null ? clipboardData.text! : '';
+                        controller.privateKeyController.text =
+                            clipboardData != null ? clipboardData.text! : '';
+                      },
+                      child: Text(
+                        'paste'.tr,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppDarkColors.orangeColor,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            )),
-        onChanged: (value) {
-          controller.privateKey.value = value;
-        },
-        onSaved: (value) {
-          controller.privateKey.value = value!;
-        },
-        validator: (value) {
-          return controller.validateSeedPhrase(value!);
-        },
+                    )
+                  ],
+                ),
+              )),
+          onChanged: (value) {
+            controller.privateKey.value = value;
+          },
+          onSaved: (value) {
+            controller.privateKey.value = value!;
+          },
+          validator: (value) {
+            return controller.validateSeedPhrase(value!);
+          },
+        ),
       ),
       SizedBox(
         height: getProportionateScreenHeight(30),

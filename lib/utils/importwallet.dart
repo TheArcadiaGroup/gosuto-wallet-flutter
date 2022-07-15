@@ -111,6 +111,8 @@ class WalletUtils {
       passwordDB = _settings.password;
     }
 
+    // if (privateKey)
+
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(privateKey, passwordDB);
 

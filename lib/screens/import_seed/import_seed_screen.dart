@@ -4,9 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
 
-// import 'package:gosuto/components/checkbox.dart';
 import 'package:gosuto/components/dialog.dart';
-import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/services/theme_service.dart';
 import 'package:gosuto/themes/colors.dart';

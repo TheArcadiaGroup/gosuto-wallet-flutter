@@ -99,11 +99,11 @@ class ImportPkController extends GetxController {
       }
     }
 
-    if (privateKey.value.length != 128) {
-      errorMessage = 'invalid_private_key'.tr;
-      isValid = false;
-      print(privateKey.value.length);
-    }
+    print(privateKey.value.length);
+    // if (privateKey.value.length != 128) {
+    //   errorMessage = 'invalid_private_key'.tr;
+    //   isValid = false;
+    // }
 
     map['isValid'] = isValid;
     map['errorMessage'] = errorMessage;

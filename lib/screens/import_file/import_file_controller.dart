@@ -144,10 +144,10 @@ class ImportFileController extends GetxController {
     bool seedPhraseAdded = await DBHelper().isSeedPhraseAdded();
 
     if (seedPhraseAdded) {
-      walletId = await WalletUtils.importWalletByPrivateKey(
-        walletName.value,
-        privateKey.value,
-      );
+      // walletId = await WalletUtils.importWalletByPrivateKey(
+      //   walletName.value,
+      //   privateKey.value,
+      // );
     } else {
       walletId = await WalletUtils.importWallet(
         walletName.value,

@@ -146,7 +146,7 @@ class ImportPkScreen extends GetView<ImportPkController> {
             controller.privateKey.value = value!;
           },
           validator: (value) {
-            return controller.validateSeedPhrase(value!);
+            return controller.validatePrivateKey(value!);
           },
         ),
       ),

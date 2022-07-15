@@ -1,8 +1,10 @@
+import 'dart:typed_data';
+
+import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/utils/utils.dart';
-import 'package:secp256k1/secp256k1.dart';
 
 class ImportPkController extends GetxController {
   dynamic data = Get.arguments;
@@ -13,6 +15,9 @@ class ImportPkController extends GetxController {
 
   var walletName = ''.obs;
   var privateKey = ''.obs;
+  var privateKeyBytes = Uint8List.fromList([]);
+  var publicKeyBytes = Uint8List.fromList([]);
+  late SignatureAlgorithm? keyType;
 
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
@@ -52,12 +57,14 @@ class ImportPkController extends GetxController {
     return null;
   }
 
-  String? validateSeedPhrase(String value) {
+  String? validatePrivateKey(String value) {
     if (value.isEmpty) {
-      return 'seed_phrase_empty'.tr;
+      return 'private_key_empty'.tr;
     }
 
-    if (value.length != 128) {
+    var base64Str = normalizePrivateKey(value);
+
+    if (base64Str.length < 64 || base64Str.length > 168) {
       return 'invalid_private_key'.tr;
     }
 
@@ -89,21 +96,36 @@ class ImportPkController extends GetxController {
 
       if (password != '') {
         // check wallet exist
-        PrivateKey pk = PrivateKey.fromHex(privateKey.value);
-        String publicKey = pk.publicKey.toCompressedHex();
-        var wallets = await DBHelper().getWalletByPublicKey(publicKey);
+        var base64Str = normalizePrivateKey(privateKey.value);
+        switch (base64Str.length) {
+          case 64:
+            privateKeyBytes = Ed25519.readBase64WithPEM(privateKey.value);
+            keyType = SignatureAlgorithm.Ed25519;
+            break;
+          case 160:
+            privateKeyBytes = Secp256K1.readBase64WithPEM(privateKey.value);
+            keyType = SignatureAlgorithm.Secp256K1;
+            break;
+          default:
+            keyType = null;
+        }
+
+        if (keyType == null) {
+          errorMessage = 'invalid_private_key'.tr;
+          isValid = false;
+        } else {
+          publicKeyBytes =
+              CasperClient.privateToPublicKey(privateKeyBytes, keyType!);
+        }
+
+        var wallets =
+            await DBHelper().getWalletByPublicKey(base16Encode(publicKeyBytes));
         if (wallets.isNotEmpty) {
           errorMessage = 'wallet_exist'.tr;
           isValid = false;
         }
       }
     }
-
-    print(privateKey.value.length);
-    // if (privateKey.value.length != 128) {
-    //   errorMessage = 'invalid_private_key'.tr;
-    //   isValid = false;
-    // }
 
     map['isValid'] = isValid;
     map['errorMessage'] = errorMessage;
@@ -112,8 +134,6 @@ class ImportPkController extends GetxController {
 
   Future<int> createWallet() async {
     return await WalletUtils.importWalletByPrivateKey(
-      walletName.value,
-      privateKey.value,
-    );
+        walletName.value, privateKeyBytes, publicKeyBytes, keyType);
   }
 }

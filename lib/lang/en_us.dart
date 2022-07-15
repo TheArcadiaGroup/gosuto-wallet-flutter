@@ -69,6 +69,7 @@ const Map<String, String> enUs = {
   'seed_phrase_invalid': 'Invalid seed phrase',
   'wallet_exist': 'This wallet already exists',
   // Import Private Key Screen
+  'private_key_empty': 'Please enter private key',
   'invalid_private_key': 'Invalid private key',
   // Import File Screen
   'import_from_file': 'Import from File',

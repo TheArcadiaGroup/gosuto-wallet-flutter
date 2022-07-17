@@ -1,10 +1,11 @@
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:toast/toast.dart';
 
 import '../components/dialog.dart';
 
 class AppClipboard {
-  static void copyToClipboard(String text, {GosutoDialog? dialog, Function? func}) {
+  static void copyToClipboard(String text,
+      {GosutoDialog? dialog, Function? func}) {
     Clipboard.setData(
       ClipboardData(text: text),
     );
@@ -18,11 +19,10 @@ class AppClipboard {
       return;
     }
 
-    Fluttertoast.showToast(
-      msg: "Copied!",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
+    Toast.show(
+      "Copied!",
+      duration: Toast.lengthLong,
+      gravity: Toast.bottom,
       // backgroundColor: Theme.of(context).colorScheme.,
       // textColor: Colors.white,
     );

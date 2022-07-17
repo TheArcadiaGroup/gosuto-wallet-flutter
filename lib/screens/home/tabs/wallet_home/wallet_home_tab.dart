@@ -9,6 +9,7 @@ import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:toast/toast.dart';
 
 import '../../../../routes/routes.dart';
 
@@ -23,6 +24,7 @@ class WalletHomeTab extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
     SizeConfig().init(context);
 
     _whController.setting = controller.setting;

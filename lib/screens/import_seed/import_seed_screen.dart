@@ -124,9 +124,10 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
                       onTap: () async {
                         var clipboardData =
                             await Clipboard.getData(Clipboard.kTextPlain);
-                        controller.seedPhrase.value = clipboardData!.text!;
+                        controller.seedPhrase.value =
+                            clipboardData != null ? clipboardData.text! : '';
                         controller.seedPhraseController.text =
-                            clipboardData.text!;
+                            clipboardData != null ? clipboardData.text! : '';
                       },
                       child: Text(
                         'paste'.tr,

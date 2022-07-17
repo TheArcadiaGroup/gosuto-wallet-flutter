@@ -1,9 +1,11 @@
+import 'dart:typed_data';
+
+import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/utils/utils.dart';
-import 'package:secp256k1/secp256k1.dart';
 import 'package:bip39/bip39.dart' as bip39;
+import 'package:gosuto/utils/utils.dart';
 
 class ImportFileController extends GetxController {
   dynamic data = Get.arguments;
@@ -14,13 +16,17 @@ class ImportFileController extends GetxController {
   late TextEditingController passwordController;
   late TextEditingController password2Controller;
 
+  var privateKeyBytes = Uint8List.fromList([]);
+  var publicKeyBytes = Uint8List.fromList([]);
+  late SignatureAlgorithm? keyType;
+
   var walletName = ''.obs;
   var privateKey = ''.obs;
   var seedPhrase = ''.obs;
   var password = ''.obs;
   var password2 = ''.obs;
 
-  var snapshotPass = ''.obs;
+  var passwordDB = ''.obs;
 
   var fileName = ''.obs;
 
@@ -35,7 +41,7 @@ class ImportFileController extends GetxController {
     seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
-    getSnapshotData();
+    getPasswordDB();
     super.onInit();
   }
 
@@ -87,14 +93,9 @@ class ImportFileController extends GetxController {
     return null;
   }
 
-  // Future<void> getSnapshotData() async {
-  //   String password = await DBHelper().getPassword();
-  //   snapshotPass(password);
-  // }
-
-  Future<void> getSnapshotData() async {
+  Future<void> getPasswordDB() async {
     String password = await DBHelper().getPassword();
-    snapshotPass(password);
+    passwordDB(password);
   }
 
   Future<Map> checkValidate() async {
@@ -109,14 +110,32 @@ class ImportFileController extends GetxController {
       errorMessage = 'wallet_name_exist'.tr;
       isValid = false;
     } else {
-      // check seed phrase exist
-      String passwordDB = await DBHelper().getPassword();
-
-      if (passwordDB != '' && privateKey.value.length == 64) {
+      if (passwordDB.value != '') {
         // check wallet exist
-        PrivateKey pk = PrivateKey.fromHex(privateKey.value);
-        String publicKey = pk.publicKey.toCompressedHex();
-        var wallets = await DBHelper().getWalletByPublicKey(publicKey);
+        var base64Str = normalizePrivateKey(privateKey.value);
+        switch (base64Str.length) {
+          case 64:
+            privateKeyBytes = Ed25519.readBase64WithPEM(privateKey.value);
+            keyType = SignatureAlgorithm.Ed25519;
+            break;
+          case 160:
+            privateKeyBytes = Secp256K1.readBase64WithPEM(privateKey.value);
+            keyType = SignatureAlgorithm.Secp256K1;
+            break;
+          default:
+            keyType = null;
+        }
+
+        if (keyType == null) {
+          errorMessage = 'invalid_private_key'.tr;
+          isValid = false;
+        } else {
+          publicKeyBytes =
+              CasperClient.privateToPublicKey(privateKeyBytes, keyType!);
+        }
+
+        var wallets =
+            await DBHelper().getWalletByPublicKey(base16Encode(publicKeyBytes));
         if (wallets.isNotEmpty) {
           errorMessage = 'wallet_exist'.tr;
           isValid = false;
@@ -124,7 +143,8 @@ class ImportFileController extends GetxController {
       }
     }
 
-    if (privateKey.value != '' && privateKey.value.length != 64) {
+    if (privateKey.value != '' &&
+        (privateKey.value.length < 64 || privateKey.value.length > 226)) {
       errorMessage = 'private_key_invalid'.tr;
       isValid = false;
     }
@@ -144,10 +164,8 @@ class ImportFileController extends GetxController {
     bool seedPhraseAdded = await DBHelper().isSeedPhraseAdded();
 
     if (seedPhraseAdded) {
-      // walletId = await WalletUtils.importWalletByPrivateKey(
-      //   walletName.value,
-      //   privateKey.value,
-      // );
+      walletId = await WalletUtils.importWalletByPrivateKey(
+          walletName.value, privateKeyBytes, publicKeyBytes, keyType);
     } else {
       walletId = await WalletUtils.importWallet(
         walletName.value,

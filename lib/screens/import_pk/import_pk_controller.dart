@@ -13,12 +13,12 @@ class ImportPkController extends GetxController {
   late TextEditingController walletNameController;
   late TextEditingController privateKeyController;
 
-  var walletName = ''.obs;
-  var privateKey = ''.obs;
   var privateKeyBytes = Uint8List.fromList([]);
   var publicKeyBytes = Uint8List.fromList([]);
   late SignatureAlgorithm? keyType;
 
+  var walletName = ''.obs;
+  var privateKey = ''.obs;
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
   var agreed = true.obs; // false.obs;
@@ -64,7 +64,7 @@ class ImportPkController extends GetxController {
 
     var base64Str = normalizePrivateKey(value);
 
-    if (base64Str.length < 64 || base64Str.length > 168) {
+    if (base64Str.length < 64 || base64Str.length > 226) {
       return 'invalid_private_key'.tr;
     }
 

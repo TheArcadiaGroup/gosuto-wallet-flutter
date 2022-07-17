@@ -113,7 +113,7 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
       ),
     ];
 
-    if (controller.snapshotPass.value == '') {
+    if (controller.passwordDB.value == '') {
       widgets.addAll([
         Obx(
           () => TextFormField(

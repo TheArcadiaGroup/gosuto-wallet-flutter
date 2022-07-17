@@ -64,13 +64,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.6"
-  blake2b:
-    dependency: "direct main"
-    description:
-      name: blake2b
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.2"
   boolean_selector:
     dependency: transitive
     description:

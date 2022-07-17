@@ -5,7 +5,6 @@ import 'package:gosuto/env/env.dart';
 import 'package:gosuto/utils/utils.dart';
 
 import '../models/models.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TransactionInfoCard extends StatelessWidget {
   const TransactionInfoCard({
@@ -21,7 +20,6 @@ class TransactionInfoCard extends StatelessWidget {
   final TransferModel transfer;
   final Wallet wallet;
   final double rate;
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,10 +52,10 @@ class TransactionInfoCard extends StatelessWidget {
               index == 1
                   ? 'received'.tr
                   : (index == 2
-                  ? 'stake'.tr
-                  : (index == 3 ? 'swap'.tr : 'sent'.tr)),
+                      ? 'stake'.tr
+                      : (index == 3 ? 'swap'.tr : 'sent'.tr)),
               style:
-              Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
+                  Theme.of(context).textTheme.headline1?.copyWith(fontSize: 22),
               textAlign: TextAlign.center,
             ),
           ),
@@ -144,21 +142,21 @@ class TransactionInfoCard extends StatelessWidget {
               (index == 1
                   ? Container()
                   : Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '-$amount CSPR'.tr,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5
-                        ?.copyWith(fontSize: 13),
-                  ),
-                  Text(
-                    '${(amount * rate).toStringAsFixed(2)} USD',
-                    style: Theme.of(context).textTheme.headline5,
-                  )
-                ],
-              )),
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '-$amount CSPR'.tr,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline5
+                              ?.copyWith(fontSize: 13),
+                        ),
+                        Text(
+                          '${(amount * rate).toStringAsFixed(2)} USD',
+                          style: Theme.of(context).textTheme.headline5,
+                        )
+                      ],
+                    )),
               if (index == 3)
                 SvgPicture.asset(
                   'assets/svgs/ic-swap-3.svg',
@@ -240,7 +238,7 @@ class TransactionInfoCard extends StatelessWidget {
               },
               style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all(Colors.transparent),
+                      MaterialStateProperty.all(Colors.transparent),
                   shadowColor: MaterialStateProperty.all(Colors.transparent),
                   foregroundColor: MaterialStateProperty.all(
                       Theme.of(context).colorScheme.background)),

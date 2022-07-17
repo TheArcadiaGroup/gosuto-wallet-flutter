@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:gosuto/data/network/api_constants.dart';
-import 'package:gosuto/models/coingecko_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../models/models.dart';

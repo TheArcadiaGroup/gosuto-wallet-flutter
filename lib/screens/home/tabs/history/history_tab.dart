@@ -5,7 +5,7 @@ import 'package:gosuto/components/components.dart';
 import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:gosuto/routes/routes.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+// import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../../../../models/models.dart';
 import 'history.dart';
@@ -16,7 +16,7 @@ class HistoryTab extends GetView<HomeController> {
   final HistoryController _hController = Get.put(HistoryController());
   final RxString _selectedFilter = RxString(AppConstants.historyFilterItems[0]);
 
-  final PanelController _pc = PanelController();
+  // final PanelController _pc = PanelController();
 
   @override
   Widget build(BuildContext context) {

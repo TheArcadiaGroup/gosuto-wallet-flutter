@@ -5,7 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/themes/theme.dart';
-import 'package:local_auth/local_auth.dart';
+// import 'package:local_auth/local_auth.dart';
 import 'app_binding.dart';
 import 'env/env.dart';
 import 'routes/app_pages.dart';
@@ -13,8 +13,8 @@ import 'routes/app_pages.dart';
 void main() async {
   await GetStorage.init();
 
-  final localAuth = LocalAuthentication();
-  bool canCheckBiometrics = await localAuth.canCheckBiometrics;
+  // final localAuth = LocalAuthentication();
+  // bool canCheckBiometrics = await localAuth.canCheckBiometrics;
 
   String initialRoute = OnboardingService().isFirstTimeOpen
       ? Routes.onBoarding

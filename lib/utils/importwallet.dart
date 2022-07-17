@@ -7,7 +7,6 @@ import 'package:gosuto/models/settings.dart';
 import 'package:gosuto/models/wallet.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:convert/convert.dart';
-import 'package:hdkey/hdkey.dart';
 
 class WalletUtils {
   static Future<int> importWallet(String walletName,
@@ -73,9 +72,8 @@ class WalletUtils {
     int walletIndex = await DBHelper().getTheLastestWalletId();
 
     // print("walletIndex $walletIndex");
-
-    HDKey hdKey = HDKey.fromMnemonic(decryptedSeedPhrase);
-    var casperHDKey = CasperHDKey(hdKey);
+    var casperHDKey = CasperHDKey.fromMasterSeed(
+        Uint8List.fromList(decryptedSeedPhrase.codeUnits.toList()));
     var key = casperHDKey.deriveIndex(walletIndex);
 
     String hashedPrivateKey =

@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/text_chip.dart';
 import 'package:gosuto/routes/routes.dart';
 import 'package:gosuto/services/service.dart';
+import 'package:gosuto/utils/utils.dart';
+import 'package:toast/toast.dart';
 import '../../components/button.dart';
 import '../../components/dialog.dart';
-import '../../utils/constants.dart';
-import '../../utils/size_config.dart';
 import 'seed_phrase_controller.dart';
 
-// ignore: must_be_immutable
 class SeedPhraseScreen extends GetView<SeedPhraseController> {
   const SeedPhraseScreen({
     Key? key,
@@ -32,10 +30,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
   }
 
   void _copyToClipboard() {
-    Clipboard.setData(
-      ClipboardData(text: controller.seedPhrase.value),
-    );
-    controller.copied.value = true;
+    AppClipboard.copyToClipboard(controller.seedPhrase.value);
   }
 
   void _onContinue(context) async {
@@ -74,6 +69,7 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
 
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
     SizeConfig().init(context);
 
     return Scaffold(

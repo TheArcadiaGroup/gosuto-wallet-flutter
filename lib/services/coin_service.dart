@@ -1,9 +1,4 @@
-import 'dart:collection';
-
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:gosuto/lang/lang.dart';
 
 class CoinService {
   final _box = GetStorage();

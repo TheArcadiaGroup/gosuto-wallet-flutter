@@ -931,9 +931,9 @@ class WalletHomeTab extends GetView<HomeController> {
     );
   }
 
-  Widget _buildSwap(BuildContext context, int index) {
-    return Container();
-  }
+  // Widget _buildSwap(BuildContext context, int index) {
+  //   return Container();
+  // }
 
   // Widget _buildBottomView(BuildContext context) {
   //   // TODO Fake publickey

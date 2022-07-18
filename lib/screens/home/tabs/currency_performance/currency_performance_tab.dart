@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/screens/home/home.dart';
-// import 'package:gosuto/services/coin_service.dart';
+import 'package:gosuto/services/coin_service.dart';
 
 class CurrencyPerformanceTab extends GetView<HomeController> {
   CurrencyPerformanceTab({Key? key}) : super(key: key);
@@ -34,7 +34,9 @@ class CurrencyPerformanceTab extends GetView<HomeController> {
         if (index == 0) {
           return Stack(alignment: AlignmentDirectional.bottomEnd, children: [
             if (controller.selectedWallet != null)
-              WalletCard(wallet: controller.selectedWallet!.value),
+              WalletCard(
+                  wallet: controller.selectedWallet!.value,
+                  rate: controller.rate.value),
             FloatingActionButton(
               onPressed: () => {},
               child: Image.asset('assets/images/ic-add.png'),
@@ -48,20 +50,20 @@ class CurrencyPerformanceTab extends GetView<HomeController> {
                   style: Theme.of(context).textTheme.headline1));
         }
 
-        // final currentPriceModel =
-        //     _cpController.casperNetwork?.value.marketData.currentPrice;
+        final currentPriceModel =
+            _cpController.casperNetwork?.value.marketData.currentPrice;
 
-        // final currentPrice = CoinService().coin == 'USD'
-        //     ? currentPriceModel?.usd
-        //     : currentPriceModel?.eur;
+        final currentPrice = CoinService().coin == 'USD'
+            ? currentPriceModel?.usd
+            : currentPriceModel?.eur;
 
         return Obx(() => ChartCard(
-              data: _cpController.prices[0].value,
+              data: _cpController.prices.value,
               onUpdateFilter: _updateFilter,
               // currentPrice: currentPrice ?? 0,
               // percentChanged: _cpController.casperNetwork?.value.marketData
-              //         .priceChangePercentage24h ??
-              //     0,
+              // .priceChangePercentage24h ??
+              // 0,
               casperNetwork: _cpController.casperNetwork?.value,
             ));
       },

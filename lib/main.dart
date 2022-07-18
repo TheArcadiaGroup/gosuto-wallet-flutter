@@ -32,7 +32,7 @@ void main() async {
 
   BuildEnvironment.init(
       flavor: BuildFlavor.development,
-      baseUrl: 'https://event-store-api-clarity-testnet.make.services/',
+      baseUrl: 'https://event-store-api-clarity-mainnet.make.services/',
       deployHashExplorer: 'https://testnet.cspr.live/deploy/');
 
   runApp(MyApp(

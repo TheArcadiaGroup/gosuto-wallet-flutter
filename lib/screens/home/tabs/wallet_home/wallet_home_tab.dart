@@ -161,7 +161,9 @@ class WalletHomeTab extends GetView<HomeController> {
               child:
                   Stack(alignment: AlignmentDirectional.bottomEnd, children: [
                 if (controller.selectedWallet != null)
-                  WalletCard(wallet: controller.selectedWallet!.value),
+                  WalletCard(
+                      wallet: controller.selectedWallet!.value,
+                      rate: controller.rate.value),
                 FloatingActionButton(
                   onPressed: () {
                     Get.toNamed(Routes.addWallet);

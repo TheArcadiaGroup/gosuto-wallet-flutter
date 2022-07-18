@@ -113,6 +113,5 @@ class HomeController extends GetxController
       Settings _settings = Settings.fromMap(_data[0]);
       setting = _settings.obs;
     }
-    // print(setting?.value.toMap());
   }
 }

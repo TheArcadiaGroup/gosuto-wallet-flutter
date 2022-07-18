@@ -12,7 +12,7 @@ class StakeTab extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Obx(
-          () => Stack(alignment: AlignmentDirectional.bottomEnd, children: [
+      () => Stack(alignment: AlignmentDirectional.bottomEnd, children: [
         _listViewBuilder(context),
         if (_sController.currentTab.value == StakeTabs.all)
           _buildBottomView(context),
@@ -42,7 +42,7 @@ class StakeTab extends GetView<HomeController> {
     double horizontalPadding = (MediaQuery.of(context).size.width - 97) / 2;
 
     return Obx(
-          () => ListView.builder(
+      () => ListView.builder(
         padding: EdgeInsets.only(
             top: 10,
             left: 0,
@@ -56,9 +56,12 @@ class StakeTab extends GetView<HomeController> {
             return Padding(
               padding: const EdgeInsets.all(10),
               child:
-              Stack(alignment: AlignmentDirectional.bottomEnd, children: [
+                  Stack(alignment: AlignmentDirectional.bottomEnd, children: [
                 if (controller.selectedWallet != null)
-                  WalletCard(wallet: controller.selectedWallet!.value),
+                  WalletCard(
+                    wallet: controller.selectedWallet!.value,
+                    rate: controller.rate.value,
+                  ),
                 FloatingActionButton(
                   onPressed: () => {},
                   child: Image.asset('assets/images/ic-add.png'),
@@ -85,7 +88,7 @@ class StakeTab extends GetView<HomeController> {
                       text: 'validators'.tr,
                       assetName: 'assets/svgs/ic-validators.svg',
                       isActive:
-                      _sController.currentTab.value == StakeTabs.validators,
+                          _sController.currentTab.value == StakeTabs.validators,
                     ),
                   ]),
             );
@@ -94,12 +97,12 @@ class StakeTab extends GetView<HomeController> {
           if (index == 2) {
             return _sController.currentTab.value == StakeTabs.validators
                 ? Padding(
-              padding: const EdgeInsets.only(left: 20, top: 20),
-              child: Text(
-                'validators'.tr,
-                style: Theme.of(context).textTheme.headline1,
-              ),
-            )
+                    padding: const EdgeInsets.only(left: 20, top: 20),
+                    child: Text(
+                      'validators'.tr,
+                      style: Theme.of(context).textTheme.headline1,
+                    ),
+                  )
                 : const SizedBox(height: 20);
           }
 
@@ -170,65 +173,65 @@ class StakeTab extends GetView<HomeController> {
 
   Widget _buildBottomView(BuildContext context) {
     return Obx(() => AnimatedContainer(
-      decoration: BoxDecoration(
-        borderRadius:
-        const BorderRadius.vertical(top: Radius.circular(30.0)),
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(12),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, -1), // changes position of shadow
-          ),
-        ],
-      ),
-      height: _sController.isShowBottom.value
-          ? 550
-          : AppConstants.heightBottomView,
-      width: MediaQuery.of(context).size.width,
-      duration: const Duration(milliseconds: 500),
-      child: Stack(
-        alignment: Alignment.topCenter,
-        children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(
-                  top: (_sController.isShowBottom.value ? 70 : 40),
-                  left: 52,
-                  right: 52,
-                  bottom: 60),
-              child: _sController.isShowBottom.value
-                  ? Text(
-                'select_a_position_to_take_actions'.tr,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2,
-              )
-                  : Text(
-                'select_a_position_to_take_actions'.tr,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subtitle2,
+          decoration: BoxDecoration(
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(30.0)),
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(12),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, -1), // changes position of shadow
               ),
-            ),
+            ],
           ),
-          GestureDetector(
-            onTap: () =>
-            {_showHideBottomView(!_sController.isShowBottom.value)},
-            child: Container(
-              width: 155,
-              height: 8,
-              margin: const EdgeInsets.only(top: 12),
-              decoration: BoxDecoration(
-                  color: const Color(0xFFC4C4C4).withOpacity(0.3),
-                  borderRadius:
-                  const BorderRadius.all(Radius.circular(30))),
-            ),
+          height: _sController.isShowBottom.value
+              ? 550
+              : AppConstants.heightBottomView,
+          width: MediaQuery.of(context).size.width,
+          duration: const Duration(milliseconds: 500),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      top: (_sController.isShowBottom.value ? 70 : 40),
+                      left: 52,
+                      right: 52,
+                      bottom: 60),
+                  child: _sController.isShowBottom.value
+                      ? Text(
+                          'select_a_position_to_take_actions'.tr,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        )
+                      : Text(
+                          'select_a_position_to_take_actions'.tr,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.subtitle2,
+                        ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () =>
+                    {_showHideBottomView(!_sController.isShowBottom.value)},
+                child: Container(
+                  width: 155,
+                  height: 8,
+                  margin: const EdgeInsets.only(top: 12),
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFC4C4C4).withOpacity(0.3),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(30))),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    ));
+        ));
   }
 
   void _showHideBottomView(bool isShow) {

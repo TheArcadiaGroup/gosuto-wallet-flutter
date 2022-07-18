@@ -3,33 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:gosuto/models/wallet.dart';
 import 'package:gosuto/themes/colors.dart';
+import 'package:gosuto/utils/number.dart';
 
-Future<String> fetchBalance(String publicKeyHex) async {
+Future<double> fetchBalance(String publicKeyHex) async {
   try {
     var casperClient = CasperClient('https://casper-node.tor.us');
     var publicKey = CLPublicKey.fromHex(publicKeyHex);
     var balance = await casperClient.balanceOfByPublicKey(publicKey);
-    print('==snapshot==');
-    print(publicKeyHex);
-    print(balance);
 
-    return CasperClient.fromWei(balance).toString();
+    return CasperClient.fromWei(balance).toDouble();
   } catch (e) {
-    return '--';
+    return 0;
   }
 }
 
 class WalletCard extends StatefulWidget {
-  const WalletCard({Key? key, required this.wallet}) : super(key: key);
+  const WalletCard({Key? key, required this.wallet, required this.rate})
+      : super(key: key);
 
   final Wallet wallet;
+  final double rate;
 
   @override
   State<StatefulWidget> createState() => _WalletCardState();
 }
 
 class _WalletCardState extends State<WalletCard> {
-  late Future<String> futureBalance;
+  late Future<double> futureBalance;
 
   @override
   void initState() {
@@ -84,28 +84,33 @@ class _WalletCardState extends State<WalletCard> {
                         .subtitle2
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  FutureBuilder(builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return RichText(
-                          text: TextSpan(
-                              text: '${snapshot.data} CSPR',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                              children: [
-                            TextSpan(
-                              text: '\$2,500 USD',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .subtitle2
-                                  ?.copyWith(fontWeight: FontWeight.bold),
-                            )
-                          ]));
-                    } else {
-                      return Text('${snapshot.error}');
-                    }
-                  }),
+                  FutureBuilder(
+                      future: futureBalance,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var balance = double.parse(snapshot.data.toString());
+                          var usdValue = balance * widget.rate;
+                          return RichText(
+                              text: TextSpan(
+                                  text:
+                                      '${NumberUtils.format(balance)} CSPR - ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                  children: [
+                                TextSpan(
+                                  text: NumberUtils.formatCurrency(usdValue),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                )
+                              ]));
+                        } else {
+                          return const Text('---');
+                        }
+                      }),
                   // RichText(
                   //     text: TextSpan(
                   //         text: '250.510 CSPR ≈ ',

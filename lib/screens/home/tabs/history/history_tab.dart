@@ -46,7 +46,10 @@ class HistoryTab extends GetView<HomeController> {
                 alignment: AlignmentDirectional.bottomEnd,
                 children: [
                   if (controller.selectedWallet != null)
-                    WalletCard(wallet: controller.selectedWallet!.value),
+                    WalletCard(
+                      wallet: controller.selectedWallet!.value,
+                      rate: controller.rate.value,
+                    ),
                   FloatingActionButton(
                     onPressed: () {
                       Get.offAllNamed(Routes.addWallet);

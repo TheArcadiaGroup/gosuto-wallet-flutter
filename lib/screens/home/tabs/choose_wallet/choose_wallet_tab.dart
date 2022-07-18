@@ -71,7 +71,10 @@ class ChooseWalletTab extends GetView<HomeController> {
           }
 
           return GestureDetector(
-              child: WalletCard(wallet: _cwController.wallets[index - 1]),
+              child: WalletCard(
+                wallet: _cwController.wallets[index - 1],
+                rate: controller.rate.value,
+              ),
               onTap: () => {_onTapWalletItem(index - 1)});
         },
       ),

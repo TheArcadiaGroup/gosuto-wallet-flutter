@@ -1,19 +1,44 @@
+import 'package:casper_dart_sdk/classes/classes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:gosuto/models/wallet.dart';
 import 'package:gosuto/themes/colors.dart';
 
-class WalletCard extends StatelessWidget {
+Future<String> fetchBalance(String publicKeyHex) async {
+  try {
+    var casperClient = CasperClient('https://casper-node.tor.us');
+    var publicKey = CLPublicKey.fromHex(publicKeyHex);
+    var balance = await casperClient.balanceOfByPublicKey(publicKey);
+    print('==snapshot==');
+    print(publicKeyHex);
+    print(balance);
+
+    return CasperClient.fromWei(balance).toString();
+  } catch (e) {
+    return '--';
+  }
+}
+
+class WalletCard extends StatefulWidget {
   const WalletCard({Key? key, required this.wallet}) : super(key: key);
 
   final Wallet wallet;
 
   @override
-  Widget build(BuildContext context) {
-    return _buildWidget(context);
+  State<StatefulWidget> createState() => _WalletCardState();
+}
+
+class _WalletCardState extends State<WalletCard> {
+  late Future<String> futureBalance;
+
+  @override
+  void initState() {
+    super.initState();
+    futureBalance = fetchBalance(widget.wallet.publicKey);
   }
 
-  Widget _buildWidget(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.only(left: 24),
@@ -46,7 +71,7 @@ class WalletCard extends StatelessWidget {
                           width: 36, height: 36),
                       const SizedBox(width: 5),
                       Expanded(
-                          child: Text(wallet.walletName,
+                          child: Text(widget.wallet.walletName,
                               style: Theme.of(context).textTheme.headline2,
                               overflow: TextOverflow.ellipsis))
                     ],
@@ -59,22 +84,44 @@ class WalletCard extends StatelessWidget {
                         .subtitle2
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  RichText(
-                      text: TextSpan(
-                          text: '250.510 CSPR ≈ ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                          children: [
-                        TextSpan(
-                          text: '\$2,500 USD',
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        )
-                      ])),
+                  FutureBuilder(builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return RichText(
+                          text: TextSpan(
+                              text: '${snapshot.data} CSPR',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                              children: [
+                            TextSpan(
+                              text: '\$2,500 USD',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2
+                                  ?.copyWith(fontWeight: FontWeight.bold),
+                            )
+                          ]));
+                    } else {
+                      return Text('${snapshot.error}');
+                    }
+                  }),
+                  // RichText(
+                  //     text: TextSpan(
+                  //         text: '250.510 CSPR ≈ ',
+                  //         style: Theme.of(context)
+                  //             .textTheme
+                  //             .bodyText1
+                  //             ?.copyWith(fontWeight: FontWeight.bold),
+                  //         children: [
+                  //       TextSpan(
+                  //         text: '\$2,500 USD',
+                  //         style: Theme.of(context)
+                  //             .textTheme
+                  //             .subtitle2
+                  //             ?.copyWith(fontWeight: FontWeight.bold),
+                  //       )
+                  //     ])),
                   const SizedBox(height: 10),
                   Divider(
                     height: 1,
@@ -96,13 +143,13 @@ class WalletCard extends StatelessWidget {
                               .bodyText1
                               ?.copyWith(fontWeight: FontWeight.bold),
                           children: [
-                        TextSpan(
-                          text: '\$2,500 USD',
-                          style: Theme.of(context)
-                              .textTheme
-                              .subtitle2
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                        )
+                        // TextSpan(
+                        //   text: '\$2,500 USD',
+                        //   style: Theme.of(context)
+                        //       .textTheme
+                        //       .subtitle2
+                        //       ?.copyWith(fontWeight: FontWeight.bold),
+                        // )
                       ])),
                   const SizedBox(height: 10),
                   RichText(

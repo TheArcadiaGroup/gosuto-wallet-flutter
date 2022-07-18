@@ -119,7 +119,8 @@ class ImportFileController extends GetxController {
             keyType = SignatureAlgorithm.Ed25519;
             break;
           case 160:
-            privateKeyBytes = Secp256K1.readBase64WithPEM(privateKey.value);
+            privateKeyBytes = Secp256K1.parsePrivateKey(
+                Secp256K1.readBase64WithPEM(privateKey.value));
             keyType = SignatureAlgorithm.Secp256K1;
             break;
           default:

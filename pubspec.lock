@@ -146,7 +146,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d72b3c858c438e3bb79c233d3d64d129bbf763e9
+      resolved-ref: "92b7c18e003709f7072ef2d515fd9b5ef17c3175"
       url: "https://github.com/faustino-luis/casper-dart-sdk.git"
     source: git
     version: "1.0.0"

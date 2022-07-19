@@ -10,7 +10,7 @@ class NumberUtils {
     return formated;
   }
 
-  static String formatCurrency(double n, [int fractionDigits = 3]) {
+  static String formatCurrency(double n) {
     var f = NumberFormat.compactCurrency(symbol: '\$');
 
     return f.format(n);

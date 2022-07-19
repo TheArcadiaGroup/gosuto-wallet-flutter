@@ -18,15 +18,16 @@ class DioBase {
 
     dio.interceptors.add(HttpLogInterceptor());
 
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: true,
-      error: true,
-      compact: true,
-      maxWidth: 1000,
-    ));
+    // dio.interceptors.add(PrettyDioLogger(
+    //   requestHeader: true,
+    //   requestBody: true,
+    //   responseBody: true,
+    //   responseHeader: true,
+    //   error: true,
+    //   compact: true,
+    //   maxWidth: 1000,
+    // ));
+
     return dio;
   }
 }

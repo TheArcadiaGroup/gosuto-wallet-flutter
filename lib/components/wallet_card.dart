@@ -1,21 +1,9 @@
-import 'package:casper_dart_sdk/classes/classes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:gosuto/models/wallet.dart';
 import 'package:gosuto/themes/colors.dart';
+import 'package:gosuto/utils/account.dart';
 import 'package:gosuto/utils/number.dart';
-
-Future<double> fetchBalance(String publicKeyHex) async {
-  try {
-    var casperClient = CasperClient('https://casper-node.tor.us');
-    var publicKey = CLPublicKey.fromHex(publicKeyHex);
-    var balance = await casperClient.balanceOfByPublicKey(publicKey);
-
-    return CasperClient.fromWei(balance).toDouble();
-  } catch (e) {
-    return 0;
-  }
-}
 
 class WalletCard extends StatefulWidget {
   const WalletCard({Key? key, required this.wallet, required this.rate})
@@ -30,11 +18,13 @@ class WalletCard extends StatefulWidget {
 
 class _WalletCardState extends State<WalletCard> {
   late Future<double> futureBalance;
+  late Future<double> futureTotalStake;
 
   @override
   void initState() {
     super.initState();
-    futureBalance = fetchBalance(widget.wallet.publicKey);
+    futureBalance = AccountUtils.fetchBalance(widget.wallet.publicKey);
+    futureTotalStake = AccountUtils.getTotalStake(widget.wallet.publicKey);
   }
 
   @override
@@ -111,22 +101,6 @@ class _WalletCardState extends State<WalletCard> {
                           return const Text('---');
                         }
                       }),
-                  // RichText(
-                  //     text: TextSpan(
-                  //         text: '250.510 CSPR ≈ ',
-                  //         style: Theme.of(context)
-                  //             .textTheme
-                  //             .bodyText1
-                  //             ?.copyWith(fontWeight: FontWeight.bold),
-                  //         children: [
-                  //       TextSpan(
-                  //         text: '\$2,500 USD',
-                  //         style: Theme.of(context)
-                  //             .textTheme
-                  //             .subtitle2
-                  //             ?.copyWith(fontWeight: FontWeight.bold),
-                  //       )
-                  //     ])),
                   const SizedBox(height: 10),
                   Divider(
                     height: 1,
@@ -140,22 +114,33 @@ class _WalletCardState extends State<WalletCard> {
                         .subtitle2
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  RichText(
-                      text: TextSpan(
-                          text: '250.510 CSPR ≈ ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.copyWith(fontWeight: FontWeight.bold),
-                          children: [
-                        // TextSpan(
-                        //   text: '\$2,500 USD',
-                        //   style: Theme.of(context)
-                        //       .textTheme
-                        //       .subtitle2
-                        //       ?.copyWith(fontWeight: FontWeight.bold),
-                        // )
-                      ])),
+                  FutureBuilder(
+                      future: futureTotalStake,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var balance = double.parse(snapshot.data.toString());
+                          var usdValue = balance * widget.rate;
+                          return RichText(
+                              text: TextSpan(
+                                  text:
+                                      '${NumberUtils.format(balance)} CSPR - ',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                  children: [
+                                TextSpan(
+                                  text: NumberUtils.formatCurrency(usdValue),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle2
+                                      ?.copyWith(fontWeight: FontWeight.bold),
+                                )
+                              ]));
+                        } else {
+                          return const Text('---');
+                        }
+                      }),
                   const SizedBox(height: 10),
                   RichText(
                       text: TextSpan(

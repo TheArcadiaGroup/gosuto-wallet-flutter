@@ -1,4 +1,3 @@
-import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:dio/dio.dart';
 import 'package:gosuto/data/network/api_constants.dart';
 import 'package:retrofit/retrofit.dart';
@@ -32,5 +31,5 @@ abstract class ApiClient {
   Future<CoingeckoResponseModel> casperNetwork();
 
   @GET(APIConstants.stateAuctionInfo)
-  Future<AuctionState> stateAuctionInfo();
+  Future<dynamic> stateAuctionInfo();
 }

@@ -281,7 +281,9 @@ class ImportPkScreen extends GetView<ImportPkController> {
                       SizedBox(
                         height: getProportionateScreenHeight(30),
                       ),
-                      _buildForm(context),
+                      Obx(
+                        () => _buildForm(context),
+                      ),
                     ],
                   ),
                 ),

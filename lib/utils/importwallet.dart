@@ -40,7 +40,7 @@ class WalletUtils {
     }
 
     // Add password & seed phrase for the first time
-    if (passwordDB == '' && seedPhraseDB == '') {
+    if (passwordDB == '' || seedPhraseDB == '') {
       if (password != '') {
         var hashedPasswordBytes =
             await cryptography.Sha1().hash(password.codeUnits);

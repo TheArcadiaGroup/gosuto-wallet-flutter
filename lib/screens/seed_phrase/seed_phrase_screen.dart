@@ -30,7 +30,8 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
   }
 
   void _copyToClipboard() {
-    AppClipboard.copyToClipboard(controller.seedPhrase.value);
+    AppClipboard.copyToClipboard(controller.seedPhrase.value,
+        func: () => controller.copied.value = true);
   }
 
   void _onContinue(context) async {

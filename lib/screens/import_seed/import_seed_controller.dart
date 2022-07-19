@@ -18,19 +18,21 @@ class ImportSeedController extends GetxController {
   var password = ''.obs;
   var password2 = ''.obs;
 
+  var passwordDB = ''.obs;
+
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
   var agreed = true.obs; // false.obs;
 
   @override
   void onInit() {
-    super.onInit();
-
     walletNameController = TextEditingController(
         text: 'Gosuto ' + data[0]['walletIndex'].toString());
     seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
+    getPasswordDB();
+    super.onInit();
   }
 
   @override
@@ -91,6 +93,11 @@ class ImportSeedController extends GetxController {
     }
 
     return null;
+  }
+
+  Future<void> getPasswordDB() async {
+    String password = await DBHelper().getPassword();
+    passwordDB(password);
   }
 
   Future<Map> checkValidate() async {

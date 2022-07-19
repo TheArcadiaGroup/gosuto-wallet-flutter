@@ -61,19 +61,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData && snapshot.data != null) {
-            if (snapshot.data == true) {
-              widgets.add(
-                Obx(
-                  () => GosutoRadioOption(
-                    value: 4,
-                    groupValue: controller.methodId.value,
-                    label: 'wallet_title2_pk'.tr,
-                    text: 'wallet_text2_pk'.tr,
-                    onChanged: _onMethodChanged(),
-                  ),
-                ),
-              );
-            } else {
+            if (snapshot.data == false) {
               widgets.add(
                 Obx(
                   () => GosutoRadioOption(
@@ -89,6 +77,18 @@ class AddWalletScreen extends GetView<AddWalletController> {
           }
 
           widgets.addAll([
+            const SizedBox(
+              height: 25,
+            ),
+            Obx(
+              () => GosutoRadioOption(
+                value: 4,
+                groupValue: controller.methodId.value,
+                label: 'wallet_title2_pk'.tr,
+                text: 'wallet_text2_pk'.tr,
+                onChanged: _onMethodChanged(),
+              ),
+            ),
             const SizedBox(
               height: 25,
             ),

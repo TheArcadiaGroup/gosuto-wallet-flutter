@@ -131,9 +131,6 @@ class ImportFileScreen extends GetView<ImportFileController> {
         SizedBox(
           height: getProportionateScreenHeight(20),
         ),
-      ];
-
-      widgets.addAll([
         Obx(
           () => TextButton.icon(
             onPressed: () => onPickFile(context),
@@ -155,9 +152,9 @@ class ImportFileScreen extends GetView<ImportFileController> {
         SizedBox(
           height: getProportionateScreenHeight(30),
         ),
-      ]);
+      ];
 
-      if (controller.passwordDB.value == '') {
+      if (controller.passwordDB.value.isEmpty) {
         widgets.addAll([
           Obx(
             () => TextFormField(

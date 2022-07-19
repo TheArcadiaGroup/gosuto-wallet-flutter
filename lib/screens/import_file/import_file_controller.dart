@@ -4,7 +4,6 @@ import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:bip39/bip39.dart' as bip39;
 import 'package:gosuto/utils/utils.dart';
 
 class ImportFileController extends GetxController {
@@ -12,7 +11,6 @@ class ImportFileController extends GetxController {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
-  late TextEditingController seedPhraseController;
   late TextEditingController passwordController;
   late TextEditingController password2Controller;
 
@@ -22,7 +20,6 @@ class ImportFileController extends GetxController {
 
   var walletName = ''.obs;
   var privateKey = ''.obs;
-  var seedPhrase = ''.obs;
   var password = ''.obs;
   var password2 = ''.obs;
 
@@ -38,7 +35,6 @@ class ImportFileController extends GetxController {
   void onInit() {
     walletNameController = TextEditingController(
         text: 'Gosuto ' + data[0]['walletIndex'].toString());
-    seedPhraseController = TextEditingController();
     passwordController = TextEditingController();
     password2Controller = TextEditingController();
     getPasswordDB();
@@ -48,7 +44,6 @@ class ImportFileController extends GetxController {
   @override
   void onClose() {
     walletNameController.dispose();
-    seedPhraseController.dispose();
     passwordController.dispose();
     password2Controller.dispose();
   }
@@ -110,48 +105,43 @@ class ImportFileController extends GetxController {
       errorMessage = 'wallet_name_exist'.tr;
       isValid = false;
     } else {
-      if (passwordDB.value != '') {
-        // check wallet exist
-        var base64Str = normalizePrivateKey(privateKey.value);
-        switch (base64Str.length) {
-          case 64:
-            privateKeyBytes = Ed25519.readBase64WithPEM(privateKey.value);
-            keyType = SignatureAlgorithm.Ed25519;
-            break;
-          case 160:
-            privateKeyBytes = Secp256K1.parsePrivateKey(
-                Secp256K1.readBase64WithPEM(privateKey.value));
-            keyType = SignatureAlgorithm.Secp256K1;
-            break;
-          default:
-            keyType = null;
-        }
-
-        if (keyType == null) {
-          errorMessage = 'invalid_private_key'.tr;
-          isValid = false;
-        } else {
-          publicKeyBytes =
-              CasperClient.privateToPublicKey(privateKeyBytes, keyType!);
-        }
-
-        var wallets =
-            await DBHelper().getWalletByPublicKey(base16Encode(publicKeyBytes));
-        if (wallets.isNotEmpty) {
-          errorMessage = 'wallet_exist'.tr;
-          isValid = false;
-        }
+      // if (passwordDB.value != '') {
+      // check wallet exist
+      var base64Str = normalizePrivateKey(privateKey.value);
+      switch (base64Str.length) {
+        case 64:
+          privateKeyBytes = Ed25519.readBase64WithPEM(privateKey.value);
+          keyType = SignatureAlgorithm.Ed25519;
+          break;
+        case 160:
+          privateKeyBytes = Secp256K1.parsePrivateKey(
+              Secp256K1.readBase64WithPEM(privateKey.value));
+          keyType = SignatureAlgorithm.Secp256K1;
+          break;
+        default:
+          keyType = null;
       }
+
+      if (keyType == null) {
+        errorMessage = 'invalid_private_key'.tr;
+        isValid = false;
+      } else {
+        publicKeyBytes =
+            CasperClient.privateToPublicKey(privateKeyBytes, keyType!);
+      }
+
+      var wallets =
+          await DBHelper().getWalletByPublicKey(base16Encode(publicKeyBytes));
+      if (wallets.isNotEmpty) {
+        errorMessage = 'wallet_exist'.tr;
+        isValid = false;
+      }
+      // }
     }
 
     if (privateKey.value != '' &&
         (privateKey.value.length < 64 || privateKey.value.length > 226)) {
       errorMessage = 'private_key_invalid'.tr;
-      isValid = false;
-    }
-
-    if (seedPhrase.value != '' && !bip39.validateMnemonic(seedPhrase.value)) {
-      errorMessage = 'seed_phrase_invalid'.tr;
       isValid = false;
     }
 
@@ -162,19 +152,8 @@ class ImportFileController extends GetxController {
 
   Future<int> createWallet() async {
     int walletId = 0;
-    bool seedPhraseAdded = await DBHelper().isSeedPhraseAdded();
-
-    if (seedPhraseAdded) {
-      walletId = await WalletUtils.importWalletByPrivateKey(
-          walletName.value, privateKeyBytes, publicKeyBytes, keyType);
-    } else {
-      walletId = await WalletUtils.importWallet(
-        walletName.value,
-        password.value,
-        seedPhrase.value,
-      );
-    }
-
+    walletId = await WalletUtils.importWalletByPrivateKey(walletName.value,
+        privateKeyBytes, publicKeyBytes, keyType, password.value);
     return walletId;
   }
 }

@@ -51,9 +51,21 @@ class AccountUtils {
     }
   }
 
-  static Future<double> getTotalRewards(String publicKey) async {
+  static Future<double> getTotalRewards(
+      String publicKey, int isValidator) async {
     var totalRewards = zeroBN;
-    return CasperClient.fromWei(totalRewards).toDouble();
+    var apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
+
+    try {
+      var response = await apiClient.totalRewards(
+          publicKey, isValidator == 1 ? 'validators' : 'delegators');
+      if (response['data'] != '') {
+        totalRewards = BigNumber.from(response['data']);
+      }
+      return CasperClient.fromWei(totalRewards).toDouble();
+    } catch (e) {
+      return 0;
+    }
   }
 
   static Future<bool> isValidator(String accountHash) async {

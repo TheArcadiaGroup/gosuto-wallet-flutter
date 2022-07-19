@@ -26,6 +26,8 @@ class _WalletCardState extends State<WalletCard> {
     super.initState();
     futureBalance = AccountUtils.fetchBalance(widget.wallet.publicKey);
     futureTotalStake = AccountUtils.getTotalStake(widget.wallet.publicKey);
+    futureTotalRewards = AccountUtils.getTotalRewards(
+        widget.wallet.publicKey, widget.wallet.isValidator);
   }
 
   @override
@@ -78,29 +80,30 @@ class _WalletCardState extends State<WalletCard> {
                   FutureBuilder(
                       future: futureBalance,
                       builder: (context, snapshot) {
+                        var textCSPR = '-- CSPR ~ ';
+                        var textUSD = '\$--';
                         if (snapshot.hasData) {
                           var balance = double.parse(snapshot.data.toString());
                           var usdValue = balance * widget.rate;
-                          return RichText(
-                              text: TextSpan(
-                                  text:
-                                      '${NumberUtils.format(balance)} CSPR ~ ',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                  children: [
-                                TextSpan(
-                                  text: NumberUtils.formatCurrency(usdValue),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                )
-                              ]));
-                        } else {
-                          return const Text('---');
+                          textCSPR = '${NumberUtils.format(balance)} CSPR ~ ';
+                          textUSD = NumberUtils.formatCurrency(usdValue);
                         }
+                        return RichText(
+                            text: TextSpan(
+                                text: textCSPR,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                children: [
+                              TextSpan(
+                                text: textUSD,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              )
+                            ]));
                       }),
                   const SizedBox(height: 10),
                   Divider(
@@ -118,44 +121,61 @@ class _WalletCardState extends State<WalletCard> {
                   FutureBuilder(
                       future: futureTotalStake,
                       builder: (context, snapshot) {
+                        var textCSPR = '-- CSPR ~ ';
+                        var textUSD = '\$--';
                         if (snapshot.hasData) {
                           var balance = double.parse(snapshot.data.toString());
                           var usdValue = balance * widget.rate;
-                          return RichText(
-                              text: TextSpan(
-                                  text:
-                                      '${NumberUtils.format(balance)} CSPR ~ ',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyText1
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                  children: [
-                                TextSpan(
-                                  text: NumberUtils.formatCurrency(usdValue),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle2
-                                      ?.copyWith(fontWeight: FontWeight.bold),
-                                )
-                              ]));
-                        } else {
-                          return const Text('---');
+                          textCSPR = '${NumberUtils.format(balance)} CSPR ~ ';
+                          textUSD = NumberUtils.formatCurrency(usdValue);
                         }
+                        return RichText(
+                            text: TextSpan(
+                                text: textCSPR,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                                children: [
+                              TextSpan(
+                                text: textUSD,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .subtitle2
+                                    ?.copyWith(fontWeight: FontWeight.bold),
+                              )
+                            ]));
                       }),
                   const SizedBox(height: 10),
-                  RichText(
-                      text: TextSpan(
-                          text: 'total_rewards'.tr,
-                          style: Theme.of(context).textTheme.subtitle2,
-                          children: [
-                        TextSpan(
-                          text: ' \$375 USD',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1
-                              ?.copyWith(fontSize: 12),
-                        )
-                      ]))
+                  FutureBuilder(
+                    future: futureTotalRewards,
+                    builder: (context, snapshot) {
+                      var textCSPR = '-- CSPR ~ ';
+                      var textUSD = '\$--';
+                      if (snapshot.hasData) {
+                        var totalRewards =
+                            double.parse(snapshot.data.toString());
+                        var usdValue = totalRewards * widget.rate;
+
+                        textCSPR = ': ${NumberUtils.format(totalRewards)} CSPR';
+                        textUSD = NumberUtils.formatCurrency(usdValue);
+                      }
+
+                      return RichText(
+                          text: TextSpan(
+                              text: 'total_rewards'.tr,
+                              style: Theme.of(context).textTheme.subtitle2,
+                              children: [
+                            TextSpan(
+                              text: '$textCSPR ($textUSD)',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  ?.copyWith(fontSize: 12),
+                            )
+                          ]));
+                    },
+                  ),
                 ],
               ),
             ),

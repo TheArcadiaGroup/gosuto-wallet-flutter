@@ -188,7 +188,7 @@ class _WalletCardState extends State<WalletCard> {
                 width: 120,
                 padding: const EdgeInsets.only(top: 23, bottom: 23, right: 20),
                 child: Image.asset('assets/images/image-card.png',
-                    width: 101, height: 163),
+                    width: 100, height: 172),
               ),
             ],
           )

@@ -10,4 +10,6 @@ class APIConstants {
   static const casperNetwork = 'coins/casper-network';
 
   static const stateAuctionInfo = 'rpc/state_get_auction_info';
+
+  static const accountsInfo = 'accounts-info/{accountHash}/';
 }

@@ -55,4 +55,20 @@ class AccountUtils {
     var totalRewards = zeroBN;
     return CasperClient.fromWei(totalRewards).toDouble();
   }
+
+  static Future<bool> isValidator(String accountHash) async {
+    var isValidator = false;
+    var apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
+
+    try {
+      var response = await apiClient.accountsInfo(accountHash);
+      if (response['data']['account_hash'].toString().toLowerCase() ==
+          accountHash.toLowerCase()) {
+        isValidator = true;
+      }
+      return isValidator;
+    } catch (e) {
+      return false;
+    }
+  }
 }

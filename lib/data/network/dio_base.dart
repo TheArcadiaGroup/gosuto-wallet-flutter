@@ -6,8 +6,8 @@ class DioBase {
   ///GetDio
   static Dio instance() {
     final dio = Dio(BaseOptions(
-      connectTimeout: 10000,
-      receiveTimeout: 10000,
+      connectTimeout: 20000,
+      receiveTimeout: 20000,
       headers: {
         // 'Content-Type': 'application/json',
         // 'Content-Type': 'application/x-www-form-urlencoded',

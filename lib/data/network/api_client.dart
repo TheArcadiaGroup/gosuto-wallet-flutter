@@ -32,4 +32,7 @@ abstract class ApiClient {
 
   @GET(APIConstants.stateAuctionInfo)
   Future<dynamic> stateAuctionInfo();
+
+  @GET(APIConstants.accountsInfo)
+  Future<dynamic> accountsInfo(@Path('accountHash') String accountHash);
 }

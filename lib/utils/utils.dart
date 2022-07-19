@@ -1,3 +1,4 @@
+export 'account.dart';
 export 'aes256gcm.dart';
 export 'constants.dart';
 export 'importwallet.dart';

@@ -269,7 +269,6 @@ class CreateWalletScreen extends GetView<CreateWalletController> {
                       GosutoButton(
                         text: 'continue'.tr,
                         style: GosutoButtonStyle.fill,
-                        // disabled: !controller.agreed.value,
                         onPressed: () {
                           _onContinue(context);
                         },

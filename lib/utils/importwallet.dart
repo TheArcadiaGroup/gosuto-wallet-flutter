@@ -76,9 +76,13 @@ class WalletUtils {
 
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(base16Encode(key.privateKey), passwordDB);
+    String accountHash = key.publicKey.toAccountHashStr();
+    bool isValidator = await AccountUtils.isValidator(
+        accountHash.replaceAll('account-hash-', ''));
+
     int walletId = await DBHelper().insertWallet(
-      WalletModel(walletName, key.publicKey.toHex(),
-          key.publicKey.toAccountHashStr(), hashedPrivateKey, 0),
+      WalletModel(walletName, key.publicKey.toHex(), accountHash,
+          hashedPrivateKey, isValidator ? 1 : 0),
     );
 
     return walletId;
@@ -128,6 +132,7 @@ class WalletUtils {
 
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(base16Encode(privateKey), passwordDB);
+
     if (algo != null) {
       CLPublicKey clPublicKey;
       if (algo == SignatureAlgorithm.Ed25519) {
@@ -136,9 +141,13 @@ class WalletUtils {
         clPublicKey = CLPublicKey.fromSecp256K1(publicKey);
       }
 
+      String accountHash = clPublicKey.toAccountHashStr();
+      bool isValidator = await AccountUtils.isValidator(
+          accountHash.replaceAll('account-hash-', ''));
+
       int walletId = await DBHelper().insertWallet(
-        WalletModel(walletName, clPublicKey.toHex(),
-            clPublicKey.toAccountHashStr(), hashedPrivateKey, 0),
+        WalletModel(walletName, clPublicKey.toHex(), accountHash,
+            hashedPrivateKey, isValidator ? 1 : 0),
       );
       return walletId;
     }

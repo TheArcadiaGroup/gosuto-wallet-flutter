@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:gosuto/data/network/api_client.dart';
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/env/env.dart';
-import 'package:gosuto/models/settings.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:convert/convert.dart';
 
 import '../../../../models/models.dart';
@@ -30,7 +30,7 @@ class WalletHomeController extends GetxController
 
   RxList<TransferModel> transfers = RxList<TransferModel>();
   RxList<String> seedPhrases = RxList<String>();
-  Rx<Settings>? setting;
+  Rx<SettingsModel>? setting;
   Rx<TransferModel>? selectedTransfer;
 
   @override

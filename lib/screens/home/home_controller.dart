@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gosuto/models/settings.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
 import '../../data/network/network.dart';
 import '../../database/dbhelper.dart';
 import '../../env/env.dart';
-import '../../models/wallet_model.dart';
 import 'home.dart';
 
 class HomeController extends GetxController
@@ -20,7 +19,7 @@ class HomeController extends GetxController
 
   Rx<WalletModel>? selectedWallet;
 
-  Rx<Settings>? setting;
+  Rx<SettingsModel>? setting;
 
   late TabController tabController;
   late AccountSettingTab accountSettingTab;
@@ -110,7 +109,7 @@ class HomeController extends GetxController
     final _data = await DBHelper().getSettings();
 
     if (_data.isNotEmpty) {
-      Settings _settings = Settings.fromMap(_data[0]);
+      SettingsModel _settings = SettingsModel.fromJson(_data[0]);
       setting = _settings.obs;
     }
   }

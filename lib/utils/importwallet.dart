@@ -3,8 +3,7 @@ import 'dart:typed_data';
 import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/settings.dart';
-import 'package:gosuto/models/wallet_model.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:convert/convert.dart';
 
@@ -17,16 +16,16 @@ class WalletUtils {
     String seedPhraseDB = '';
     String hashedSeedPhrase = '';
 
-    Settings _settings = Settings(
-      seedPhrase: '',
-      password: '',
-      useBiometricAuth: 0,
+    SettingsModel _settings = SettingsModel(
+      '',
+      '',
+      0,
     );
 
     // Get settings from db
     var _data = await DBHelper().getSettings();
     if (_data.isNotEmpty) {
-      _settings = Settings.fromMap(_data[0]);
+      _settings = SettingsModel.fromJson(_data[0]);
       passwordDB = _settings.password;
       seedPhraseDB = _settings.seedPhrase;
     }
@@ -53,10 +52,10 @@ class WalletUtils {
       }
 
       await DBHelper().updateSettings(
-        Settings(
-          seedPhrase: hashedSeedPhrase,
-          password: hashedPassword,
-          useBiometricAuth: _settings.useBiometricAuth,
+        SettingsModel(
+          hashedSeedPhrase,
+          hashedPassword,
+          _settings.useBiometricAuth,
         ),
         'all',
       );
@@ -91,16 +90,16 @@ class WalletUtils {
     String passwordDB = '';
     String hashedPassword = '';
 
-    Settings _settings = Settings(
-      seedPhrase: '',
-      password: '',
-      useBiometricAuth: 0,
+    SettingsModel _settings = SettingsModel(
+      '',
+      '',
+      0,
     );
 
     // Get settings from db
     var _data = await DBHelper().getSettings();
     if (_data.isNotEmpty) {
-      _settings = Settings.fromMap(_data[0]);
+      _settings = SettingsModel.fromJson(_data[0]);
       passwordDB = _settings.password;
     }
 
@@ -115,10 +114,10 @@ class WalletUtils {
         hashedPassword = hex.encode(hashedPasswordBytes.bytes);
 
         await DBHelper().updateSettings(
-          Settings(
-            seedPhrase: '',
-            password: hashedPassword,
-            useBiometricAuth: _settings.useBiometricAuth,
+          SettingsModel(
+            '',
+            hashedPassword,
+            _settings.useBiometricAuth,
           ),
           'password',
         );

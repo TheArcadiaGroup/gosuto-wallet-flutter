@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:gosuto/models/wallet_model.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/themes/colors.dart';
 import 'package:gosuto/utils/account.dart';
 import 'package:gosuto/utils/number.dart';

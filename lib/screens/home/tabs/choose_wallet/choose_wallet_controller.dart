@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/wallet_model.dart';
+import 'package:gosuto/models/models.dart';
 
 class ChooseWalletController extends GetxController {
   List<WalletModel> wallets = <WalletModel>[].obs;

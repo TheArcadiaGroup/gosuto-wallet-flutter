@@ -1,7 +1,6 @@
 import 'dart:developer';
 
-import 'package:gosuto/models/settings.dart';
-import 'package:gosuto/models/wallet_model.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -52,7 +51,7 @@ class DBHelper {
     try {
       var data = await getSettings();
       if (data.isNotEmpty) {
-        Settings _settings = Settings.fromMap(data[0]);
+        SettingsModel _settings = SettingsModel.fromJson(data[0]);
         return _settings.seedPhrase != '';
       }
       return false;
@@ -66,17 +65,17 @@ class DBHelper {
     final _data = await getSettings();
 
     if (_data.isNotEmpty) {
-      Settings _settings = Settings.fromMap(_data[0]);
+      SettingsModel _settings = SettingsModel.fromJson(_data[0]);
       return _settings.password;
     }
 
     return '';
   }
 
-  Future<int> insertSettings(Settings settings) async {
+  Future<int> insertSettings(SettingsModel settings) async {
     try {
       Database db = await initDB();
-      int settingsId = await db.insert('settings', settings.toMap());
+      int settingsId = await db.insert('settings', settings.toJson());
       return settingsId;
     } catch (e) {
       log('INSERT SETTINGS ERROR: ', error: e);
@@ -84,7 +83,7 @@ class DBHelper {
     }
   }
 
-  Future<int> updateSettings(Settings settings, [String? type]) async {
+  Future<int> updateSettings(SettingsModel settings, [String? type]) async {
     try {
       var currentSettings = await getSettings();
 

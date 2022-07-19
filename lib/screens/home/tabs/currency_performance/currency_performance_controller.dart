@@ -1,8 +1,6 @@
 import 'package:get/get.dart';
 import 'package:gosuto/data/network/network.dart';
-import 'package:gosuto/models/casper_network_model.dart';
-import 'package:gosuto/models/market_chart_model.dart';
-import 'package:gosuto/models/wallet_model.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/services/coin_service.dart';
 
 class CurrencyPerformanceController extends GetxController {

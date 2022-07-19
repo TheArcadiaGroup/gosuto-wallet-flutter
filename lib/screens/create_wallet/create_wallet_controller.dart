@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/settings.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/utils/utils.dart';
 
 class CreateWalletController extends GetxController {
@@ -84,7 +84,7 @@ class CreateWalletController extends GetxController {
     final _data = await DBHelper().getSettings();
 
     if (_data.isNotEmpty) {
-      Settings _settings = Settings.fromMap(_data[0]);
+      SettingsModel _settings = SettingsModel.fromJson(_data[0]);
       return _settings.seedPhrase;
     }
 

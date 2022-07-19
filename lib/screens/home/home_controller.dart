@@ -7,7 +7,7 @@ import 'package:gosuto/utils/utils.dart';
 import '../../data/network/network.dart';
 import '../../database/dbhelper.dart';
 import '../../env/env.dart';
-import '../../models/wallet.dart';
+import '../../models/wallet_model.dart';
 import 'home.dart';
 
 class HomeController extends GetxController
@@ -18,7 +18,7 @@ class HomeController extends GetxController
   var selectedLanguage = TranslationService().locale.languageCode.obs;
   var selectedCoin = AppConstants.coins[0].obs;
 
-  Rx<Wallet>? selectedWallet;
+  Rx<WalletModel>? selectedWallet;
 
   Rx<Settings>? setting;
 

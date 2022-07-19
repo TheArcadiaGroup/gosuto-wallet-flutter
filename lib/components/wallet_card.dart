@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
-import 'package:gosuto/models/wallet.dart';
+import 'package:gosuto/models/wallet_model.dart';
 import 'package:gosuto/themes/colors.dart';
 import 'package:gosuto/utils/account.dart';
 import 'package:gosuto/utils/number.dart';
@@ -9,7 +9,7 @@ class WalletCard extends StatefulWidget {
   const WalletCard({Key? key, required this.wallet, required this.rate})
       : super(key: key);
 
-  final Wallet wallet;
+  final WalletModel wallet;
   final double rate;
 
   @override
@@ -19,6 +19,7 @@ class WalletCard extends StatefulWidget {
 class _WalletCardState extends State<WalletCard> {
   late Future<double> futureBalance;
   late Future<double> futureTotalStake;
+  late Future<double> futureTotalRewards;
 
   @override
   void initState() {
@@ -83,7 +84,7 @@ class _WalletCardState extends State<WalletCard> {
                           return RichText(
                               text: TextSpan(
                                   text:
-                                      '${NumberUtils.format(balance)} CSPR - ',
+                                      '${NumberUtils.format(balance)} CSPR ~ ',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1
@@ -123,7 +124,7 @@ class _WalletCardState extends State<WalletCard> {
                           return RichText(
                               text: TextSpan(
                                   text:
-                                      '${NumberUtils.format(balance)} CSPR - ',
+                                      '${NumberUtils.format(balance)} CSPR ~ ',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyText1
@@ -144,7 +145,7 @@ class _WalletCardState extends State<WalletCard> {
                   const SizedBox(height: 10),
                   RichText(
                       text: TextSpan(
-                          text: 'unclaimed_rewards'.tr,
+                          text: 'total_rewards'.tr,
                           style: Theme.of(context).textTheme.subtitle2,
                           children: [
                         TextSpan(

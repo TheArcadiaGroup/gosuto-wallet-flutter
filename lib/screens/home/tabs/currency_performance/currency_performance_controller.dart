@@ -2,11 +2,11 @@ import 'package:get/get.dart';
 import 'package:gosuto/data/network/network.dart';
 import 'package:gosuto/models/casper_network_model.dart';
 import 'package:gosuto/models/market_chart_model.dart';
-import 'package:gosuto/models/wallet.dart';
+import 'package:gosuto/models/wallet_model.dart';
 import 'package:gosuto/services/coin_service.dart';
 
 class CurrencyPerformanceController extends GetxController {
-  List<Wallet> wallets = <Wallet>[].obs;
+  List<WalletModel> wallets = <WalletModel>[].obs;
   late ApiClient apiClient;
   var vsCurrency = 'usd'.obs;
   var days = 1.obs;

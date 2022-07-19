@@ -262,7 +262,7 @@ class HistoryTab extends GetView<HomeController> {
         ));
   }
 
-  void _onTapHistoryItem(TransferModel transfer, Wallet wallet) {
+  void _onTapHistoryItem(TransferModel transfer, WalletModel wallet) {
     _showHideBottomView(true);
     // _hController.selectedTransfer = transfer.obs;
     if (_hController.selectedTransfer == null) {

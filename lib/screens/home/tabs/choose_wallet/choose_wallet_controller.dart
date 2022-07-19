@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/wallet.dart';
+import 'package:gosuto/models/wallet_model.dart';
 
 class ChooseWalletController extends GetxController {
-  List<Wallet> wallets = <Wallet>[].obs;
+  List<WalletModel> wallets = <WalletModel>[].obs;
 
   Future fetchData() async {
     final _wallets = await DBHelper().getWallets();

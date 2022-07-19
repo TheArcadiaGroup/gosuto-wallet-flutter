@@ -751,52 +751,52 @@ class WalletHomeTab extends GetView<HomeController> {
               onChanged: _changeWalletName,
               borderRadius: 12),
           const SizedBox(height: 20),
-          Stack(
-            alignment: AlignmentDirectional.topStart,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-                child: Container(
-                  padding: const EdgeInsets.only(
-                      top: 20, bottom: 20, left: 13, right: 13),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.onSecondary,
-                      width: 1.0,
-                    ),
-                  ),
-                  child: Obx(
-                    () => Wrap(
-                      spacing: 11,
-                      runSpacing: 15,
-                      children: [
-                        for (int i = 0;
-                            i < _whController.seedPhrases.length;
-                            i++)
-                          _buildMnemonicItem(context, '${i + 1}',
-                              _whController.seedPhrases[i]),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, top: 3),
-                child: Container(
-                  color: Theme.of(context).colorScheme.primary,
-                  child: Text(
-                    'Mnemonic',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        ?.copyWith(fontSize: 12),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // Stack(
+          //   alignment: AlignmentDirectional.topStart,
+          //   children: [
+          //     Padding(
+          //       padding: const EdgeInsets.only(top: 10, bottom: 10),
+          //       child: Container(
+          //         padding: const EdgeInsets.only(
+          //             top: 20, bottom: 20, left: 13, right: 13),
+          //         width: double.infinity,
+          //         decoration: BoxDecoration(
+          //           borderRadius: BorderRadius.circular(12),
+          //           border: Border.all(
+          //             color: Theme.of(context).colorScheme.onSecondary,
+          //             width: 1.0,
+          //           ),
+          //         ),
+          //         child: Obx(
+          //           () => Wrap(
+          //             spacing: 11,
+          //             runSpacing: 15,
+          //             children: [
+          //               for (int i = 0;
+          //                   i < _whController.seedPhrases.length;
+          //                   i++)
+          //                 _buildMnemonicItem(context, '${i + 1}',
+          //                     _whController.seedPhrases[i]),
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //     Padding(
+          //       padding: const EdgeInsets.only(left: 20, top: 3),
+          //       child: Container(
+          //         color: Theme.of(context).colorScheme.primary,
+          //         child: Text(
+          //           'Mnemonic',
+          //           style: Theme.of(context)
+          //               .textTheme
+          //               .bodyText1
+          //               ?.copyWith(fontSize: 12),
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           const SizedBox(height: 20),
           CustomWidgets.textField(
             context,
@@ -1009,7 +1009,7 @@ class WalletHomeTab extends GetView<HomeController> {
     _selectedFilter(value);
   }
 
-  void _onTapHistoryItem(TransferModel transfer, Wallet wallet) {
+  void _onTapHistoryItem(TransferModel transfer, WalletModel wallet) {
     _showHideBottomView(true);
     // _whController.selectedTransfer = transfer.obs;
     // _whController.selectedTransfer?.refresh();

@@ -4,22 +4,6 @@ part 'transfer_model.g.dart';
 
 @JsonSerializable()
 class TransferModel {
-  TransferModel(
-      {this.transferId,
-        required this.deployHash,
-        required this.blockHash,
-        required this.sourcePurse,
-        required this.targetPurse,
-        required this.amount,
-        required this.fromAccount,
-        required this.toAccount,
-        required this.timestamp,
-        required this.fromAccountPublicKey,
-        this.toAccountPublicKey});
-
-  factory TransferModel.fromJson(Map<String, dynamic> json) =>
-      _$TransferModelFromJson(json);
-
   @JsonKey(name: 'transferId')
   String? transferId;
 
@@ -52,6 +36,22 @@ class TransferModel {
 
   @JsonKey(name: 'toAccountPublicKey')
   String? toAccountPublicKey;
+
+  TransferModel(
+      {this.transferId,
+      required this.deployHash,
+      required this.blockHash,
+      required this.sourcePurse,
+      required this.targetPurse,
+      required this.amount,
+      required this.fromAccount,
+      required this.toAccount,
+      required this.timestamp,
+      required this.fromAccountPublicKey,
+      this.toAccountPublicKey});
+
+  factory TransferModel.fromJson(Map<String, dynamic> json) =>
+      _$TransferModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$TransferModelToJson(this);
 }

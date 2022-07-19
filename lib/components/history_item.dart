@@ -14,7 +14,7 @@ class HistoryItem extends StatelessWidget {
 
   final String subTitle;
   final TransferModel transfer;
-  final Wallet wallet;
+  final WalletModel wallet;
   final double rate;
 
   @override

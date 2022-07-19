@@ -233,8 +233,8 @@ class TransactionInfoCard extends StatelessWidget {
             padding: const EdgeInsets.only(top: 15),
             child: ElevatedButton(
               onPressed: () => {
-                Urls.launchInWebViewOrVC(
-                    '${env?.deployHashExplorer ?? ''}${transfer.deployHash}')
+                Urls.launchInWebViewOrVC(Uri.parse(
+                    '${env?.deployHashExplorer ?? ''}${transfer.deployHash}'))
               },
               style: ButtonStyle(
                   backgroundColor:

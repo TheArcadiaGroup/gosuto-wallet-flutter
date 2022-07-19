@@ -4,11 +4,11 @@ import 'package:gosuto/data/network/api_client.dart';
 import 'package:gosuto/env/env.dart';
 
 class AccountUtils {
-  static Future<double> fetchBalance(String publicKeyHex) async {
+  static Future<double> fetchBalance(String publicKey) async {
     try {
       var casperClient = CasperClient('https://casper-node.tor.us');
-      var publicKey = CLPublicKey.fromHex(publicKeyHex);
-      var balance = await casperClient.balanceOfByPublicKey(publicKey);
+      var clPublicKey = CLPublicKey.fromHex(publicKey);
+      var balance = await casperClient.balanceOfByPublicKey(clPublicKey);
 
       return CasperClient.fromWei(balance).toDouble();
     } catch (e) {
@@ -47,8 +47,12 @@ class AccountUtils {
 
       return CasperClient.fromWei(totalStake).toDouble();
     } catch (e) {
-      print(e);
       return 0;
     }
+  }
+
+  static Future<double> getTotalRewards(String publicKey) async {
+    var totalRewards = zeroBN;
+    return CasperClient.fromWei(totalRewards).toDouble();
   }
 }

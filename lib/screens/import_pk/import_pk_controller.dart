@@ -12,6 +12,8 @@ class ImportPkController extends GetxController {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   late TextEditingController walletNameController;
   late TextEditingController privateKeyController;
+  late TextEditingController passwordController;
+  late TextEditingController password2Controller;
 
   var privateKeyBytes = Uint8List.fromList([]);
   var publicKeyBytes = Uint8List.fromList([]);
@@ -19,22 +21,32 @@ class ImportPkController extends GetxController {
 
   var walletName = ''.obs;
   var privateKey = ''.obs;
+  var password = ''.obs;
+  var password2 = ''.obs;
+
+  var passwordDB = ''.obs;
+
   var hidePassword = true.obs;
   var hideRePassword = true.obs;
   var agreed = true.obs; // false.obs;
 
   @override
   void onInit() {
-    super.onInit();
     walletNameController = TextEditingController(
         text: 'Gosuto ' + data[0]['walletIndex'].toString());
     privateKeyController = TextEditingController();
+    passwordController = TextEditingController();
+    password2Controller = TextEditingController();
+    getPasswordDB();
+    super.onInit();
   }
 
   @override
   void onClose() {
     walletNameController.dispose();
     privateKeyController.dispose();
+    passwordController.dispose();
+    password2Controller.dispose();
   }
 
   void togglePassword() {
@@ -77,6 +89,23 @@ class ImportPkController extends GetxController {
     }
 
     return null;
+  }
+
+  String? validateConfirmPassword(String value) {
+    if (value.isEmpty) {
+      return 'confirm_password_empty'.tr;
+    }
+
+    if (value != password.value) {
+      return 'confirm_password_wrong'.tr;
+    }
+
+    return null;
+  }
+
+  Future<void> getPasswordDB() async {
+    String password = await DBHelper().getPassword();
+    passwordDB(password);
   }
 
   Future<Map> checkValidate() async {

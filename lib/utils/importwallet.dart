@@ -4,7 +4,7 @@ import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:gosuto/database/dbhelper.dart';
 import 'package:gosuto/models/settings.dart';
-import 'package:gosuto/models/wallet.dart';
+import 'package:gosuto/models/wallet_model.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:convert/convert.dart';
 
@@ -71,7 +71,6 @@ class WalletUtils {
     // Get current index
     int walletIndex = await DBHelper().getTheLastestWalletId();
 
-    // print("walletIndex $walletIndex");
     var casperHDKey = CasperHDKey.fromMasterSeed(
         Uint8List.fromList(decryptedSeedPhrase.codeUnits.toList()));
     var key = casperHDKey.deriveIndex(walletIndex);
@@ -79,23 +78,18 @@ class WalletUtils {
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(base16Encode(key.privateKey), passwordDB);
     int walletId = await DBHelper().insertWallet(
-      Wallet(
-        walletName: walletName,
-        publicKey: key.publicKey.toHex(),
-        accountHash: key.publicKey.toAccountHashStr(),
-        privateKey: hashedPrivateKey,
-      ),
+      WalletModel(walletName, key.publicKey.toHex(),
+          key.publicKey.toAccountHashStr(), hashedPrivateKey, 0),
     );
 
     return walletId;
   }
 
   static Future<int> importWalletByPrivateKey(
-      String walletName,
-      Uint8List privateKey,
-      Uint8List publicKey,
-      SignatureAlgorithm? algo) async {
+      String walletName, Uint8List privateKey, Uint8List publicKey,
+      [SignatureAlgorithm? algo, String password = '']) async {
     String passwordDB = '';
+    String hashedPassword = '';
 
     Settings _settings = Settings(
       seedPhrase: '',
@@ -110,6 +104,29 @@ class WalletUtils {
       passwordDB = _settings.password;
     }
 
+    if (passwordDB != '') {
+      hashedPassword = passwordDB;
+    } else {
+      // Add password & seed phrase for the first time
+      if (password != '') {
+        var hashedPasswordBytes =
+            await cryptography.Sha1().hash(password.codeUnits);
+
+        hashedPassword = hex.encode(hashedPasswordBytes.bytes);
+
+        await DBHelper().updateSettings(
+          Settings(
+            seedPhrase: '',
+            password: hashedPassword,
+            useBiometricAuth: _settings.useBiometricAuth,
+          ),
+          'password',
+        );
+
+        passwordDB = hashedPassword;
+      }
+    }
+
     String hashedPrivateKey =
         await GosutoAes256Gcm.encrypt(base16Encode(privateKey), passwordDB);
     if (algo != null) {
@@ -121,12 +138,8 @@ class WalletUtils {
       }
 
       int walletId = await DBHelper().insertWallet(
-        Wallet(
-          walletName: walletName,
-          publicKey: clPublicKey.toHex(),
-          accountHash: clPublicKey.toAccountHashStr(),
-          privateKey: hashedPrivateKey,
-        ),
+        WalletModel(walletName, clPublicKey.toHex(),
+            clPublicKey.toAccountHashStr(), hashedPrivateKey, 0),
       );
       return walletId;
     }

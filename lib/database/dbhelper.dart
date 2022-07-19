@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:gosuto/models/settings.dart';
-import 'package:gosuto/models/wallet.dart';
+import 'package:gosuto/models/wallet_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -16,7 +16,7 @@ class DBHelper {
 
   Future<Database> initDB() async {
     String path = join(await getDatabasesPath(), _dbName);
-    // print(path);
+    print(path);
     var theDb = await openDatabase(path, version: 1, onCreate: _onCreate);
     return theDb;
   }
@@ -32,7 +32,8 @@ class DBHelper {
           walletName TEXT NOT NULL UNIQUE,
           publicKey TEXT NOT NULL UNIQUE,
           accountHash TEXT NOT NULL UNIQUE,
-          privateKey TEXT NOT NULL UNIQUE
+          privateKey TEXT NOT NULL UNIQUE,
+          isValidator INT DEFAULT 0
         )''');
   }
 
@@ -120,10 +121,10 @@ class DBHelper {
     }
   }
 
-  Future<int> insertWallet(Wallet wallet) async {
+  Future<int> insertWallet(WalletModel wallet) async {
     try {
       Database db = await initDB();
-      int walletId = await db.insert('wallets', wallet.toMap());
+      int walletId = await db.insert('wallets', wallet.toJson());
       return walletId;
     } catch (e) {
       log('INSERT WALLET ERROR: ', error: e);
@@ -143,17 +144,17 @@ class DBHelper {
     }
   }
 
-  Future<List<Wallet>> getWallets() async {
+  Future<List<WalletModel>> getWallets() async {
     try {
       Database db = await initDB();
       List<Map<String, dynamic>> maps = await db.query('wallets');
 
-      List<Wallet> wallets = [];
+      List<WalletModel> wallets = [];
       if (maps.isNotEmpty) {
         for (var element in maps) {
-          wallets.add(Wallet.fromMap(element));
+          wallets.add(WalletModel.fromJson(element));
         }
-        return maps.map((e) => Wallet.fromMap(e)).toList();
+        return maps.map((e) => WalletModel.fromJson(e)).toList();
       }
 
       return wallets;
@@ -219,10 +220,10 @@ class DBHelper {
     }
   }
 
-  Future<int> update(Wallet wallet) async {
+  Future<int> update(WalletModel wallet) async {
     Database db = await initDB();
 
-    return await db.update('wallets', wallet.toMap(),
+    return await db.update('wallets', wallet.toJson(),
         where: 'id = ?', whereArgs: [wallet.id]);
   }
 }

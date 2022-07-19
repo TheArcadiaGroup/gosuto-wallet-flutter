@@ -157,7 +157,7 @@ class _WalletCardState extends State<WalletCard> {
                             double.parse(snapshot.data.toString());
                         var usdValue = totalRewards * widget.rate;
 
-                        textCSPR = ': ${NumberUtils.format(totalRewards)} CSPR';
+                        textCSPR = '${NumberUtils.format(totalRewards)} CSPR';
                         textUSD = NumberUtils.formatCurrency(usdValue);
                       }
 
@@ -167,7 +167,7 @@ class _WalletCardState extends State<WalletCard> {
                               style: Theme.of(context).textTheme.subtitle2,
                               children: [
                             TextSpan(
-                              text: '$textCSPR ($textUSD)',
+                              text: '\n$textCSPR ($textUSD)',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyText1

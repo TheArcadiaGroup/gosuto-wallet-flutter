@@ -89,7 +89,7 @@ const Map<String, String> enUs = {
   'email': 'Email',
   'available': 'Available',
   'staked': 'Staked',
-  'total_rewards': 'Total Rewards Received',
+  'total_rewards': 'Total Rewards Received:',
   'currencies_own': 'Currencies Own',
   'select_wallet': 'Select Wallet',
   'add_wallet': 'Add Wallet',

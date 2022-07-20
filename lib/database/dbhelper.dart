@@ -120,7 +120,6 @@ class DBHelper {
     var box = await Hive.openBox<WalletModel>(walletBox,
         encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
     try {
-      print('=getTheLastestWalletId=');
       var id = box.values.isNotEmpty ? box.values.first.id + 1 : box.length;
       return id;
     } catch (e) {

@@ -17,27 +17,29 @@ class WalletModelAdapter extends TypeAdapter<WalletModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return WalletModel(
-      name: fields[0] as String,
-      publicKey: fields[1] as String,
-      accountHash: fields[2] as String,
-      privateKey: fields[3] as String,
-      isValidator: fields[4] as bool,
-    );
+      name: fields[1] as String,
+      publicKey: fields[2] as String,
+      accountHash: fields[3] as String,
+      privateKey: fields[4] as String,
+      isValidator: fields[5] as bool,
+    )..id = fields[0] as int;
   }
 
   @override
   void write(BinaryWriter writer, WalletModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.publicKey)
+      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.accountHash)
+      ..write(obj.publicKey)
       ..writeByte(3)
-      ..write(obj.privateKey)
+      ..write(obj.accountHash)
       ..writeByte(4)
+      ..write(obj.privateKey)
+      ..writeByte(5)
       ..write(obj.isValidator);
   }
 

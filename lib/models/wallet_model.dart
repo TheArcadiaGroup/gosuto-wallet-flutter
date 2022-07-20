@@ -28,4 +28,9 @@ class WalletModel {
       required this.accountHash,
       required this.privateKey,
       required this.isValidator});
+
+  @override
+  String toString() {
+    return '$id $name $publicKey ($accountHash)';
+  }
 }

@@ -117,14 +117,14 @@ class DBHelper {
   }
 
   Future<int> getTheLastestWalletId() async {
+    var box = await Hive.openBox<WalletModel>(walletBox,
+        encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
     try {
-      var box = await Hive.openBox<WalletModel>(walletBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      var id = box.values.isNotEmpty ? box.values.first.id + 1 : 0;
+      print('=getTheLastestWalletId=');
+      var id = box.values.isNotEmpty ? box.values.first.id + 1 : box.length;
       return id;
     } catch (e) {
-      log('GET LATEST WALLET ID ERROR: ', error: e);
-      return -1;
+      return box.length;
     }
   }
 

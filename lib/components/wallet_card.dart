@@ -64,7 +64,7 @@ class _WalletCardState extends State<WalletCard> {
                           width: 36, height: 36),
                       const SizedBox(width: 5),
                       Expanded(
-                          child: Text(widget.wallet.walletName,
+                          child: Text(widget.wallet.name,
                               style: Theme.of(context).textTheme.headline2,
                               overflow: TextOverflow.ellipsis))
                     ],

@@ -110,8 +110,10 @@ class ImportPkController extends GetxController {
 
   Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletNameIsExist =
-        await DBHelper().isWalletNameExist(walletName.value);
+    bool walletNameIsExist = await DBHelper().isWalletNameExist(
+        walletName.value.isNotEmpty
+            ? walletName.value
+            : walletNameController.text);
 
     String errorMessage = '';
     var map = {};
@@ -120,41 +122,44 @@ class ImportPkController extends GetxController {
       errorMessage = 'wallet_name_exist'.tr;
       isValid = false;
     } else {
-      // check seed phrase exist
-      String password = await DBHelper().getPassword();
+      // check password exist
+      // String password = await DBHelper().getPassword();
 
-      if (password != '') {
-        // check wallet exist
-        var base64Str = normalizePrivateKey(privateKey.value);
-        switch (base64Str.length) {
-          case 64:
-            privateKeyBytes = Ed25519.readBase64WithPEM(privateKey.value);
-            keyType = SignatureAlgorithm.Ed25519;
-            break;
-          case 160:
-            privateKeyBytes = Secp256K1.parsePrivateKey(
-                Secp256K1.readBase64WithPEM(privateKey.value));
-            keyType = SignatureAlgorithm.Secp256K1;
-            break;
-          default:
-            keyType = null;
-        }
-
-        if (keyType == null) {
-          errorMessage = 'invalid_private_key'.tr;
-          isValid = false;
-        } else {
-          publicKeyBytes =
-              CasperClient.privateToPublicKey(privateKeyBytes, keyType!);
-        }
-
-        var wallets =
-            await DBHelper().getWalletByPublicKey(base16Encode(publicKeyBytes));
-        if (wallets.isNotEmpty) {
-          errorMessage = 'wallet_exist'.tr;
-          isValid = false;
-        }
+      // if (password != '') {
+      // check wallet exist
+      var base64Str = normalizePrivateKey(privateKey.value);
+      switch (base64Str.length) {
+        case 64:
+          privateKeyBytes = Ed25519.readBase64WithPEM(privateKey.value);
+          keyType = SignatureAlgorithm.Ed25519;
+          break;
+        case 160:
+          privateKeyBytes = Secp256K1.parsePrivateKey(
+              Secp256K1.readBase64WithPEM(privateKey.value));
+          keyType = SignatureAlgorithm.Secp256K1;
+          break;
+        default:
+          keyType = null;
       }
+
+      var publicKeyHex = '';
+      if (keyType == null) {
+        errorMessage = 'invalid_private_key'.tr;
+        isValid = false;
+      } else {
+        publicKeyBytes =
+            CasperClient.privateToPublicKey(privateKeyBytes, keyType!);
+        publicKeyHex = keyType == SignatureAlgorithm.Ed25519
+            ? Ed25519.accountHexStr(publicKeyBytes)
+            : Secp256K1.accountHexStr(publicKeyBytes);
+      }
+
+      var wallets = await DBHelper().getWalletByPublicKey(publicKeyHex);
+      if (wallets != null) {
+        errorMessage = 'wallet_exist'.tr;
+        isValid = false;
+      }
+      // }
     }
 
     map['isValid'] = isValid;
@@ -163,7 +168,7 @@ class ImportPkController extends GetxController {
   }
 
   Future<int> createWallet() async {
-    return await WalletUtils.importWalletByPrivateKey(
-        walletName.value, privateKeyBytes, publicKeyBytes, keyType);
+    return await WalletUtils.importWalletByPrivateKey(walletName.value,
+        privateKeyBytes, publicKeyBytes, keyType, password.value);
   }
 }

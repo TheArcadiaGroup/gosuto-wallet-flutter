@@ -6,8 +6,9 @@ class ChooseWalletController extends GetxController {
   List<WalletModel> wallets = <WalletModel>[].obs;
 
   Future fetchData() async {
-    final _wallets = await DBHelper().getWallets();
-    // print(_wallets[0].toMap());
+    final _walletsDB = await DBHelper().getWallets();
+    final _wallets = _walletsDB.values.toList();
+    _wallets.sort((a, b) => a.id.compareTo(b.id));
     wallets.assignAll(_wallets);
   }
 }

@@ -106,10 +106,9 @@ class HomeController extends GetxController
   }
 
   Future fetchSetting() async {
-    final _data = await DBHelper().getSettings();
+    final _settings = await DBHelper().getSettings();
 
-    if (_data.isNotEmpty) {
-      SettingsModel _settings = SettingsModel.fromJson(_data[0]);
+    if (_settings != null) {
       setting = _settings.obs;
     }
   }

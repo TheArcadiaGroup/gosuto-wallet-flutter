@@ -1,21 +1,31 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:hive/hive.dart';
 
 part 'wallet_model.g.dart';
 
-@JsonSerializable()
+@HiveType(typeId: 1)
 class WalletModel {
-  int? id;
-  late String walletName;
+  @HiveField(0)
+  late int id;
+
+  @HiveField(1)
+  late String name;
+
+  @HiveField(2)
   late String publicKey;
+
+  @HiveField(3)
   late String accountHash;
+
+  @HiveField(4)
   late String privateKey;
-  late int isValidator;
 
-  WalletModel(this.walletName, this.publicKey, this.accountHash,
-      this.privateKey, this.isValidator);
+  @HiveField(5)
+  late bool isValidator;
 
-  factory WalletModel.fromJson(Map<String, dynamic> json) =>
-      _$WalletModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$WalletModelToJson(this);
+  WalletModel(
+      {required this.name,
+      required this.publicKey,
+      required this.accountHash,
+      required this.privateKey,
+      required this.isValidator});
 }

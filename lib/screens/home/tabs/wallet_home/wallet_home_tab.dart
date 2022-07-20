@@ -228,7 +228,7 @@ class WalletHomeTab extends GetView<HomeController> {
                       padding: const EdgeInsets.only(left: 20, top: 20),
                       child: Obx(
                         () => Text(
-                          controller.selectedWallet?.value.walletName ?? '',
+                          controller.selectedWallet?.value.name ?? '',
                           style: Theme.of(context).textTheme.headline1,
                         ),
                       ),
@@ -673,8 +673,7 @@ class WalletHomeTab extends GetView<HomeController> {
 
   void _updateWalletName(BuildContext context) async {
     if (controller.selectedWallet != null) {
-      controller.selectedWallet!.value.walletName =
-          _whController.walletName.value;
+      controller.selectedWallet!.value.name = _whController.walletName.value;
       controller.selectedWallet?.refresh();
       await _whController.updateWallet(controller.selectedWallet!.value);
       _showAlert(context, 'update_wallet_success'.tr);
@@ -729,8 +728,8 @@ class WalletHomeTab extends GetView<HomeController> {
   }
 
   Widget _buildWalletSettings(BuildContext context, int index) {
-    TextEditingController _walletName = TextEditingController(
-        text: controller.selectedWallet?.value.walletName);
+    TextEditingController _walletName =
+        TextEditingController(text: controller.selectedWallet?.value.name);
     TextEditingController _oldPass =
         TextEditingController(text: _whController.currentPass.value);
     TextEditingController _pass =

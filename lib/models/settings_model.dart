@@ -1,21 +1,21 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:hive/hive.dart';
 
 part 'settings_model.g.dart';
 
-@JsonSerializable()
+@HiveType(typeId: 2)
 class SettingsModel {
+  @HiveField(0)
   late String seedPhrase;
+
+  @HiveField(1)
   late String password;
+
+  @HiveField(2)
   late int useBiometricAuth;
 
-  SettingsModel(
-    this.seedPhrase,
-    this.password,
-    this.useBiometricAuth,
-  );
-
-  factory SettingsModel.fromJson(Map<String, dynamic> json) =>
-      _$SettingsModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SettingsModelToJson(this);
+  SettingsModel({
+    required this.seedPhrase,
+    required this.password,
+    required this.useBiometricAuth,
+  });
 }

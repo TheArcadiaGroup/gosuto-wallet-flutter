@@ -102,8 +102,10 @@ class ImportSeedController extends GetxController {
 
   Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletNameIsExist =
-        await DBHelper().isWalletNameExist(walletName.value);
+    bool walletNameIsExist = await DBHelper().isWalletNameExist(
+        walletName.value.isNotEmpty
+            ? walletName.value
+            : walletNameController.text);
 
     String errorMessage = '';
     var map = {};
@@ -111,21 +113,6 @@ class ImportSeedController extends GetxController {
     if (walletNameIsExist) {
       errorMessage = 'wallet_name_exist'.tr;
       isValid = false;
-    } else {
-      // check seed phrase exist
-      String password = await DBHelper().getPassword();
-
-      if (password != '') {
-        String hashedSeedPhrase =
-            await GosutoAes256Gcm.encrypt(seedPhrase.value, password);
-
-        // check seed phrase exist
-        var wallets = await DBHelper().getWalletsBySeedPhrase(hashedSeedPhrase);
-        if (wallets.isNotEmpty) {
-          errorMessage = 'seed_phrase_exist'.tr;
-          isValid = false;
-        }
-      }
     }
 
     if (!bip39.validateMnemonic(seedPhrase.value)) {

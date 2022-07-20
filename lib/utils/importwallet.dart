@@ -17,17 +17,16 @@ class WalletUtils {
     String hashedSeedPhrase = '';
 
     SettingsModel _settings = SettingsModel(
-      '',
-      '',
-      0,
+      seedPhrase: '',
+      password: '',
+      useBiometricAuth: 0,
     );
 
     // Get settings from db
-    var _data = await DBHelper().getSettings();
-    if (_data.isNotEmpty) {
-      _settings = SettingsModel.fromJson(_data[0]);
-      passwordDB = _settings.password;
-      seedPhraseDB = _settings.seedPhrase;
+    var settingsDB = await DBHelper().getSettings();
+    if (settingsDB != null) {
+      passwordDB = settingsDB.password;
+      seedPhraseDB = settingsDB.seedPhrase;
     }
 
     if (passwordDB != '') {
@@ -53,9 +52,9 @@ class WalletUtils {
 
       await DBHelper().updateSettings(
         SettingsModel(
-          hashedSeedPhrase,
-          hashedPassword,
-          _settings.useBiometricAuth,
+          seedPhrase: hashedSeedPhrase,
+          password: hashedPassword,
+          useBiometricAuth: _settings.useBiometricAuth,
         ),
         'all',
       );
@@ -81,8 +80,12 @@ class WalletUtils {
         accountHash.replaceAll('account-hash-', ''));
 
     int walletId = await DBHelper().insertWallet(
-      WalletModel(walletName, key.publicKey.toHex(), accountHash,
-          hashedPrivateKey, isValidator ? 1 : 0),
+      WalletModel(
+          name: walletName,
+          publicKey: key.publicKey.toHex(),
+          accountHash: accountHash,
+          privateKey: hashedPrivateKey,
+          isValidator: isValidator),
     );
 
     return walletId;
@@ -95,16 +98,15 @@ class WalletUtils {
     String hashedPassword = '';
 
     SettingsModel _settings = SettingsModel(
-      '',
-      '',
-      0,
+      seedPhrase: '',
+      password: '',
+      useBiometricAuth: 0,
     );
 
     // Get settings from db
-    var _data = await DBHelper().getSettings();
-    if (_data.isNotEmpty) {
-      _settings = SettingsModel.fromJson(_data[0]);
-      passwordDB = _settings.password;
+    var settingsDB = await DBHelper().getSettings();
+    if (settingsDB != null) {
+      passwordDB = settingsDB.password;
     }
 
     if (passwordDB != '') {
@@ -119,9 +121,9 @@ class WalletUtils {
 
         await DBHelper().updateSettings(
           SettingsModel(
-            '',
-            hashedPassword,
-            _settings.useBiometricAuth,
+            seedPhrase: '',
+            password: hashedPassword,
+            useBiometricAuth: _settings.useBiometricAuth,
           ),
           'password',
         );
@@ -146,8 +148,12 @@ class WalletUtils {
           accountHash.replaceAll('account-hash-', ''));
 
       int walletId = await DBHelper().insertWallet(
-        WalletModel(walletName, clPublicKey.toHex(), accountHash,
-            hashedPrivateKey, isValidator ? 1 : 0),
+        WalletModel(
+            name: walletName,
+            publicKey: clPublicKey.toHex(),
+            accountHash: accountHash,
+            privateKey: hashedPrivateKey,
+            isValidator: isValidator),
       );
       return walletId;
     }

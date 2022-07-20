@@ -1,58 +1,38 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gosuto/models/models.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class DBHelper {
-  static late Database _db;
-  static const _dbName = 'gosuto.db';
+  final String walletBox = 'wallets';
+  final String settingsBox = 'settings';
 
-  Future<Database> get db async {
-    _db = await initDB();
-    return _db;
+  Future<List<int>> _getEncrytionKey() async {
+    const secureStorage = FlutterSecureStorage();
+    final key = await secureStorage.read(key: 'gosuto');
+
+    final encryptionKey = base64Url.decode(key!);
+    return encryptionKey;
   }
 
-  Future<Database> initDB() async {
-    String path = join(await getDatabasesPath(), _dbName);
-    print(path);
-    var theDb = await openDatabase(path, version: 1, onCreate: _onCreate);
-    return theDb;
-  }
-
-  void _onCreate(Database db, int version) async {
-    await db.execute('''CREATE TABLE settings(
-      seedPhrase TEXT DEFAULT '',
-      password TEXT DEFAULT '',
-      useBiometricAuth INT DEFAULT 0
-    )''');
-    await db.execute('''CREATE TABLE wallets(
-          id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-          walletName TEXT NOT NULL UNIQUE,
-          publicKey TEXT NOT NULL UNIQUE,
-          accountHash TEXT NOT NULL UNIQUE,
-          privateKey TEXT NOT NULL UNIQUE,
-          isValidator INT DEFAULT 0
-        )''');
-  }
-
-  Future<List<Map<String, dynamic>>> getSettings() async {
+  Future<SettingsModel?> getSettings() async {
     try {
-      Database db = await initDB();
-      var settings = await db.query('settings');
-      return settings;
+      var settings = await Hive.openBox<SettingsModel>(settingsBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      return settings.values.isNotEmpty ? settings.values.first : null;
     } catch (e) {
       log('GET SETTINGS ERROR', error: e);
-      return [];
+      return null;
     }
   }
 
   Future<bool> isSeedPhraseAdded() async {
     try {
-      var data = await getSettings();
-      if (data.isNotEmpty) {
-        SettingsModel _settings = SettingsModel.fromJson(data[0]);
-        return _settings.seedPhrase != '';
+      var settings = await getSettings();
+      if (settings != null) {
+        return settings.seedPhrase != '';
       }
       return false;
     } catch (e) {
@@ -62,21 +42,23 @@ class DBHelper {
   }
 
   Future<String> getPassword() async {
-    final _data = await getSettings();
-
-    if (_data.isNotEmpty) {
-      SettingsModel _settings = SettingsModel.fromJson(_data[0]);
-      return _settings.password;
+    try {
+      var settings = await getSettings();
+      if (settings != null) {
+        return settings.password;
+      }
+      return '';
+    } catch (e) {
+      log('GET PASSWORD: ', error: e);
+      return '';
     }
-
-    return '';
   }
 
   Future<int> insertSettings(SettingsModel settings) async {
     try {
-      Database db = await initDB();
-      int settingsId = await db.insert('settings', settings.toJson());
-      return settingsId;
+      var box = await Hive.openBox<SettingsModel>(settingsBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      return box.add(settings);
     } catch (e) {
       log('INSERT SETTINGS ERROR: ', error: e);
       return -1;
@@ -87,142 +69,111 @@ class DBHelper {
     try {
       var currentSettings = await getSettings();
 
-      if (currentSettings.isEmpty) {
-        return await insertSettings(settings);
+      if (currentSettings == null) {
+        await insertSettings(settings);
       } else {
-        Database db = await initDB();
-        String query = '';
-        List<dynamic> args = [];
-
+        var box = await Hive.openBox<SettingsModel>(settingsBox,
+            encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
         switch (type) {
           case 'password':
-            query = 'UPDATE settings SET password = ?';
-            args = [settings.password];
+            currentSettings.password = settings.password;
+            box.putAt(0, currentSettings);
             break;
           case 'all':
           default:
-            query =
-                'UPDATE settings SET seedPhrase = ?, password = ?, useBiometricAuth = ?';
-            args = [
-              settings.seedPhrase,
-              settings.password,
-              settings.useBiometricAuth,
-            ];
+            box.putAt(0, settings);
             break;
         }
-
-        int result = await db.rawUpdate(query, args);
-        return result;
       }
+      return 0;
     } catch (e) {
       log('UPDATE SETTINGS ERROR: ', error: e);
       return -1;
     }
   }
 
+  Future<Map<dynamic, WalletModel>> getWallets() async {
+    try {
+      var wallets = await Hive.openBox<WalletModel>(walletBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      return wallets.toMap();
+    } catch (e) {
+      log('GET ALL WALLETS ERROR: ', error: e);
+      return {};
+    }
+  }
+
   Future<int> insertWallet(WalletModel wallet) async {
     try {
-      Database db = await initDB();
-      int walletId = await db.insert('wallets', wallet.toJson());
-      return walletId;
+      var wallets = await Hive.openBox<WalletModel>(walletBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      wallet.id = wallets.length;
+      await wallets.put(wallet.publicKey, wallet);
+      return wallets.length;
     } catch (e) {
       log('INSERT WALLET ERROR: ', error: e);
       return -1;
     }
   }
 
+  Future<int> getTheLastestWalletId() async {
+    try {
+      var box = await Hive.openBox<WalletModel>(walletBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      var id = box.values.isNotEmpty ? box.values.first.id + 1 : 0;
+      return id;
+    } catch (e) {
+      log('GET LATEST WALLET ID ERROR: ', error: e);
+      return -1;
+    }
+  }
+
+  Future<WalletModel?> getWalletByPublicKey(String publicKey) async {
+    try {
+      var wallets = await Hive.openBox<WalletModel>(walletBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      return wallets.get(publicKey);
+    } catch (e) {
+      log('GET WALLET BY PUBLIC KEY ERROR: ', error: e);
+      return null;
+    }
+  }
+
   Future<bool> isWalletNameExist(String name) async {
     try {
-      Database db = await initDB();
-      List<Map> wallets =
-          await db.query('wallets', where: 'walletName = ?', whereArgs: [name]);
-      return wallets.isNotEmpty;
+      var wallets = await Hive.openBox<WalletModel>(walletBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      var index = wallets.values.toList().indexWhere((w) => w.name == name);
+      return index >= 0;
     } catch (e) {
       log('GET WALLET BY NAME ERROR: ', error: e);
       return false;
     }
   }
 
-  Future<List<WalletModel>> getWallets() async {
-    try {
-      Database db = await initDB();
-      List<Map<String, dynamic>> maps = await db.query('wallets');
-
-      List<WalletModel> wallets = [];
-      if (maps.isNotEmpty) {
-        for (var element in maps) {
-          wallets.add(WalletModel.fromJson(element));
-        }
-        return maps.map((e) => WalletModel.fromJson(e)).toList();
-      }
-
-      return wallets;
-    } catch (e) {
-      log('GET ALL WALLETS ERROR: ', error: e);
-      return [];
-    }
-  }
-
-  Future<int> delete(int id) async {
-    Database db = await initDB();
-    return await db.delete('wallets', where: 'id = ?', whereArgs: [id]);
-  }
-
-  Future<List<Map>?> getWalletById(int id) async {
-    try {
-      Database db = await initDB();
-      List<Map> wallet =
-          await db.query('wallets', where: 'id = ?', whereArgs: [id]);
-      return wallet;
-    } catch (e) {
-      log('GET WALLET BY ID ERROR: ', error: e);
-      return null;
-    }
-  }
-
-  Future<List<Map>> getWalletsBySeedPhrase(String seedphrase) async {
-    try {
-      Database db = await initDB();
-      List<Map> wallet = await db
-          .query('wallets', where: 'seedPhrase = ?', whereArgs: [seedphrase]);
-      return wallet;
-    } catch (e) {
-      log('GET WALLET BY SEED PHRASE ERROR: ', error: e);
-      return [];
-    }
-  }
-
-  Future<int> getTheLastestWalletId() async {
-    try {
-      Database db = await initDB();
-      List<Map> data = await db
-          .query('sqlite_sequence', where: 'name = ?', whereArgs: ['wallets']);
-      if (data.isNotEmpty) {
-        return data[0]['seq'];
-      }
-      return 0;
-    } catch (e) {
-      log('GET LATEST WALLET ID ERROR: ', error: e);
-      return 0;
-    }
-  }
-
-  Future<List<Map>> getWalletByPublicKey(String publicKey) async {
-    try {
-      Database db = await initDB();
-      List<Map> wallet = await db
-          .query('wallets', where: 'publicKey = ?', whereArgs: [publicKey]);
-      return wallet;
-    } catch (e) {
-      log('GET WALLET BY PUBLIC KEY ERROR: ', error: e);
-      return [];
-    }
-  }
-
   Future<int> update(WalletModel wallet) async {
-    Database db = await initDB();
+    try {
+      var wallets = await Hive.openBox<WalletModel>(walletBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      var index = wallets.keys.toList().indexOf(wallet.publicKey);
 
-    return await db.update('wallets', wallet.toJson(),
-        where: 'id = ?', whereArgs: [wallet.id]);
+      if (index >= 0) {
+        await wallets.putAt(index, wallet);
+      }
+      return index;
+    } catch (e) {
+      log('DELETE WALLET ERROR: ', error: e);
+      return -1;
+    }
+  }
+
+  Future<void> delete(WalletModel wallet) async {
+    try {
+      var wallets = await Hive.openBox<WalletModel>(walletBox,
+          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      await wallets.delete(wallet.publicKey);
+    } catch (e) {
+      log('DELETE WALLET ERROR: ', error: e);
+    }
   }
 }

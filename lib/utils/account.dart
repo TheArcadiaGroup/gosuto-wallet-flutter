@@ -52,13 +52,13 @@ class AccountUtils {
   }
 
   static Future<double> getTotalRewards(
-      String publicKey, int isValidator) async {
+      String publicKey, bool isValidator) async {
     var totalRewards = zeroBN;
     var apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
 
     try {
       var response = await apiClient.totalRewards(
-          publicKey, isValidator == 1 ? 'validators' : 'delegators');
+          publicKey, isValidator ? 'validators' : 'delegators');
       if (response['data'] != '') {
         totalRewards = BigNumber.from(response['data']);
       }

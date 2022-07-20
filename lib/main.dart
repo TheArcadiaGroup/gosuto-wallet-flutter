@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gosuto/database/dbhelper.dart';
+import 'package:gosuto/models/settings_model.dart';
+import 'package:gosuto/models/wallet_model.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/themes/theme.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 // import 'package:local_auth/local_auth.dart';
 import 'app_binding.dart';
 import 'env/env.dart';
@@ -12,6 +18,22 @@ import 'routes/app_pages.dart';
 
 void main() async {
   await GetStorage.init();
+
+  const secureStorage = FlutterSecureStorage();
+  // if key not exists return null
+  final encryprionKey = await secureStorage.read(key: 'gosuto');
+  if (encryprionKey == null) {
+    final key = Hive.generateSecureKey();
+    await secureStorage.write(
+      key: 'gosuto',
+      value: base64UrlEncode(key),
+    );
+  }
+
+  await Hive.initFlutter();
+  Hive
+    ..registerAdapter(WalletModelAdapter())
+    ..registerAdapter(SettingsModelAdapter());
 
   // final localAuth = LocalAuthentication();
   // bool canCheckBiometrics = await localAuth.canCheckBiometrics;

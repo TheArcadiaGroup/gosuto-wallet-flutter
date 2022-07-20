@@ -95,8 +95,10 @@ class ImportFileController extends GetxController {
 
   Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletNameIsExist =
-        await DBHelper().isWalletNameExist(walletName.value);
+    bool walletNameIsExist = await DBHelper().isWalletNameExist(
+        walletName.value.isNotEmpty
+            ? walletName.value
+            : walletNameController.text);
 
     String errorMessage = '';
     var map = {};
@@ -122,17 +124,20 @@ class ImportFileController extends GetxController {
           keyType = null;
       }
 
+      var publicKeyHex = '';
       if (keyType == null) {
         errorMessage = 'invalid_private_key'.tr;
         isValid = false;
       } else {
         publicKeyBytes =
             CasperClient.privateToPublicKey(privateKeyBytes, keyType!);
+        publicKeyHex = keyType == SignatureAlgorithm.Ed25519
+            ? Ed25519.accountHexStr(publicKeyBytes)
+            : Secp256K1.accountHexStr(publicKeyBytes);
       }
 
-      var wallets =
-          await DBHelper().getWalletByPublicKey(base16Encode(publicKeyBytes));
-      if (wallets.isNotEmpty) {
+      var wallets = await DBHelper().getWalletByPublicKey(publicKeyHex);
+      if (wallets != null) {
         errorMessage = 'wallet_exist'.tr;
         isValid = false;
       }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/models.dart';
 import 'package:gosuto/utils/utils.dart';
 
 class CreateWalletController extends GetxController {
@@ -81,10 +80,9 @@ class CreateWalletController extends GetxController {
   }
 
   Future<String> getSeedPhrase() async {
-    final _data = await DBHelper().getSettings();
+    final _settings = await DBHelper().getSettings();
 
-    if (_data.isNotEmpty) {
-      SettingsModel _settings = SettingsModel.fromJson(_data[0]);
+    if (_settings != null) {
       return _settings.seedPhrase;
     }
 
@@ -98,7 +96,10 @@ class CreateWalletController extends GetxController {
 
   Future<bool> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletIsExist = await DBHelper().isWalletNameExist(walletName.value);
+    bool walletIsExist = await DBHelper().isWalletNameExist(
+        walletName.value.isNotEmpty
+            ? walletName.value
+            : walletNameController.text);
     isValid = !walletIsExist;
     return isValid;
   }

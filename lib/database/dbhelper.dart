@@ -17,11 +17,15 @@ class DBHelper {
     return encryptionKey;
   }
 
+  Future<Box<E>> _openBox<E>(String boxName) async {
+    return await Hive.openBox<E>(boxName,
+        encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+  }
+
   Future<SettingsModel?> getSettings() async {
     try {
-      var settings = await Hive.openBox<SettingsModel>(settingsBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      return settings.values.isNotEmpty ? settings.values.first : null;
+      var box = await _openBox<SettingsModel>(settingsBox);
+      return box.values.isNotEmpty ? box.values.first : null;
     } catch (e) {
       log('GET SETTINGS ERROR', error: e);
       return null;
@@ -56,8 +60,7 @@ class DBHelper {
 
   Future<int> insertSettings(SettingsModel settings) async {
     try {
-      var box = await Hive.openBox<SettingsModel>(settingsBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+      var box = await _openBox<SettingsModel>(settingsBox);
       return box.add(settings);
     } catch (e) {
       log('INSERT SETTINGS ERROR: ', error: e);
@@ -72,8 +75,7 @@ class DBHelper {
       if (currentSettings == null) {
         await insertSettings(settings);
       } else {
-        var box = await Hive.openBox<SettingsModel>(settingsBox,
-            encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+        var box = await _openBox<SettingsModel>(settingsBox);
         switch (type) {
           case 'password':
             currentSettings.password = settings.password;
@@ -94,9 +96,8 @@ class DBHelper {
 
   Future<Map<dynamic, WalletModel>> getWallets() async {
     try {
-      var wallets = await Hive.openBox<WalletModel>(walletBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      return wallets.toMap();
+      var box = await _openBox<WalletModel>(walletBox);
+      return box.toMap();
     } catch (e) {
       log('GET ALL WALLETS ERROR: ', error: e);
       return {};
@@ -105,11 +106,10 @@ class DBHelper {
 
   Future<int> insertWallet(WalletModel wallet) async {
     try {
-      var wallets = await Hive.openBox<WalletModel>(walletBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      wallet.id = wallets.length;
-      await wallets.put(wallet.publicKey, wallet);
-      return wallets.length;
+      var box = await _openBox<WalletModel>(walletBox);
+      wallet.id = box.length;
+      await box.put(wallet.publicKey, wallet);
+      return box.length;
     } catch (e) {
       log('INSERT WALLET ERROR: ', error: e);
       return -1;
@@ -117,8 +117,7 @@ class DBHelper {
   }
 
   Future<int> getTheLastestWalletId() async {
-    var box = await Hive.openBox<WalletModel>(walletBox,
-        encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+    var box = await _openBox<WalletModel>(walletBox);
     try {
       var id = box.values.isNotEmpty ? box.values.first.id + 1 : box.length;
       return id;
@@ -129,9 +128,8 @@ class DBHelper {
 
   Future<WalletModel?> getWalletByPublicKey(String publicKey) async {
     try {
-      var wallets = await Hive.openBox<WalletModel>(walletBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      return wallets.get(publicKey);
+      var box = await _openBox<WalletModel>(walletBox);
+      return box.get(publicKey);
     } catch (e) {
       log('GET WALLET BY PUBLIC KEY ERROR: ', error: e);
       return null;
@@ -140,9 +138,8 @@ class DBHelper {
 
   Future<bool> isWalletNameExist(String name) async {
     try {
-      var wallets = await Hive.openBox<WalletModel>(walletBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      var index = wallets.values.toList().indexWhere((w) => w.name == name);
+      var box = await _openBox<WalletModel>(walletBox);
+      var index = box.values.toList().indexWhere((w) => w.name == name);
       return index >= 0;
     } catch (e) {
       log('GET WALLET BY NAME ERROR: ', error: e);
@@ -152,12 +149,11 @@ class DBHelper {
 
   Future<int> update(WalletModel wallet) async {
     try {
-      var wallets = await Hive.openBox<WalletModel>(walletBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      var index = wallets.keys.toList().indexOf(wallet.publicKey);
+      var box = await _openBox<WalletModel>(walletBox);
+      var index = box.keys.toList().indexOf(wallet.publicKey);
 
       if (index >= 0) {
-        await wallets.putAt(index, wallet);
+        await box.putAt(index, wallet);
       }
       return index;
     } catch (e) {
@@ -168,9 +164,8 @@ class DBHelper {
 
   Future<void> delete(WalletModel wallet) async {
     try {
-      var wallets = await Hive.openBox<WalletModel>(walletBox,
-          encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
-      await wallets.delete(wallet.publicKey);
+      var box = await _openBox<WalletModel>(walletBox);
+      await box.delete(wallet.publicKey);
     } catch (e) {
       log('DELETE WALLET ERROR: ', error: e);
     }

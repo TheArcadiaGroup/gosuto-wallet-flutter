@@ -34,13 +34,13 @@ class DioBase {
     });
 
     // dio.interceptors.add(PrettyDioLogger(
-    //   requestHeader: true,
-    //   requestBody: true,
+    //   requestHeader: false,
+    //   requestBody: false,
     //   responseBody: true,
-    //   responseHeader: true,
+    //   responseHeader: false,
     //   error: true,
     //   compact: true,
-    //   maxWidth: 1000,
+    //   maxWidth: 1000000,
     // ));
 
     return dio;

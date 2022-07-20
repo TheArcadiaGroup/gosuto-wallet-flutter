@@ -82,7 +82,8 @@ class _WalletCardState extends State<WalletCard> {
                       builder: (context, snapshot) {
                         var textCSPR = '-- CSPR ~ ';
                         var textUSD = '\$--';
-                        if (snapshot.hasData) {
+                        if (snapshot.hasData &&
+                            snapshot.connectionState == ConnectionState.done) {
                           var balance = double.parse(snapshot.data.toString());
                           var usdValue = balance * widget.rate;
                           textCSPR = '${NumberUtils.format(balance)} CSPR ~ ';

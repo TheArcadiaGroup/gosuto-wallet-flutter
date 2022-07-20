@@ -70,12 +70,21 @@ class ChooseWalletTab extends GetView<HomeController> {
             );
           }
 
-          return GestureDetector(
-              child: WalletCard(
-                wallet: _cwController.wallets[index - 1],
-                rate: controller.rate.value,
-              ),
-              onTap: () => {_onTapWalletItem(index - 1)});
+          return FutureBuilder(
+              future: controller.getRate(1),
+              builder: ((context, snapshot) {
+                var casperPrice = 0.0;
+                if (snapshot.hasData &&
+                    snapshot.connectionState == ConnectionState.done) {
+                  casperPrice = double.parse(snapshot.data.toString());
+                }
+                return GestureDetector(
+                    child: WalletCard(
+                      wallet: _cwController.wallets[index - 1],
+                      rate: casperPrice,
+                    ),
+                    onTap: () => {_onTapWalletItem(index - 1)});
+              }));
         },
       ),
     );

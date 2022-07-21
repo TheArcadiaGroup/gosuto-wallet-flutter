@@ -1,16 +1,27 @@
 import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/data/network/api_client.dart';
+import 'package:gosuto/database/cache_helper.dart';
 import 'package:gosuto/env/env.dart';
 
 class AccountUtils {
   static Future<double> fetchBalance(String publicKey) async {
     try {
-      var casperClient = CasperClient('https://casper-node.tor.us');
-      var clPublicKey = CLPublicKey.fromHex(publicKey);
-      var balance = await casperClient.balanceOfByPublicKey(clPublicKey);
+      var cacheHelper = CacheHelper();
+      var isOutdated = await cacheHelper.isOutdated();
+      if (await cacheHelper.isBalanceCacheExist(publicKey) && !isOutdated) {
+        return cacheHelper.getBalanceByPublicKey(publicKey);
+      } else {
+        var casperClient = CasperClient('https://casper-node.tor.us');
+        var clPublicKey = CLPublicKey.fromHex(publicKey);
+        var balance = await casperClient.balanceOfByPublicKey(clPublicKey);
+        var balanceDouble = CasperClient.fromWei(balance).toDouble();
 
-      return CasperClient.fromWei(balance).toDouble();
+        await cacheHelper.updateBalanceCache(
+            {'public_key': publicKey, 'balance': balanceDouble});
+
+        return balanceDouble;
+      }
     } catch (e) {
       return 0;
     }

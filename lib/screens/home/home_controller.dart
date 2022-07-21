@@ -100,10 +100,14 @@ class HomeController extends GetxController
   }
 
   Future<double> getRate(int rateId) async {
-    final response = await apiClient.rateAmount(rateId);
-    final _rate = response.data;
-    rate(_rate);
-    return double.parse(_rate.toString());
+    try {
+      final response = await apiClient.rateAmount(rateId);
+      final _rate = response.data;
+      rate(_rate);
+      return double.parse(_rate.toString());
+    } catch (e) {
+      return 0.0;
+    }
   }
 
   Future fetchSetting() async {

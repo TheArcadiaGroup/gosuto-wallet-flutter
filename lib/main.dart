@@ -6,13 +6,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gosuto/database/dbhelper.dart';
-import 'package:gosuto/models/settings_model.dart';
-import 'package:gosuto/models/wallet_model.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/themes/theme.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 // import 'package:local_auth/local_auth.dart';
 import 'app_binding.dart';
+import 'database/cache_helper.dart';
 import 'env/env.dart';
 import 'routes/app_pages.dart';
 
@@ -33,7 +33,13 @@ void main() async {
   await Hive.initFlutter();
   Hive
     ..registerAdapter(WalletModelAdapter())
-    ..registerAdapter(SettingsModelAdapter());
+    ..registerAdapter(SettingsModelAdapter())
+    ..registerAdapter(RPCCacheModelAdapter());
+
+  var cacheHelper = CacheHelper();
+  await cacheHelper.addCache(RPCCacheModel(
+      balance: List.empty(growable: true),
+      lastTimestamp: DateTime.now().millisecondsSinceEpoch));
 
   // final localAuth = LocalAuthentication();
   // bool canCheckBiometrics = await localAuth.canCheckBiometrics;

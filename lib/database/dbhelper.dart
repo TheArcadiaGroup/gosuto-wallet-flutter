@@ -9,7 +9,7 @@ class DBHelper {
   final String walletBox = 'wallets';
   final String settingsBox = 'settings';
 
-  Future<List<int>> _getEncrytionKey() async {
+  Future<List<int>> getEncrytionKey() async {
     const secureStorage = FlutterSecureStorage();
     final key = await secureStorage.read(key: 'gosuto');
 
@@ -17,14 +17,14 @@ class DBHelper {
     return encryptionKey;
   }
 
-  Future<Box<E>> _openBox<E>(String boxName) async {
+  Future<Box<E>> openBox<E>(String boxName) async {
     return await Hive.openBox<E>(boxName,
-        encryptionCipher: HiveAesCipher(await _getEncrytionKey()));
+        encryptionCipher: HiveAesCipher(await getEncrytionKey()));
   }
 
   Future<SettingsModel?> getSettings() async {
     try {
-      var box = await _openBox<SettingsModel>(settingsBox);
+      var box = await openBox<SettingsModel>(settingsBox);
       return box.values.isNotEmpty ? box.values.first : null;
     } catch (e) {
       log('GET SETTINGS ERROR', error: e);
@@ -60,7 +60,7 @@ class DBHelper {
 
   Future<int> insertSettings(SettingsModel settings) async {
     try {
-      var box = await _openBox<SettingsModel>(settingsBox);
+      var box = await openBox<SettingsModel>(settingsBox);
       return box.add(settings);
     } catch (e) {
       log('INSERT SETTINGS ERROR: ', error: e);
@@ -75,7 +75,7 @@ class DBHelper {
       if (currentSettings == null) {
         await insertSettings(settings);
       } else {
-        var box = await _openBox<SettingsModel>(settingsBox);
+        var box = await openBox<SettingsModel>(settingsBox);
         switch (type) {
           case 'password':
             currentSettings.password = settings.password;
@@ -96,7 +96,7 @@ class DBHelper {
 
   Future<Map<dynamic, WalletModel>> getWallets() async {
     try {
-      var box = await _openBox<WalletModel>(walletBox);
+      var box = await openBox<WalletModel>(walletBox);
       return box.toMap();
     } catch (e) {
       log('GET ALL WALLETS ERROR: ', error: e);
@@ -106,7 +106,7 @@ class DBHelper {
 
   Future<int> insertWallet(WalletModel wallet) async {
     try {
-      var box = await _openBox<WalletModel>(walletBox);
+      var box = await openBox<WalletModel>(walletBox);
       wallet.id = box.length;
       await box.put(wallet.publicKey, wallet);
       return box.length;
@@ -117,7 +117,7 @@ class DBHelper {
   }
 
   Future<int> getTheLastestWalletId() async {
-    var box = await _openBox<WalletModel>(walletBox);
+    var box = await openBox<WalletModel>(walletBox);
     try {
       var id = box.values.isNotEmpty ? box.values.first.id + 1 : box.length;
       return id;
@@ -128,7 +128,7 @@ class DBHelper {
 
   Future<WalletModel?> getWalletByPublicKey(String publicKey) async {
     try {
-      var box = await _openBox<WalletModel>(walletBox);
+      var box = await openBox<WalletModel>(walletBox);
       return box.get(publicKey);
     } catch (e) {
       log('GET WALLET BY PUBLIC KEY ERROR: ', error: e);
@@ -138,7 +138,7 @@ class DBHelper {
 
   Future<bool> isWalletNameExist(String name) async {
     try {
-      var box = await _openBox<WalletModel>(walletBox);
+      var box = await openBox<WalletModel>(walletBox);
       var index = box.values.toList().indexWhere((w) => w.name == name);
       return index >= 0;
     } catch (e) {
@@ -149,7 +149,7 @@ class DBHelper {
 
   Future<int> update(WalletModel wallet) async {
     try {
-      var box = await _openBox<WalletModel>(walletBox);
+      var box = await openBox<WalletModel>(walletBox);
       var index = box.keys.toList().indexOf(wallet.publicKey);
 
       if (index >= 0) {
@@ -164,7 +164,7 @@ class DBHelper {
 
   Future<void> delete(WalletModel wallet) async {
     try {
-      var box = await _openBox<WalletModel>(walletBox);
+      var box = await openBox<WalletModel>(walletBox);
       await box.delete(wallet.publicKey);
     } catch (e) {
       log('DELETE WALLET ERROR: ', error: e);

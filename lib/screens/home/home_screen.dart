@@ -98,12 +98,10 @@ class HomeScreen extends GetView<HomeController> {
             body: EasyRefresh(
               controller: _refreshController,
               header: const ClassicHeader(),
+              footer: const ClassicFooter(),
               onRefresh: () async {
                 await controller.chooseWalletTab.fetchData();
                 _refreshController.finishRefresh();
-              },
-              onLoad: () {
-                _refreshController.finishLoad(IndicatorResult.success);
               },
               child: _buildContent(controller.currentTab.value),
             )));

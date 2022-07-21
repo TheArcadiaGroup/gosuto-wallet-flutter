@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
+import 'package:gosuto/database/cache_helper.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/screens/home/home.dart';
 
@@ -12,11 +13,13 @@ class ChooseWalletTab extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    _fetchData();
+    fetchData();
     return _listViewBuilder();
   }
 
-  Future<void> _fetchData() async {
+  Future<void> fetchData() async {
+    // delete cache
+    await CacheHelper().deleteBalanceCache();
     await _cwController.fetchData();
     controller.selectedWallet ??= _cwController.wallets[0].obs;
   }

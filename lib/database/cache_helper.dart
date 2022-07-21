@@ -48,12 +48,6 @@ class CacheHelper extends DBHelper {
     try {
       var box = await openBox<RPCCacheModel>(cacheBox);
       if (box.isNotEmpty) {
-        //   var cache = RPCCacheModel(balance: List.empty(growable: true));
-        //   cache.balance = List<Map<String, dynamic>>.empty(growable: true);
-        //   cache.balance.add(map);
-        //   print(cache.balance.toList());
-        //   await addCache(cache);
-        // } else {
         var currentCache = box.getAt(0);
         if (currentCache != null) {
           var index = currentCache.balance
@@ -106,6 +100,21 @@ class CacheHelper extends DBHelper {
     } catch (e) {
       log('GET BALANCE CACHE ERROR: ', error: e);
       return 0;
+    }
+  }
+
+  Future<void> deleteBalanceCache() async {
+    try {
+      var box = await openBox<RPCCacheModel>(cacheBox);
+      if (box.isNotEmpty) {
+        var currentCache = box.getAt(0);
+        if (currentCache != null) {
+          currentCache.balance.clear();
+          box.putAt(0, currentCache);
+        }
+      }
+    } catch (e) {
+      log('DELETE BALANCE CACHE ERROR: ', error: e);
     }
   }
 }

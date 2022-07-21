@@ -39,16 +39,6 @@ class WalletHomeTab extends GetView<HomeController> {
     return Obx(
       () => _buildContent(context),
     );
-    // return Obx(
-    //   () => Stack(
-    //     alignment: AlignmentDirectional.bottomEnd,
-    //     children: [
-    //       _listViewBuilder(context),
-    //       if (_whController.currentTab.value != WalletHomeTabs.walletSettings)
-    //         _buildBottomView(context),
-    //     ],
-    //   ),
-    // );
   }
 
   Widget _buildContent(BuildContext context) {

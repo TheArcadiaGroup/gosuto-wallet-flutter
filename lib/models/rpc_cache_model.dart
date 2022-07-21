@@ -14,6 +14,6 @@ class RPCCacheModel {
 
   @override
   String toString() {
-    return 'Cache: ' + lastTimestamp.toString();
+    return 'Cache: ' + balance.toString() + ', ' + lastTimestamp.toString();
   }
 }

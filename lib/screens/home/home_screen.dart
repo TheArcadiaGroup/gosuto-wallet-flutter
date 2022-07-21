@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/services/service.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 
 import 'home.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
+
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +95,18 @@ class HomeScreen extends GetView<HomeController> {
                 ],
               ),
             ),
-            body: _buildContent(controller.currentTab.value)));
+            body: EasyRefresh(
+              controller: _refreshController,
+              header: const ClassicHeader(),
+              onRefresh: () async {
+                await controller.chooseWalletTab.fetchData();
+                _refreshController.finishRefresh();
+              },
+              onLoad: () {
+                _refreshController.finishLoad(IndicatorResult.success);
+              },
+              child: _buildContent(controller.currentTab.value),
+            )));
   }
 
   Widget _buildContent(MainTabs tab) {

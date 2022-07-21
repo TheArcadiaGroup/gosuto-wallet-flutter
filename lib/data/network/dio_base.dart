@@ -23,6 +23,7 @@ class DioBase {
     // Add cache
     getTemporaryDirectory().then((dir) {
       var cacheStore = HiveCacheStore(dir.path);
+      print(dir.path);
 
       var cacheOptions = CacheOptions(
         store: cacheStore,

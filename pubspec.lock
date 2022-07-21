@@ -297,6 +297,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.11"
+  easy_refresh:
+    dependency: "direct main"
+    description:
+      name: easy_refresh
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.2+2"
   ecdsa:
     dependency: transitive
     description:

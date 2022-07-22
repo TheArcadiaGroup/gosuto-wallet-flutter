@@ -190,7 +190,6 @@ class DBHelper {
       double? totalStake,
       double? totalRewards}) async {
     try {
-      print('==updateWalletBalance==');
       var box = await openBox<WalletModel>(walletBox);
       var index = box.keys.toList().indexOf(publicKey);
 
@@ -208,7 +207,6 @@ class DBHelper {
           if (totalRewards != null) {
             wallet.totalRewards = totalRewards;
           }
-          print(wallet);
           await box.put(publicKey, wallet);
         }
       }

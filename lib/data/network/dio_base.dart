@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+// import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 ///Create DioBase
 class DioBase {
@@ -23,7 +23,6 @@ class DioBase {
     // Add cache
     getTemporaryDirectory().then((dir) {
       var cacheStore = HiveCacheStore(dir.path);
-      print(dir.path);
 
       var cacheOptions = CacheOptions(
         store: cacheStore,

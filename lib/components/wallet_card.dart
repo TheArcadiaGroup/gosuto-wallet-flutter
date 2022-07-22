@@ -13,8 +13,6 @@ class WalletCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('==WalletCard==');
-    print(wallet);
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.only(left: 24),

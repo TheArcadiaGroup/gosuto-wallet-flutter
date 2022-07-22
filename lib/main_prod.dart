@@ -1,10 +1,18 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:gosuto/database/dbhelper.dart';
+import 'package:gosuto/models/models.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/themes/theme.dart';
+import 'package:gosuto/utils/utils.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+// import 'package:local_auth/local_auth.dart';
 import 'app_binding.dart';
 import 'env/env.dart';
 import 'routes/app_pages.dart';
@@ -12,28 +20,28 @@ import 'routes/app_pages.dart';
 void main() async {
   await GetStorage.init();
 
+  await Hive.initFlutter();
+  Hive
+    ..registerAdapter(WalletModelAdapter())
+    ..registerAdapter(SettingsModelAdapter());
+
   String initialRoute = OnboardingService().isFirstTimeOpen
       ? Routes.onBoarding
       : Routes.addWallet;
 
-  final _wallets = await DBHelper().getWallets();
+  final _wallets = await DBHelper.getWallets();
   if (_wallets.isNotEmpty) {
     initialRoute = Routes.home;
   }
 
-  // FlavorConfig(name: 'prod', variables: {
-  //   'baseUrl': 'https://event-store-api-clarity-mainnet.make.services',
-  // });
+  await DBHelper.addSettings(
+      SettingsModel(seedPhrase: '', password: '', useBiometricAuth: 0));
 
-  BuildEnvironment.init(
-      flavor: BuildFlavor.development,
-      baseUrl: 'https://event-store-api-clarity-mainnet.make.services/',
-      deployHashExplorer: 'https://cspr.live/deploy/');
+  await configLoading();
 
   runApp(MyApp(
     initialRoute: initialRoute,
   ));
-  configLoading();
 }
 
 class MyApp extends StatelessWidget {
@@ -59,4 +67,25 @@ class MyApp extends StatelessWidget {
   }
 }
 
-void configLoading() {}
+Future<void> configLoading() async {
+  BuildEnvironment.init(
+      flavor: BuildFlavor.development,
+      rpcUrl: 'https://casper-node.tor.us',
+      baseUrl: 'https://event-store-api-clarity-mainnet.make.services/',
+      deployHashExplorer: 'https://cspr.live/deploy/');
+
+  const secureStorage = FlutterSecureStorage();
+  // if key not exists return null
+  final encryprionKey = await secureStorage.read(key: 'gosuto');
+  if (encryprionKey == null) {
+    final key = Hive.generateSecureKey();
+    await secureStorage.write(
+      key: 'gosuto',
+      value: base64UrlEncode(key),
+    );
+  }
+
+  Timer.periodic(const Duration(minutes: 10), (Timer t) async {
+    await AccountUtils.getAllBalances(false);
+  });
+}

@@ -75,7 +75,8 @@ class WalletHomeController extends GetxController
   }
 
   Future updateWallet(WalletModel wallet) async {
-    await DBHelper().update(wallet);
+    // TODO: update name
+    // await DBHelper.updateWallet(wallet);
   }
 
   Future<void> getTransfers(String accountHash, int page, int limit,
@@ -92,7 +93,7 @@ class WalletHomeController extends GetxController
   }
 
   Future<void> getSeedPhrase() async {
-    bool seedPhraseAdded = await DBHelper().isSeedPhraseAdded();
+    bool seedPhraseAdded = await DBHelper.isSeedPhraseAdded();
     if (seedPhraseAdded) {
       String decryptedSeedPhrase = await GosutoAes256Gcm.decrypt(
           setting?.value.seedPhrase ?? '', setting?.value.password ?? '');
@@ -115,7 +116,7 @@ class WalletHomeController extends GetxController
     setting?.value.password = hashedPassword;
     setting?.refresh();
 
-    await DBHelper().updateSettings(
+    await DBHelper.updateSettings(
       setting!.value,
       'password',
     );

@@ -16,7 +16,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
   }
 
   Future<void> _onNextPressed() async {
-    int walletIndex = await DBHelper().getTheLastestWalletId();
+    int walletIndex = await DBHelper.getTheLastestWalletId();
 
     final args = [
       {'walletIndex': walletIndex + 1}
@@ -57,7 +57,7 @@ class AddWalletScreen extends GetView<AddWalletController> {
       ),
     ];
     return FutureBuilder(
-      future: DBHelper().isSeedPhraseAdded(),
+      future: DBHelper.isSeedPhraseAdded(),
       builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasData && snapshot.data != null) {

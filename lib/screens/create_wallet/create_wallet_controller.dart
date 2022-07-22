@@ -80,7 +80,7 @@ class CreateWalletController extends GetxController {
   }
 
   Future<String> getSeedPhrase() async {
-    final _settings = await DBHelper().getSettings();
+    final _settings = await DBHelper.getSettings();
 
     if (_settings != null) {
       return _settings.seedPhrase;
@@ -90,13 +90,13 @@ class CreateWalletController extends GetxController {
   }
 
   Future<void> getPasswordDB() async {
-    String password = await DBHelper().getPassword();
+    String password = await DBHelper.getPassword();
     passwordDB(password);
   }
 
   Future<bool> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletIsExist = await DBHelper().isWalletNameExist(
+    bool walletIsExist = await DBHelper.isWalletNameExist(
         walletName.value.isNotEmpty
             ? walletName.value
             : walletNameController.text);

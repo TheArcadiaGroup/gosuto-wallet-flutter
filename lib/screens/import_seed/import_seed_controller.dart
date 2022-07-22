@@ -96,13 +96,13 @@ class ImportSeedController extends GetxController {
   }
 
   Future<void> getPasswordDB() async {
-    String password = await DBHelper().getPassword();
+    String password = await DBHelper.getPassword();
     passwordDB(password);
   }
 
   Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletNameIsExist = await DBHelper().isWalletNameExist(
+    bool walletNameIsExist = await DBHelper.isWalletNameExist(
         walletName.value.isNotEmpty
             ? walletName.value
             : walletNameController.text);

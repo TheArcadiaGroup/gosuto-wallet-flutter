@@ -23,7 +23,7 @@ class WalletUtils {
     );
 
     // Get settings from db
-    var settingsDB = await DBHelper().getSettings();
+    var settingsDB = await DBHelper.getSettings();
     if (settingsDB != null) {
       passwordDB = settingsDB.password;
       seedPhraseDB = settingsDB.seedPhrase;
@@ -50,7 +50,7 @@ class WalletUtils {
             await GosutoAes256Gcm.encrypt(seedPhrase, hashedPassword);
       }
 
-      await DBHelper().updateSettings(
+      await DBHelper.updateSettings(
         SettingsModel(
           seedPhrase: hashedSeedPhrase,
           password: hashedPassword,
@@ -67,7 +67,7 @@ class WalletUtils {
         await GosutoAes256Gcm.decrypt(seedPhraseDB, passwordDB);
 
     // Get current index
-    int walletIndex = await DBHelper().getTheLastestWalletId();
+    int walletIndex = await DBHelper.getTheLastestWalletId();
 
     var casperHDKey = CasperHDKey.fromMasterSeed(
         Uint8List.fromList(decryptedSeedPhrase.codeUnits.toList()));
@@ -79,7 +79,7 @@ class WalletUtils {
     bool isValidator = await AccountUtils.isValidator(
         accountHash.replaceAll('account-hash-', ''));
 
-    int walletId = await DBHelper().insertWallet(
+    int walletId = await DBHelper.insertWallet(
       WalletModel(
           name: walletName,
           publicKey: key.publicKey.toHex(),
@@ -104,7 +104,7 @@ class WalletUtils {
     );
 
     // Get settings from db
-    var settingsDB = await DBHelper().getSettings();
+    var settingsDB = await DBHelper.getSettings();
     if (settingsDB != null) {
       passwordDB = settingsDB.password;
     }
@@ -119,7 +119,7 @@ class WalletUtils {
 
         hashedPassword = hex.encode(hashedPasswordBytes.bytes);
 
-        await DBHelper().updateSettings(
+        await DBHelper.updateSettings(
           SettingsModel(
             seedPhrase: '',
             password: hashedPassword,
@@ -147,7 +147,7 @@ class WalletUtils {
       bool isValidator = await AccountUtils.isValidator(
           accountHash.replaceAll('account-hash-', ''));
 
-      int walletId = await DBHelper().insertWallet(
+      int walletId = await DBHelper.insertWallet(
         WalletModel(
             name: walletName,
             publicKey: clPublicKey.toHex(),

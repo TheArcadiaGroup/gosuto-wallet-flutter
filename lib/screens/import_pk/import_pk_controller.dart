@@ -104,13 +104,13 @@ class ImportPkController extends GetxController {
   }
 
   Future<void> getPasswordDB() async {
-    String password = await DBHelper().getPassword();
+    String password = await DBHelper.getPassword();
     passwordDB(password);
   }
 
   Future<Map> checkValidate() async {
     bool isValid = formKey.currentState!.validate();
-    bool walletNameIsExist = await DBHelper().isWalletNameExist(
+    bool walletNameIsExist = await DBHelper.isWalletNameExist(
         walletName.value.isNotEmpty
             ? walletName.value
             : walletNameController.text);
@@ -123,7 +123,7 @@ class ImportPkController extends GetxController {
       isValid = false;
     } else {
       // check password exist
-      // String password = await DBHelper().getPassword();
+      // String password = await DBHelper.getPassword();
 
       // if (password != '') {
       // check wallet exist
@@ -154,7 +154,7 @@ class ImportPkController extends GetxController {
             : Secp256K1.accountHexStr(publicKeyBytes);
       }
 
-      var wallets = await DBHelper().getWalletByPublicKey(publicKeyHex);
+      var wallets = await DBHelper.getWalletByPublicKey(publicKeyHex);
       if (wallets != null) {
         errorMessage = 'wallet_exist'.tr;
         isValid = false;

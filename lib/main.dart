@@ -17,6 +17,35 @@ import 'app_binding.dart';
 import 'env/env.dart';
 import 'routes/app_pages.dart';
 
+Future<void> configLoading() async {
+  // BuildEnvironment.init(
+  //     flavor: BuildFlavor.development,
+  //     rpcUrl: 'https://testnet.casper-node.tor.us',
+  //     baseUrl: 'https://event-store-api-clarity-testnet.make.services/',
+  //     deployHashExplorer: 'https://testnet.cspr.live/deploy/');
+
+  BuildEnvironment.init(
+      flavor: BuildFlavor.development,
+      rpcUrl: 'https://casper-node.tor.us',
+      baseUrl: 'https://event-store-api-clarity-mainnet.make.services/',
+      deployHashExplorer: 'https://cspr.live/deploy/');
+
+  const secureStorage = FlutterSecureStorage();
+  // if key not exists return null
+  final encryprionKey = await secureStorage.read(key: 'gosuto');
+  if (encryprionKey == null) {
+    final key = Hive.generateSecureKey();
+    await secureStorage.write(
+      key: 'gosuto',
+      value: base64UrlEncode(key),
+    );
+  }
+
+  Timer.periodic(const Duration(minutes: 10), (Timer t) async {
+    await AccountUtils.getAllBalances(false);
+  });
+}
+
 void main() async {
   await GetStorage.init();
 
@@ -65,33 +94,4 @@ class MyApp extends StatelessWidget {
       translations: TranslationService(),
     );
   }
-}
-
-Future<void> configLoading() async {
-  BuildEnvironment.init(
-      flavor: BuildFlavor.development,
-      rpcUrl: 'https://testnet.casper-node.tor.us',
-      baseUrl: 'https://event-store-api-clarity-testnet.make.services/',
-      deployHashExplorer: 'https://testnet.cspr.live/deploy/');
-
-  // BuildEnvironment.init(
-  //     flavor: BuildFlavor.development,
-  //     rpcUrl: 'https://casper-node.tor.us',
-  //     baseUrl: 'https://event-store-api-clarity-mainnet.make.services/',
-  //     deployHashExplorer: 'https://cspr.live/deploy/');
-
-  const secureStorage = FlutterSecureStorage();
-  // if key not exists return null
-  final encryprionKey = await secureStorage.read(key: 'gosuto');
-  if (encryprionKey == null) {
-    final key = Hive.generateSecureKey();
-    await secureStorage.write(
-      key: 'gosuto',
-      value: base64UrlEncode(key),
-    );
-  }
-
-  Timer.periodic(const Duration(minutes: 10), (Timer t) async {
-    await AccountUtils.getAllBalances(false);
-  });
 }

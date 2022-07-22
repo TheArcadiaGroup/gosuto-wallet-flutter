@@ -21,14 +21,18 @@ class WalletModelAdapter extends TypeAdapter<WalletModel> {
       publicKey: fields[2] as String,
       accountHash: fields[3] as String,
       privateKey: fields[4] as String,
-      isValidator: fields[5] as bool,
-    )..id = fields[0] as int;
+      isValidator: fields[8] as bool,
+    )
+      ..id = fields[0] as int
+      ..balance = fields[5] as double
+      ..totalStake = fields[6] as double
+      ..totalRewards = fields[7] as double;
   }
 
   @override
   void write(BinaryWriter writer, WalletModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -40,6 +44,12 @@ class WalletModelAdapter extends TypeAdapter<WalletModel> {
       ..writeByte(4)
       ..write(obj.privateKey)
       ..writeByte(5)
+      ..write(obj.balance)
+      ..writeByte(6)
+      ..write(obj.totalStake)
+      ..writeByte(7)
+      ..write(obj.totalRewards)
+      ..writeByte(8)
       ..write(obj.isValidator);
   }
 

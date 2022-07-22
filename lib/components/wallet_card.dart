@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:gosuto/models/models.dart';
 import 'package:gosuto/themes/colors.dart';
-import 'package:gosuto/utils/account.dart';
 import 'package:gosuto/utils/number.dart';
 
-class WalletCard extends StatefulWidget {
+class WalletCard extends StatelessWidget {
   const WalletCard({Key? key, required this.wallet, required this.rate})
       : super(key: key);
 
@@ -13,25 +12,9 @@ class WalletCard extends StatefulWidget {
   final double rate;
 
   @override
-  State<StatefulWidget> createState() => _WalletCardState();
-}
-
-class _WalletCardState extends State<WalletCard> {
-  late Future<double> futureBalance;
-  late Future<double> futureTotalStake;
-  late Future<double> futureTotalRewards;
-
-  @override
-  void initState() {
-    super.initState();
-    futureBalance = AccountUtils.fetchBalance(widget.wallet.publicKey);
-    futureTotalStake = AccountUtils.getTotalStake(widget.wallet.publicKey);
-    futureTotalRewards = AccountUtils.getTotalRewards(
-        widget.wallet.publicKey, widget.wallet.isValidator);
-  }
-
-  @override
   Widget build(BuildContext context) {
+    print('==WalletCard==');
+    print(wallet);
     return Container(
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.only(left: 24),
@@ -64,7 +47,7 @@ class _WalletCardState extends State<WalletCard> {
                           width: 36, height: 36),
                       const SizedBox(width: 5),
                       Expanded(
-                          child: Text(widget.wallet.name,
+                          child: Text(wallet.name,
                               style: Theme.of(context).textTheme.headline2,
                               overflow: TextOverflow.ellipsis))
                     ],
@@ -77,35 +60,23 @@ class _WalletCardState extends State<WalletCard> {
                         .subtitle2
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  FutureBuilder(
-                      future: futureBalance,
-                      builder: (context, snapshot) {
-                        var textCSPR = '-- CSPR ~ ';
-                        var textUSD = '\$--';
-                        if (snapshot.hasData &&
-                            snapshot.connectionState == ConnectionState.done) {
-                          var balance = double.parse(snapshot.data.toString());
-                          var usdValue = balance * widget.rate;
-                          textCSPR = '${NumberUtils.format(balance)} CSPR ~ ';
-                          textUSD = NumberUtils.formatCurrency(usdValue);
-                        }
-                        return RichText(
-                            text: TextSpan(
-                                text: textCSPR,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                                children: [
-                              TextSpan(
-                                text: textUSD,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle2
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                              )
-                            ]));
-                      }),
+                  RichText(
+                      text: TextSpan(
+                          text: '${NumberUtils.format(wallet.balance)} CSPR ~ ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          children: [
+                        TextSpan(
+                          text:
+                              NumberUtils.formatCurrency(wallet.balance * rate),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        )
+                      ])),
                   const SizedBox(height: 10),
                   Divider(
                     height: 1,
@@ -119,64 +90,39 @@ class _WalletCardState extends State<WalletCard> {
                         .subtitle2
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  FutureBuilder(
-                      future: futureTotalStake,
-                      builder: (context, snapshot) {
-                        var textCSPR = '-- CSPR ~ ';
-                        var textUSD = '\$--';
-                        if (snapshot.hasData) {
-                          var balance = double.parse(snapshot.data.toString());
-                          var usdValue = balance * widget.rate;
-                          textCSPR = '${NumberUtils.format(balance)} CSPR ~ ';
-                          textUSD = NumberUtils.formatCurrency(usdValue);
-                        }
-                        return RichText(
-                            text: TextSpan(
-                                text: textCSPR,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText1
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                                children: [
-                              TextSpan(
-                                text: textUSD,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle2
-                                    ?.copyWith(fontWeight: FontWeight.bold),
-                              )
-                            ]));
-                      }),
+                  RichText(
+                      text: TextSpan(
+                          text:
+                              '${NumberUtils.format(wallet.totalStake)} CSPR ~ ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                          children: [
+                        TextSpan(
+                          text: NumberUtils.formatCurrency(
+                              wallet.totalStake * rate),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2
+                              ?.copyWith(fontWeight: FontWeight.bold),
+                        )
+                      ])),
                   const SizedBox(height: 10),
-                  FutureBuilder(
-                    future: futureTotalRewards,
-                    builder: (context, snapshot) {
-                      var textCSPR = '-- CSPR ~ ';
-                      var textUSD = '\$--';
-                      if (snapshot.hasData) {
-                        var totalRewards =
-                            double.parse(snapshot.data.toString());
-                        var usdValue = totalRewards * widget.rate;
-
-                        textCSPR = '${NumberUtils.format(totalRewards)} CSPR';
-                        textUSD = NumberUtils.formatCurrency(usdValue);
-                      }
-
-                      return RichText(
-                          text: TextSpan(
-                              text: 'total_rewards'.tr,
-                              style: Theme.of(context).textTheme.subtitle2,
-                              children: [
-                            TextSpan(
-                              text: '\n$textCSPR ($textUSD)',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1
-                                  ?.copyWith(fontSize: 12),
-                            )
-                          ]));
-                    },
-                  ),
+                  RichText(
+                      text: TextSpan(
+                          text: 'total_rewards'.tr,
+                          style: Theme.of(context).textTheme.subtitle2,
+                          children: [
+                        TextSpan(
+                          text:
+                              '\n${NumberUtils.format(wallet.totalRewards)} CSPR (${NumberUtils.formatCurrency(wallet.totalRewards * rate)})',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1
+                              ?.copyWith(fontSize: 12),
+                        )
+                      ])),
                 ],
               ),
             ),

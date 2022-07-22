@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:gosuto/utils/utils.dart';
 
 import 'home.dart';
 
@@ -100,7 +101,11 @@ class HomeScreen extends GetView<HomeController> {
               header: const ClassicHeader(),
               footer: const ClassicFooter(),
               onRefresh: () async {
+                // await AccountUtils.getAllBalances(false);
+                // await AccountUtils.getAllTotalStakes(false);
+                await AccountUtils.getAllTotalRewards(false);
                 await controller.chooseWalletTab.fetchData();
+
                 _refreshController.finishRefresh();
               },
               child: _buildContent(controller.currentTab.value),

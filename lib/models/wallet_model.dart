@@ -20,6 +20,15 @@ class WalletModel {
   late String privateKey;
 
   @HiveField(5)
+  late double balance;
+
+  @HiveField(6)
+  late double totalStake;
+
+  @HiveField(7)
+  late double totalRewards;
+
+  @HiveField(8)
   late bool isValidator;
 
   WalletModel(
@@ -31,6 +40,6 @@ class WalletModel {
 
   @override
   String toString() {
-    return '$id $name $publicKey ($accountHash)';
+    return '$id $name $publicKey ($accountHash) $balance $totalStake $totalRewards';
   }
 }

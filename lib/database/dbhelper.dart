@@ -110,10 +110,6 @@ class DBHelper {
           var now = DateTime.now().millisecondsSinceEpoch;
           var duration = Duration(milliseconds: now - lastUpdatedTimestamp);
 
-          print('==isCacheOutdated==');
-          print(cacheDuration);
-          print(duration);
-
           if (cacheDuration.compareTo(duration) < 0) {
             // update if outdate;
             settings.lastUpdatedTimestamp = now;
@@ -145,9 +141,10 @@ class DBHelper {
       var box = await openBox<WalletModel>(walletBox);
       wallet.id = box.length;
       wallet.balance = await AccountUtils.getBalance(wallet.publicKey, false);
-      wallet.totalStake = await AccountUtils.getTotalStake(wallet.publicKey);
+      wallet.totalStake =
+          await AccountUtils.getTotalStake(wallet.publicKey, false);
       wallet.totalRewards = await AccountUtils.getTotalRewards(
-          wallet.publicKey, wallet.isValidator);
+          wallet.publicKey, wallet.isValidator, false);
       await box.put(wallet.publicKey, wallet);
       return box.length;
     } catch (e) {
@@ -187,18 +184,30 @@ class DBHelper {
     }
   }
 
-  static Future<int> updateWalletBalance(
-      String publicKey, double balance) async {
+  static Future<int> updateWallet(
+      {required String publicKey,
+      double? balance,
+      double? totalStake,
+      double? totalRewards}) async {
     try {
       print('==updateWalletBalance==');
-      print(balance);
       var box = await openBox<WalletModel>(walletBox);
       var index = box.keys.toList().indexOf(publicKey);
 
       if (index >= 0) {
         var wallet = box.get(publicKey);
         if (wallet != null) {
-          wallet.balance = balance;
+          if (balance != null) {
+            wallet.balance = balance;
+          }
+
+          if (totalStake != null) {
+            wallet.totalStake = totalStake;
+          }
+
+          if (totalRewards != null) {
+            wallet.totalRewards = totalRewards;
+          }
           print(wallet);
           await box.put(publicKey, wallet);
         }

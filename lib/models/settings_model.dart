@@ -13,9 +13,17 @@ class SettingsModel {
   @HiveField(2)
   late int useBiometricAuth;
 
+  @HiveField(3)
+  late int lastUpdatedTimestamp;
+
   SettingsModel({
     required this.seedPhrase,
     required this.password,
     required this.useBiometricAuth,
   });
+
+  @override
+  String toString() {
+    return 'Settings: lastUpdatedTimestamp: $lastUpdatedTimestamp';
+  }
 }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:gosuto/models/models.dart';
+import 'package:gosuto/utils/utils.dart';
 
 class HistoryItem extends StatelessWidget {
   const HistoryItem(
@@ -57,7 +59,8 @@ class HistoryItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  transfer.timestamp,
+                  GetTimeAgo.parse(DateTime.parse(transfer.timestamp).toLocal(),
+                      pattern: 'LLL d, hh:mm:ss a'),
                   overflow: TextOverflow.clip,
                   style: Theme.of(context)
                       .textTheme
@@ -73,7 +76,7 @@ class HistoryItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '-$amount CSPR'.tr,
+                      '-${NumberUtils.format(amount)} CSPR',
                       style: Theme.of(context)
                           .textTheme
                           .headline5
@@ -81,7 +84,7 @@ class HistoryItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      '${(amount * rate).toStringAsFixed(2)} USD',
+                      NumberUtils.formatCurrency(amount * rate),
                       style: Theme.of(context).textTheme.headline5,
                     )
                   ],
@@ -100,7 +103,7 @@ class HistoryItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '+$amount CSPR'.tr,
+                  '+${NumberUtils.format(amount)} CSPR',
                   style: Theme.of(context)
                       .textTheme
                       .headline3
@@ -108,7 +111,7 @@ class HistoryItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  '${(amount * rate).toStringAsFixed(2)} USD',
+                  NumberUtils.formatCurrency(amount * rate),
                   style: Theme.of(context).textTheme.headline3,
                 )
               ],

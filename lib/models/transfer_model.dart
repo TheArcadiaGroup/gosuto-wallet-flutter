@@ -26,7 +26,7 @@ class TransferModel {
   String fromAccount;
 
   @JsonKey(name: 'toAccount')
-  String toAccount;
+  String? toAccount;
 
   @JsonKey(name: 'timestamp')
   String timestamp;

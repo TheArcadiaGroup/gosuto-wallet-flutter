@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:get_time_ago/get_time_ago.dart';
 import 'package:gosuto/env/env.dart';
 import 'package:gosuto/utils/utils.dart';
 
@@ -29,7 +30,7 @@ class TransactionInfoCard extends StatelessWidget {
     return Container(
       width: 400,
       // height: 435,
-      padding: const EdgeInsets.all(25),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: Theme.of(context).colorScheme.secondary),
@@ -45,6 +46,7 @@ class TransactionInfoCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
             width: 400,
@@ -118,7 +120,8 @@ class TransactionInfoCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.subtitle1,
                 ),
                 Text(
-                  transfer.timestamp,
+                  GetTimeAgo.parse(DateTime.parse(transfer.timestamp).toLocal(),
+                      pattern: 'LLL d, hh:mm:ss a'),
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       color: Theme.of(context).colorScheme.tertiaryContainer),
                 )
@@ -145,14 +148,14 @@ class TransactionInfoCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '-$amount CSPR'.tr,
+                          '-${NumberUtils.format(amount)} CSPR',
                           style: Theme.of(context)
                               .textTheme
                               .headline5
                               ?.copyWith(fontSize: 13),
                         ),
                         Text(
-                          '${(amount * rate).toStringAsFixed(2)} USD',
+                          NumberUtils.formatCurrency(amount * rate),
                           style: Theme.of(context).textTheme.headline5,
                         )
                       ],
@@ -168,14 +171,14 @@ class TransactionInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '+$amount CSPR'.tr,
+                      '+${NumberUtils.format(amount)} CSPR',
                       style: Theme.of(context)
                           .textTheme
                           .headline3
                           ?.copyWith(fontSize: 13),
                     ),
                     Text(
-                      '${(amount * rate).toStringAsFixed(2)} USD',
+                      NumberUtils.formatCurrency(amount * rate),
                       style: Theme.of(context).textTheme.headline3,
                     )
                   ],

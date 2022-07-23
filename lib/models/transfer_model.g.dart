@@ -15,7 +15,7 @@ TransferModel _$TransferModelFromJson(Map<String, dynamic> json) =>
       targetPurse: json['targetPurse'] as String,
       amount: json['amount'] as String,
       fromAccount: json['fromAccount'] as String,
-      toAccount: json['toAccount'] as String,
+      toAccount: json['toAccount'] as String?,
       timestamp: json['timestamp'] as String,
       fromAccountPublicKey: json['fromAccountPublicKey'] as String,
       toAccountPublicKey: json['toAccountPublicKey'] as String?,

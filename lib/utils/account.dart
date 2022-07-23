@@ -117,8 +117,6 @@ class AccountUtils {
           totalRewards = BigNumber.from(response['data']);
         }
         var totalRewardsDouble = CasperClient.fromWei(totalRewards).toDouble();
-        print('==totalRewardsDouble==');
-        print(totalRewardsDouble);
         await DBHelper.updateWallet(
             publicKey: publicKey, totalRewards: totalRewardsDouble);
         return totalRewardsDouble;

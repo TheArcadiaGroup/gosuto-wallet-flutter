@@ -41,15 +41,6 @@ class WalletHomeController extends GetxController
     carouselController = CarouselController();
 
     apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
-    // TODO: Fake
-    // accountHash = '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b'
-    // page=1&limit=10&order_direction=DESC&with_extended_info=1
-    // getTransfers(
-    //     '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
-    //     page.value,
-    //     limit.value,
-    //     'DESC',
-    //     1);
   }
 
   void switchTab(index) {
@@ -75,8 +66,7 @@ class WalletHomeController extends GetxController
   }
 
   Future updateWallet(WalletModel wallet) async {
-    // TODO: update name
-    // await DBHelper.updateWallet(wallet);
+    await DBHelper.updateWallet(publicKey: wallet.publicKey);
   }
 
   Future<void> getTransfers(String accountHash, int page, int limit,

@@ -46,7 +46,7 @@ class HomeController extends GetxController
     tabController = TabController(length: MainTabs.values.length, vsync: this);
     apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
 
-    getRate(1);
+    getCasperPrice(1);
     fetchSetting();
   }
 
@@ -99,7 +99,7 @@ class HomeController extends GetxController
     }
   }
 
-  Future<double> getRate(int rateId) async {
+  Future<double> getCasperPrice(int rateId) async {
     try {
       final response = await apiClient.rateAmount(rateId);
       final _rate = response.data;

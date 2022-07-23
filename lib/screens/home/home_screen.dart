@@ -10,11 +10,6 @@ import 'home.dart';
 class HomeScreen extends GetView<HomeController> {
   HomeScreen({Key? key}) : super(key: key);
 
-  final EasyRefreshController _refreshController = EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -28,88 +23,70 @@ class HomeScreen extends GetView<HomeController> {
     return DefaultTabController(
         length: 6,
         child: Scaffold(
-            appBar: AppBar(
-              flexibleSpace: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
-                        child: Tab(
-                            icon: ThemeService().isDarkMode
-                                ? SvgPicture.asset(
-                                    'assets/svgs/dark/ic-menu.svg')
-                                : SvgPicture.asset(
-                                    'assets/svgs/light/ic-menu.svg')),
+          appBar: AppBar(
+            flexibleSpace: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
+                      child: Tab(
+                          icon: ThemeService().isDarkMode
+                              ? SvgPicture.asset('assets/svgs/dark/ic-menu.svg')
+                              : SvgPicture.asset(
+                                  'assets/svgs/light/ic-menu.svg')),
+                    ),
+                    Expanded(
+                      child: TabBar(
+                        controller: controller.tabController,
+                        isScrollable: true,
+                        indicatorColor: Colors.transparent,
+                        tabs: [
+                          Tab(icon: Image.asset('assets/images/ic-tab-2.png')),
+                          Tab(icon: Image.asset('assets/images/ic-tab-3.png')),
+                          Tab(
+                              icon: SvgPicture.asset(
+                                  'assets/svgs/ic-history.svg',
+                                  color: selectedIdx == 2
+                                      ? Colors.white
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onTertiary)),
+                          Tab(
+                              icon: SvgPicture.asset('assets/svgs/ic-stake.svg',
+                                  color: selectedIdx == 3
+                                      ? Colors.white
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onTertiary)),
+                          Tab(
+                              icon: SvgPicture.asset(
+                                  'assets/svgs/ic-performance.svg',
+                                  color: selectedIdx == 4
+                                      ? Colors.white
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onTertiary)),
+                          Tab(
+                              icon: SvgPicture.asset(
+                                  'assets/svgs/ic-setting.svg',
+                                  color: selectedIdx == 5
+                                      ? Colors.white
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .onTertiary)),
+                        ],
+                        onTap: (index) => controller.switchTab(index),
                       ),
-                      Expanded(
-                        child: TabBar(
-                          controller: controller.tabController,
-                          isScrollable: true,
-                          indicatorColor: Colors.transparent,
-                          tabs: [
-                            Tab(
-                                icon:
-                                    Image.asset('assets/images/ic-tab-2.png')),
-                            Tab(
-                                icon:
-                                    Image.asset('assets/images/ic-tab-3.png')),
-                            Tab(
-                                icon: SvgPicture.asset(
-                                    'assets/svgs/ic-history.svg',
-                                    color: selectedIdx == 2
-                                        ? Colors.white
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary)),
-                            Tab(
-                                icon: SvgPicture.asset(
-                                    'assets/svgs/ic-stake.svg',
-                                    color: selectedIdx == 3
-                                        ? Colors.white
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary)),
-                            Tab(
-                                icon: SvgPicture.asset(
-                                    'assets/svgs/ic-performance.svg',
-                                    color: selectedIdx == 4
-                                        ? Colors.white
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary)),
-                            Tab(
-                                icon: SvgPicture.asset(
-                                    'assets/svgs/ic-setting.svg',
-                                    color: selectedIdx == 5
-                                        ? Colors.white
-                                        : Theme.of(context)
-                                            .colorScheme
-                                            .onTertiary)),
-                          ],
-                          onTap: (index) => controller.switchTab(index),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                )
+              ],
             ),
-            body: EasyRefresh(
-              controller: _refreshController,
-              header: const ClassicHeader(),
-              footer: const ClassicFooter(),
-              onRefresh: () async {
-                // await AccountUtils.getAllBalances(false);
-                // await AccountUtils.getAllTotalStakes(false);
-                await AccountUtils.getAllTotalRewards(false);
-                await controller.chooseWalletTab.fetchData();
-
-                _refreshController.finishRefresh();
-              },
-              child: _buildContent(controller.currentTab.value),
-            )));
+          ),
+          body: _buildContent(controller.currentTab.value),
+        ));
   }
 
   Widget _buildContent(MainTabs tab) {

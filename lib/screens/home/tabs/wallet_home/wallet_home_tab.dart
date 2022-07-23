@@ -30,7 +30,9 @@ class WalletHomeTab extends GetView<HomeController> {
     _whController.setting = controller.setting;
     _whController.getSeedPhrase();
     _whController.getTransfers(
-        controller.selectedWallet?.value.accountHash ?? '',
+        controller.selectedWallet?.value.accountHash
+                .replaceAll('account-hash-', '') ??
+            '',
         _whController.page.value,
         _whController.limit.value,
         'DESC',
@@ -145,6 +147,7 @@ class WalletHomeTab extends GetView<HomeController> {
                     : AppConstants.heightBottomView + 20),
         itemCount: _getItemCountListView(_whController.currentTab.value),
         itemBuilder: (context, index) {
+          // Add new Wallet button
           if (index == 0) {
             return Padding(
               padding: const EdgeInsets.all(10),
@@ -164,6 +167,7 @@ class WalletHomeTab extends GetView<HomeController> {
             );
           }
 
+          // Tab bar
           if (index == 1) {
             return Padding(
               padding: const EdgeInsets.only(top: 20),
@@ -207,6 +211,7 @@ class WalletHomeTab extends GetView<HomeController> {
             );
           }
 
+          // Wallet Address
           if (index == 2) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -242,7 +247,14 @@ class WalletHomeTab extends GetView<HomeController> {
                               Strings.displayHash(
                                   controller.selectedWallet?.value.publicKey ??
                                       ''),
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1
+                                  ?.copyWith(
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .headline1
+                                          ?.color),
                             ),
                             const SizedBox(width: 5),
                             SvgPicture.asset('assets/svgs/ic-copy.svg'),
@@ -280,6 +292,7 @@ class WalletHomeTab extends GetView<HomeController> {
             );
           }
 
+          //  ShowMore button for History tab
           if (index ==
                   _getItemCountListView(_whController.currentTab.value) - 1 &&
               _whController.currentTab.value == WalletHomeTabs.history) {
@@ -332,14 +345,14 @@ class WalletHomeTab extends GetView<HomeController> {
   }
 
   Widget _buildHistory(BuildContext context, int index) {
+    // Filter row
     if (index == 0) {
       return Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('stake_from_this_wallet'.tr,
-                style: Theme.of(context).textTheme.headline1),
+            Text('history'.tr, style: Theme.of(context).textTheme.headline1),
             SizedBox(
               height: 36,
               width: 142,

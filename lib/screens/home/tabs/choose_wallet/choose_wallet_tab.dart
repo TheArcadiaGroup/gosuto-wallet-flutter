@@ -1,11 +1,18 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/screens/home/home.dart';
+import 'package:gosuto/utils/account.dart';
 
 class ChooseWalletTab extends GetView<HomeController> {
   ChooseWalletTab({Key? key}) : super(key: key);
+
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
 
   final ChooseWalletController _cwController =
       Get.put(ChooseWalletController());
@@ -13,7 +20,20 @@ class ChooseWalletTab extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     fetchData();
-    return _listViewBuilder();
+    return EasyRefresh(
+      controller: _refreshController,
+      header: const ClassicHeader(),
+      footer: const ClassicFooter(),
+      onRefresh: () async {
+        await AccountUtils.getAllBalances(false);
+        await AccountUtils.getAllTotalStakes(false);
+        await AccountUtils.getAllTotalRewards(false);
+        await controller.chooseWalletTab.fetchData();
+
+        _refreshController.finishRefresh();
+      },
+      child: _listViewBuilder(),
+    );
   }
 
   Future<void> fetchData() async {
@@ -71,7 +91,7 @@ class ChooseWalletTab extends GetView<HomeController> {
           }
 
           return FutureBuilder(
-              future: controller.getRate(1),
+              future: controller.getCasperPrice(1),
               builder: ((context, snapshot) {
                 var casperPrice = 0.0;
                 if (snapshot.hasData &&

@@ -25,8 +25,10 @@ class WalletHomeController extends GetxController
   var newPass = ''.obs;
   var rePass = ''.obs;
   var pass = ''.obs;
-  var page = 1.obs;
+  var currentPage = 1.obs;
   var limit = 10.obs;
+  var pageCount = 1.obs;
+  var itemCount = 0.obs;
 
   RxList<TransferModel> transfers = RxList<TransferModel>();
   RxList<String> seedPhrases = RxList<String>();
@@ -74,11 +76,16 @@ class WalletHomeController extends GetxController
     final response = await apiClient.accountsTransfers(
         accountHash, page, limit, orderDirection, withExtendedInfo);
     List<dynamic> data = response.data;
+    pageCount.value = response.pageCount ?? 1;
+    itemCount.value = response.itemCount ?? 0;
+
     final _transfers = data.map((val) => TransferModel.fromJson(val)).toList();
     if (transfers.isEmpty) {
       transfers(_transfers);
     } else {
-      transfers.addAll(_transfers);
+      if (currentPage.value != page) {
+        transfers.addAll(_transfers);
+      }
     }
   }
 

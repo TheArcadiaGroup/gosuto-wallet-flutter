@@ -22,7 +22,7 @@ class HistoryTab extends GetView<HomeController> {
   Widget build(BuildContext context) {
     _hController.getTransfers(
         controller.selectedWallet?.value.accountHash ?? '',
-        _hController.page.value,
+        _hController.currentPage.value,
         _hController.limit.value,
         'DESC',
         1);
@@ -117,10 +117,10 @@ class HistoryTab extends GetView<HomeController> {
                 width: 97,
                 child: ElevatedButton(
                   onPressed: () {
-                    _hController.page.value++;
+                    _hController.currentPage.value++;
                     _hController.getTransfers(
                         '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
-                        _hController.page.value,
+                        _hController.currentPage.value,
                         _hController.limit.value,
                         'DESC',
                         1);

@@ -10,7 +10,7 @@ class HistoryController extends GetxController {
   RxList<TransferModel> transfers = RxList<TransferModel>();
   late ApiClient apiClient;
 
-  var page = 1.obs;
+  var currentPage = 1.obs;
   var limit = 10.obs;
 
   Rx<TransferModel>? selectedTransfer;
@@ -32,6 +32,12 @@ class HistoryController extends GetxController {
     //     1);
   }
 
+  @override
+  void onClose() {
+    transfers.clear();
+    super.dispose();
+  }
+
   Future<void> getTransfers(String accountHash, int page, int limit,
       String orderDirection, int withExtendedInfo) async {
     final response = await apiClient.accountsTransfers(
@@ -42,7 +48,11 @@ class HistoryController extends GetxController {
     if (transfers.isEmpty) {
       transfers(_transfers);
     } else {
-      transfers.addAll(_transfers);
+      print(page);
+      print(currentPage.value);
+      if (page != currentPage.value) {
+        transfers.addAll(_transfers);
+      }
     }
   }
 }

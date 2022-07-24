@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -22,6 +23,11 @@ class WalletHomeTab extends GetView<HomeController> {
 
   final PanelController _pc = PanelController();
 
+  final EasyRefreshController _refreshController = EasyRefreshController(
+    controlFinishRefresh: true,
+    controlFinishLoad: true,
+  );
+
   @override
   Widget build(BuildContext context) {
     ToastContext().init(context);
@@ -33,14 +39,31 @@ class WalletHomeTab extends GetView<HomeController> {
         controller.selectedWallet?.value.accountHash
                 .replaceAll('account-hash-', '') ??
             '',
-        _whController.page.value,
+        _whController.currentPage.value,
         _whController.limit.value,
         'DESC',
         1);
 
-    return Obx(
-      () => _buildContent(context),
-    );
+    return EasyRefresh(
+        controller: _refreshController,
+        header: const ClassicHeader(),
+        footer: const ClassicFooter(),
+        onRefresh: () async {
+          await AccountUtils.getBalance(
+              controller.selectedWallet?.value.publicKey ?? '', false);
+          await AccountUtils.getTotalStake(
+              controller.selectedWallet?.value.publicKey ?? '', false);
+          await AccountUtils.getTotalRewards(
+              controller.selectedWallet?.value.publicKey ?? '',
+              controller.selectedWallet?.value.isValidator ?? false,
+              false);
+          await controller.chooseWalletTab.fetchData();
+
+          _refreshController.finishRefresh();
+        },
+        child: Obx(
+          () => _buildContent(context),
+        ));
   }
 
   Widget _buildContent(BuildContext context) {
@@ -147,7 +170,7 @@ class WalletHomeTab extends GetView<HomeController> {
                     : AppConstants.heightBottomView + 20),
         itemCount: _getItemCountListView(_whController.currentTab.value),
         itemBuilder: (context, index) {
-          // Add new Wallet button
+          // Wallet Card & New Wallet button
           if (index == 0) {
             return Padding(
               padding: const EdgeInsets.all(10),
@@ -296,45 +319,55 @@ class WalletHomeTab extends GetView<HomeController> {
           if (index ==
                   _getItemCountListView(_whController.currentTab.value) - 1 &&
               _whController.currentTab.value == WalletHomeTabs.history) {
-            return Padding(
-              padding: EdgeInsets.only(
-                top: 37,
-                bottom: 34,
-                left: horizontalPadding,
-                right: horizontalPadding,
-              ),
-              child: SizedBox(
-                height: 40,
-                width: 97,
-                child: ElevatedButton(
-                  onPressed: () {
-                    _whController.page.value++;
-                    _whController.getTransfers(
-                        '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
-                        _whController.page.value,
-                        _whController.limit.value,
-                        'DESC',
-                        1);
-                  },
-                  child: Text(
-                    'show_more'.tr,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline4
-                        ?.copyWith(fontSize: 12),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.primary,
-                    side: BorderSide(
-                        width: 2.0,
-                        color: Theme.of(context).colorScheme.onPrimary),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24),
+            if (_whController.currentPage.value <
+                _whController.pageCount.value) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  top: 37,
+                  bottom: 34,
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                ),
+                child: SizedBox(
+                  height: 40,
+                  width: 97,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      _whController.currentPage.value++;
+                      await _whController.getTransfers(
+                          controller.selectedWallet?.value.accountHash
+                                  .replaceAll('account-hash-', '') ??
+                              '',
+                          _whController.currentPage.value++,
+                          _whController.limit.value,
+                          'DESC',
+                          1);
+                    },
+                    child: Text(
+                      'show_more'.tr,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4
+                          ?.copyWith(fontSize: 12),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Theme.of(context).colorScheme.primary,
+                      side: BorderSide(
+                          width: 2.0,
+                          color: Theme.of(context).colorScheme.onPrimary),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.all(20),
+                child: Container(),
+              );
+            }
           }
 
           return _buildViewItemList(
@@ -391,34 +424,38 @@ class WalletHomeTab extends GetView<HomeController> {
 
     final _wallet = controller.selectedWallet?.value;
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
-      child: Column(
-        children: [
-          GestureDetector(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(19),
+    if (_whController.transfers.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
+        child: Column(
+          children: [
+            GestureDetector(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  borderRadius: BorderRadius.circular(19),
+                ),
+                child: HistoryItem(
+                  transfer: _whController.transfers[index - 1],
+                  wallet: _wallet!,
+                  rate: controller.rate.value,
+                ),
               ),
-              child: HistoryItem(
-                transfer: _whController.transfers[index - 1],
-                wallet: _wallet!,
-                rate: controller.rate.value,
-              ),
+              onTap: () => {
+                _onTapHistoryItem(_whController.transfers[index - 1], _wallet)
+              },
             ),
-            onTap: () => {
-              _onTapHistoryItem(_whController.transfers[index - 1], _wallet)
-            },
-          ),
-          const SizedBox(height: 12),
-          Divider(
-            height: 1,
-            color: Colors.black.withOpacity(0.1),
-          ),
-        ],
-      ),
-    );
+            const SizedBox(height: 12),
+            Divider(
+              height: 1,
+              color: Colors.black.withOpacity(0.1),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Container();
   }
 
   Widget _buildItemsSlider(

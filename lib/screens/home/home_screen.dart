@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/services/service.dart';
-import 'package:easy_refresh/easy_refresh.dart';
-import 'package:gosuto/utils/utils.dart';
 
 import 'home.dart';
 
 class HomeScreen extends GetView<HomeController> {
-  HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

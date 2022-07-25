@@ -35,6 +35,7 @@ class WalletHomeTab extends GetView<HomeController> {
 
     _whController.setting = controller.setting;
     _whController.getSeedPhrase();
+    _whController.transfers.clear();
     _whController.getTransfers(
         controller.selectedWallet?.value.accountHash
                 .replaceAll('account-hash-', '') ??

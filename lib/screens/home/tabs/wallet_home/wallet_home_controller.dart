@@ -83,7 +83,8 @@ class WalletHomeController extends GetxController
     if (transfers.isEmpty) {
       transfers(_transfers);
     } else {
-      if (currentPage.value != page) {
+      if (currentPage.value < page) {
+        // Load more
         transfers.addAll(_transfers);
       }
     }

@@ -21,7 +21,9 @@ abstract class ApiClient {
     @Query('limit') int limit = 10,
     @Query('order_direction') String orderDirection = 'DESC',
     @Query('with_extended_info') int withExtendedInfo = 1,
+    @Query('with_amounts_in_currency_id') int withAmountsInCurrencyId = 1,
   ]);
+
   // extended-deploys?with_amounts_in_currency_id=1&page=1&limit=10&fields=entry_point,contract_package
   @GET(APIConstants.accountDeploys)
   Future<ServerResponseModel> accountDeploys(
@@ -31,6 +33,22 @@ abstract class ApiClient {
     @Query('with_amounts_in_currency_id') int withAmountsInCurrencyId = 1,
     @Query('fields') String fields = 'entry_point,contract_package',
   ]);
+
+  // extended-deploys/{deployHash}/?fields=entry_point,contract_package
+  @GET(APIConstants.deployInfo)
+  Future<DeployModel> deployInfo(
+    @Path('deployHash') String deployHash, [
+    @Query('fields') String fields = 'entry_point,contract_package',
+  ]);
+
+  // deploys/{deployHash}/transfers?page=1&limit=10&with_extended_info=1
+  @GET(APIConstants.deployTransfers)
+  Future<ServerResponseModel> deployTransfers(
+      @Path('deployHash') String deployHash,
+      [@Query('page') int page = 1,
+      @Query('limit') int limit = 10,
+      @Query('with_amounts_in_currency_id') int withAmountsInCurrencyId = 1,
+      @Query('with_extended_info') int withExtendedInfo = 1]);
 
   @GET(APIConstants.marketChart)
   Future<CoingeckoResponseModel> marketChart(

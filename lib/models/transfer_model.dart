@@ -37,18 +37,31 @@ class TransferModel {
   @JsonKey(name: 'toAccountPublicKey')
   String? toAccountPublicKey;
 
-  TransferModel(
-      {this.transferId,
-      required this.deployHash,
-      required this.blockHash,
-      required this.sourcePurse,
-      required this.targetPurse,
-      required this.amount,
-      required this.fromAccount,
-      required this.toAccount,
-      required this.timestamp,
-      required this.fromAccountPublicKey,
-      this.toAccountPublicKey});
+  @JsonKey(name: 'currency_amount')
+  double currencyAmount;
+
+  @JsonKey(name: 'rate')
+  double rate;
+
+  @JsonKey(name: 'current_currency_amount')
+  double currentCurrencyAmount;
+
+  TransferModel({
+    this.transferId,
+    required this.deployHash,
+    required this.blockHash,
+    required this.sourcePurse,
+    required this.targetPurse,
+    required this.amount,
+    required this.fromAccount,
+    required this.toAccount,
+    required this.timestamp,
+    required this.fromAccountPublicKey,
+    this.toAccountPublicKey,
+    required this.currencyAmount,
+    required this.rate,
+    required this.currentCurrencyAmount,
+  });
 
   factory TransferModel.fromJson(Map<String, dynamic> json) =>
       _$TransferModelFromJson(json);

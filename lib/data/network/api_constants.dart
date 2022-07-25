@@ -5,6 +5,10 @@ class APIConstants {
 
   static const accountDeploys = 'accounts/{publicKey}/extended-deploys';
 
+  static const deployInfo = 'extended-deploys/{deployHash}';
+
+  static const deployTransfers = 'deploys/{deployHash}/transfers';
+
   static const rateAmount = 'rates/{rateId}/amount';
 
   static const marketChart = 'coins/casper-network/market_chart';

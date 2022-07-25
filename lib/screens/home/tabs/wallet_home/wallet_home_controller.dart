@@ -33,6 +33,7 @@ class WalletHomeController extends GetxController
   RxList<String> seedPhrases = RxList<String>();
   Rx<SettingsModel>? setting;
   Rx<TransferModel>? selectedTransfer;
+  Rx<DeployModel>? selectedDeloy;
 
   @override
   void onInit() {
@@ -77,19 +78,24 @@ class WalletHomeController extends GetxController
     String orderDirection = 'DESC',
     int withExtendedInfo = 1,
   ]) async {
-    final response = await apiClient.accountTransfers(
-        accountHash, page, limit, orderDirection, withExtendedInfo);
-    List<dynamic> data = response.data;
-    pageCount.value = response.pageCount ?? 1;
-    itemCount.value = response.itemCount ?? 0;
+    if (page <= pageCount.value) {
+      final response = await apiClient.accountTransfers(
+          accountHash, page, limit, orderDirection, withExtendedInfo);
+      List<dynamic> data = response.data;
 
-    final _transfers = data.map((val) => TransferModel.fromJson(val)).toList();
-    if (transfers.isEmpty) {
-      transfers(_transfers);
-    } else {
-      if (currentPage.value < page) {
-        // Load more
-        transfers.addAll(_transfers);
+      pageCount(response.pageCount ?? 1);
+      itemCount(response.itemCount ?? 0);
+
+      final _transfers =
+          data.map((val) => TransferModel.fromJson(val)).toList();
+      if (transfers.isEmpty) {
+        transfers(_transfers);
+      } else {
+        if (currentPage.value < page) {
+          // Load more
+          transfers.addAll(_transfers);
+          currentPage(page);
+        }
       }
     }
   }
@@ -126,5 +132,24 @@ class WalletHomeController extends GetxController
     newPass('');
     currentPass('');
     rePass('');
+  }
+
+  Future<void> getDeployInfo(String deployHash) async {
+    final deploy = await apiClient.deployInfo(deployHash);
+
+    var response = await apiClient.deployTransfers(deployHash);
+    List<dynamic> data = response.data;
+
+    var amount = data[0]['amount'] ?? '0.0';
+    deploy.amount = amount;
+
+    var currencyAmount = data[0]['currency_amount'] ?? '0.0';
+    deploy.currencyCost = currencyAmount;
+
+    if (selectedDeloy == null) {
+      selectedDeloy = deploy.obs;
+    } else {
+      selectedDeloy!(deploy);
+    }
   }
 }

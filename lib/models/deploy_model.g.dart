@@ -63,10 +63,10 @@ DeployModel _$DeployModelFromJson(Map<String, dynamic> json) => DeployModel(
           ? null
           : ContractPackage.fromJson(
               json['contract_package'] as Map<String, dynamic>),
-      currencyCost: (json['currency_cost'] as num).toDouble(),
-      rate: (json['rate'] as num).toDouble(),
-      currentCurrencyCost: (json['current_currency_cost'] as num).toDouble(),
-    );
+      currencyCost: (json['currency_cost'] as num?)?.toDouble(),
+      rate: (json['rate'] as num?)?.toDouble(),
+      currentCurrencyCost: (json['current_currency_cost'] as num?)?.toDouble(),
+    )..args = json['args'];
 
 Map<String, dynamic> _$DeployModelToJson(DeployModel instance) =>
     <String, dynamic>{
@@ -87,4 +87,5 @@ Map<String, dynamic> _$DeployModelToJson(DeployModel instance) =>
       'currency_cost': instance.currencyCost,
       'rate': instance.rate,
       'current_currency_cost': instance.currentCurrencyCost,
+      'args': instance.args,
     };

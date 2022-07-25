@@ -1,3 +1,4 @@
+import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -10,20 +11,19 @@ class HistoryItem extends StatelessWidget {
       {Key? key,
       required this.transfer,
       required this.wallet,
-      required this.rate,
       this.subTitle = ''})
       : super(key: key);
 
   final String subTitle;
   final TransferModel transfer;
   final WalletModel wallet;
-  final double rate;
 
   @override
   Widget build(BuildContext context) {
     final index = wallet.publicKey == transfer.fromAccountPublicKey ? 4 : 1;
 
-    final amount = double.parse(transfer.amount) / 1e9;
+    final amount =
+        CasperClient.fromWei(BigNumber.from(transfer.amount)).toDouble();
 
     return Padding(
       padding: const EdgeInsets.all(15),
@@ -84,7 +84,7 @@ class HistoryItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                      NumberUtils.formatCurrency(amount * rate),
+                      NumberUtils.formatCurrency(transfer.currencyAmount),
                       style: Theme.of(context).textTheme.headline5,
                     )
                   ],
@@ -111,7 +111,7 @@ class HistoryItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  NumberUtils.formatCurrency(amount * rate),
+                  NumberUtils.formatCurrency(transfer.currencyAmount),
                   style: Theme.of(context).textTheme.headline3,
                 )
               ],

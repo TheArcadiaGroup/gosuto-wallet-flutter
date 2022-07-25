@@ -112,13 +112,15 @@ class DeployModel {
   ContractPackage? contractPackage;
 
   @JsonKey(name: 'currency_cost')
-  double currencyCost;
+  double? currencyCost;
 
   @JsonKey(name: 'rate')
-  double rate;
+  double? rate;
 
   @JsonKey(name: 'current_currency_cost')
-  double currentCurrencyCost;
+  double? currentCurrencyCost;
+
+  dynamic args;
 
   DeployModel({
     required this.deployHash,

@@ -155,7 +155,6 @@ class HistoryTab extends GetView<HomeController> {
                     child: HistoryItem(
                       transfer: _hController.transfers[index - 2],
                       wallet: _wallet!,
-                      rate: controller.rate.value,
                     ),
                   ),
                   onTap: () => {
@@ -226,9 +225,9 @@ class HistoryTab extends GetView<HomeController> {
                       right: 52,
                       bottom: 60),
                   child: _hController.isShowBottom.value
-                      ? TransactionInfoCard(
-                          rate: controller.rate.value,
-                          transfer: _hController.selectedTransfer!.value,
+                      ? TransferInfoCard(
+                          // rate: controller.rate.value,
+                          // deploy: _hController.selectedTransfer!.value,
                           wallet: _wallet!,
                         )
                       : Text(

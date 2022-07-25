@@ -35,6 +35,8 @@ class WalletHomeTab extends GetView<HomeController> {
 
     _whController.setting = controller.setting;
     _whController.getSeedPhrase();
+
+    _whController.currentPage.value = 1;
     _whController.transfers.clear();
     _whController.getTransfers(
       controller.selectedWallet?.value.accountHash
@@ -102,9 +104,8 @@ class WalletHomeTab extends GetView<HomeController> {
         padding:
             const EdgeInsets.only(top: 70, left: 52, right: 52, bottom: 60),
         child: _whController.isShowBottom.value
-            ? TransactionInfoCard(
-                rate: controller.rate.value,
-                transfer: _whController.selectedTransfer!.value,
+            ? TransferInfoCard(
+                deploy: _whController.selectedDeloy?.value,
                 wallet: _wallet!,
               )
             : Container(),
@@ -331,12 +332,11 @@ class WalletHomeTab extends GetView<HomeController> {
                   width: 97,
                   child: ElevatedButton(
                     onPressed: () async {
-                      _whController.currentPage.value++;
                       await _whController.getTransfers(
                         controller.selectedWallet?.value.accountHash
                                 .replaceAll('account-hash-', '') ??
                             '',
-                        _whController.currentPage.value++,
+                        _whController.currentPage.value + 1,
                       );
                     },
                     child: Text(
@@ -385,7 +385,7 @@ class WalletHomeTab extends GetView<HomeController> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('history'.tr, style: Theme.of(context).textTheme.headline1),
+            Text('transfers'.tr, style: Theme.of(context).textTheme.headline1),
             SizedBox(
               height: 36,
               width: 142,
@@ -438,7 +438,6 @@ class WalletHomeTab extends GetView<HomeController> {
                 child: HistoryItem(
                   transfer: _whController.transfers[index - 1],
                   wallet: _wallet!,
-                  rate: controller.rate.value,
                 ),
               ),
               onTap: () => {
@@ -972,68 +971,6 @@ class WalletHomeTab extends GetView<HomeController> {
     );
   }
 
-  // Widget _buildSwap(BuildContext context, int index) {
-  //   return Container();
-  // }
-
-  // Widget _buildBottomView(BuildContext context) {
-  //   // TODO Fake publickey
-  //   final _wallet = controller.selectedWallet?.value;
-  //   _wallet?.publicKey =
-  //       '017a3a850401c1933057fc40e1948c355405fa8d72943a5c1b2ce33605dab3cbf5';
-  //   return Obx(() => AnimatedContainer(
-  //         decoration: BoxDecoration(
-  //           borderRadius:
-  //               const BorderRadius.vertical(top: Radius.circular(30.0)),
-  //           color: Theme.of(context).colorScheme.secondaryContainer,
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.black.withAlpha(12),
-  //               spreadRadius: 5,
-  //               blurRadius: 7,
-  //               offset: const Offset(0, -1), // changes position of shadow
-  //             ),
-  //           ],
-  //         ),
-  //         height: _whController.isShowBottom.value ? 550 : AppConstants.heightBottomView,
-  //         width: MediaQuery.of(context).size.width,
-  //         duration: const Duration(milliseconds: 500),
-  //         child: Stack(
-  //           alignment: Alignment.topCenter,
-  //           children: [
-  //             SingleChildScrollView(
-  //               child: Padding(
-  //                 padding: const EdgeInsets.only(
-  //                     top: 70, left: 52, right: 52, bottom: 60),
-  //                 child: _whController.isShowBottom.value
-  //                     ? TransactionInfoCard(
-  //                         rate: controller.rate.value,
-  //                         transfer: _whController.selectedTransfer!.value,
-  //                         wallet: _wallet!,
-  //                       )
-  //                     : Text('bottom_text_note'.tr,
-  //                         maxLines: 2,
-  //                         textAlign: TextAlign.center,
-  //                         style: Theme.of(context).textTheme.subtitle2),
-  //               ),
-  //             ),
-  //             GestureDetector(
-  //               onTap: () => {_showHideBottomView(false)},
-  //               child: Container(
-  //                 width: 155,
-  //                 height: 8,
-  //                 margin: const EdgeInsets.only(top: 12),
-  //                 decoration: BoxDecoration(
-  //                     color: const Color(0xFFC4C4C4).withOpacity(0.3),
-  //                     borderRadius:
-  //                         const BorderRadius.all(Radius.circular(30))),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ));
-  // }
-
   void _showHideBottomView(bool isShow) {
     _whController.isShowBottom(isShow);
     if (isShow) {
@@ -1048,7 +985,7 @@ class WalletHomeTab extends GetView<HomeController> {
     _selectedFilter(value);
   }
 
-  void _onTapHistoryItem(TransferModel transfer, WalletModel wallet) {
+  void _onTapHistoryItem(TransferModel transfer, WalletModel wallet) async {
     _showHideBottomView(true);
     // _whController.selectedTransfer = transfer.obs;
     // _whController.selectedTransfer?.refresh();
@@ -1057,6 +994,8 @@ class WalletHomeTab extends GetView<HomeController> {
     } else {
       _whController.selectedTransfer!(transfer);
     }
+
+    await _whController.getDeployInfo(transfer.deployHash);
   }
 
   List<DropdownMenuItem<String>> _buildDropDownMenuItems() {

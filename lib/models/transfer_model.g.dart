@@ -19,6 +19,10 @@ TransferModel _$TransferModelFromJson(Map<String, dynamic> json) =>
       timestamp: json['timestamp'] as String,
       fromAccountPublicKey: json['fromAccountPublicKey'] as String,
       toAccountPublicKey: json['toAccountPublicKey'] as String?,
+      currencyAmount: (json['currency_amount'] as num).toDouble(),
+      rate: (json['rate'] as num).toDouble(),
+      currentCurrencyAmount:
+          (json['current_currency_amount'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$TransferModelToJson(TransferModel instance) =>
@@ -34,4 +38,7 @@ Map<String, dynamic> _$TransferModelToJson(TransferModel instance) =>
       'timestamp': instance.timestamp,
       'fromAccountPublicKey': instance.fromAccountPublicKey,
       'toAccountPublicKey': instance.toAccountPublicKey,
+      'currency_amount': instance.currencyAmount,
+      'rate': instance.rate,
+      'current_currency_amount': instance.currentCurrencyAmount,
     };

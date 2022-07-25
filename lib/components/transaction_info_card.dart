@@ -84,7 +84,8 @@ class TransactionInfoCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  Strings.displayHash(transfer.toAccountPublicKey ?? ''),
+                  Strings.displayHash(
+                      transfer.toAccountPublicKey ?? transfer.targetPurse),
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       color: Theme.of(context).colorScheme.tertiaryContainer),
                 )

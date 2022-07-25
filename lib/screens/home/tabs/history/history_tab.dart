@@ -22,10 +22,7 @@ class HistoryTab extends GetView<HomeController> {
   Widget build(BuildContext context) {
     _hController.getTransfers(
         controller.selectedWallet?.value.accountHash ?? '',
-        _hController.currentPage.value,
-        _hController.limit.value,
-        'DESC',
-        1);
+        _hController.currentPage.value);
     return Stack(
         alignment: AlignmentDirectional.bottomEnd,
         children: [_listViewBuilder(context), _buildBottomView(context)]);
@@ -120,10 +117,7 @@ class HistoryTab extends GetView<HomeController> {
                     _hController.currentPage.value++;
                     _hController.getTransfers(
                         '35305979df049640142981a6f3765519dfd032066a5cb932c674bb56f2044b5b',
-                        _hController.currentPage.value,
-                        _hController.limit.value,
-                        'DESC',
-                        1);
+                        _hController.currentPage.value);
                   },
                   child: Text(
                     'show_more'.tr,

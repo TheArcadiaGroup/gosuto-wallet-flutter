@@ -26,7 +26,6 @@ class WalletHomeController extends GetxController
   var rePass = ''.obs;
   var pass = ''.obs;
   var currentPage = 1.obs;
-  var limit = 10.obs;
   var pageCount = 1.obs;
   var itemCount = 0.obs;
 
@@ -71,9 +70,14 @@ class WalletHomeController extends GetxController
     await DBHelper.updateWallet(publicKey: wallet.publicKey);
   }
 
-  Future<void> getTransfers(String accountHash, int page, int limit,
-      String orderDirection, int withExtendedInfo) async {
-    final response = await apiClient.accountsTransfers(
+  Future<void> getTransfers(
+    String accountHash, [
+    int page = 1,
+    int limit = 10,
+    String orderDirection = 'DESC',
+    int withExtendedInfo = 1,
+  ]) async {
+    final response = await apiClient.accountTransfers(
         accountHash, page, limit, orderDirection, withExtendedInfo);
     List<dynamic> data = response.data;
     pageCount.value = response.pageCount ?? 1;

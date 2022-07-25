@@ -14,14 +14,23 @@ abstract class ApiClient {
   Future<ServerResponseModel> rateAmount(@Path('rateId') int rateId);
 
   // page=1&limit=10&order_direction=DESC&with_extended_info=1
-  @GET(APIConstants.accountsTransfers)
-  Future<ServerResponseModel> accountsTransfers(
-    @Path('accountHash') String accountHash,
-    @Query('page') int page,
-    @Query('limit') int limit,
-    @Query('order_direction') String orderDirection,
-    @Query('with_extended_info') int withExtendedInfo,
-  );
+  @GET(APIConstants.accountTransfers)
+  Future<ServerResponseModel> accountTransfers(
+    @Path('accountHash') String accountHash, [
+    @Query('page') int page = 1,
+    @Query('limit') int limit = 10,
+    @Query('order_direction') String orderDirection = 'DESC',
+    @Query('with_extended_info') int withExtendedInfo = 1,
+  ]);
+  // extended-deploys?with_amounts_in_currency_id=1&page=1&limit=10&fields=entry_point,contract_package
+  @GET(APIConstants.accountDeploys)
+  Future<ServerResponseModel> accountDeploys(
+    @Path('publicKey') String publicKey, [
+    @Query('page') int page = 1,
+    @Query('limit') int limit = 10,
+    @Query('with_amounts_in_currency_id') int withAmountsInCurrencyId = 1,
+    @Query('fields') String fields = 'entry_point,contract_package',
+  ]);
 
   @GET(APIConstants.marketChart)
   Future<CoingeckoResponseModel> marketChart(

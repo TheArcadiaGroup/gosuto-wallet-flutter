@@ -32,8 +32,11 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<ServerResponseModel> accountsTransfers(
-      accountHash, page, limit, orderDirection, withExtendedInfo) async {
+  Future<ServerResponseModel> accountTransfers(accountHash,
+      [page = 1,
+      limit = 10,
+      orderDirection = 'DESC',
+      withExtendedInfo = 1]) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
       r'page': page,
@@ -47,6 +50,31 @@ class _ApiClient implements ApiClient {
         _setStreamType<ServerResponseModel>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'accounts/${accountHash}/transfers',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = ServerResponseModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<ServerResponseModel> accountDeploys(publicKey,
+      [page = 1,
+      limit = 10,
+      withAmountsInCurrencyId = 1,
+      fields = 'entry_point,contract_package']) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'limit': limit,
+      r'with_amounts_in_currency_id': withAmountsInCurrencyId,
+      r'fields': fields
+    };
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ServerResponseModel>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'accounts/${publicKey}/extended-deploys',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = ServerResponseModel.fromJson(_result.data!);

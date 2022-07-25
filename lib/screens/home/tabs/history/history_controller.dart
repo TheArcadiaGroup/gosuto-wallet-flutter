@@ -11,7 +11,6 @@ class HistoryController extends GetxController {
   late ApiClient apiClient;
 
   var currentPage = 1.obs;
-  var limit = 10.obs;
 
   Rx<TransferModel>? selectedTransfer;
   // Rx<Wallet>? wallet;
@@ -38,9 +37,14 @@ class HistoryController extends GetxController {
     super.dispose();
   }
 
-  Future<void> getTransfers(String accountHash, int page, int limit,
-      String orderDirection, int withExtendedInfo) async {
-    final response = await apiClient.accountsTransfers(
+  Future<void> getTransfers(
+    String accountHash, [
+    int page = 1,
+    int limit = 10,
+    String orderDirection = 'DESC',
+    int withExtendedInfo = 1,
+  ]) async {
+    final response = await apiClient.accountTransfers(
         accountHash, page, limit, orderDirection, withExtendedInfo);
     List<dynamic> data = response.data;
     final _transfers = data.map((val) => TransferModel.fromJson(val)).toList();

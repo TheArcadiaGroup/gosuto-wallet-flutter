@@ -37,13 +37,10 @@ class WalletHomeTab extends GetView<HomeController> {
     _whController.getSeedPhrase();
     _whController.transfers.clear();
     _whController.getTransfers(
-        controller.selectedWallet?.value.accountHash
-                .replaceAll('account-hash-', '') ??
-            '',
-        _whController.currentPage.value,
-        _whController.limit.value,
-        'DESC',
-        1);
+      controller.selectedWallet?.value.accountHash
+              .replaceAll('account-hash-', '') ??
+          '',
+    );
 
     return EasyRefresh(
         controller: _refreshController,
@@ -336,13 +333,11 @@ class WalletHomeTab extends GetView<HomeController> {
                     onPressed: () async {
                       _whController.currentPage.value++;
                       await _whController.getTransfers(
-                          controller.selectedWallet?.value.accountHash
-                                  .replaceAll('account-hash-', '') ??
-                              '',
-                          _whController.currentPage.value++,
-                          _whController.limit.value,
-                          'DESC',
-                          1);
+                        controller.selectedWallet?.value.accountHash
+                                .replaceAll('account-hash-', '') ??
+                            '',
+                        _whController.currentPage.value++,
+                      );
                     },
                     child: Text(
                       'show_more'.tr,

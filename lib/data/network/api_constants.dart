@@ -1,7 +1,9 @@
 class APIConstants {
   static const pathAPI = '';
 
-  static const accountsTransfers = 'accounts/{accountHash}/transfers';
+  static const accountTransfers = 'accounts/{accountHash}/transfers';
+
+  static const accountDeploys = 'accounts/{publicKey}/extended-deploys';
 
   static const rateAmount = 'rates/{rateId}/amount';
 

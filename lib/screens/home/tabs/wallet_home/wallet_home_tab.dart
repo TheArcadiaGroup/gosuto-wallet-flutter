@@ -323,7 +323,7 @@ class WalletHomeTab extends GetView<HomeController> {
                 _whController.pageCount.value) {
               return Padding(
                 padding: EdgeInsets.only(
-                  top: 37,
+                  top: 20,
                   bottom: 34,
                   left: horizontalPadding,
                   right: horizontalPadding,
@@ -352,9 +352,13 @@ class WalletHomeTab extends GetView<HomeController> {
                     ),
                     style: ElevatedButton.styleFrom(
                       primary: Theme.of(context).colorScheme.primary,
+                      elevation: 0.0,
                       side: BorderSide(
                           width: 2.0,
-                          color: Theme.of(context).colorScheme.onPrimary),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withAlpha(100)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),

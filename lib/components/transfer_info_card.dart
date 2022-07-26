@@ -1,9 +1,7 @@
 import 'package:casper_dart_sdk/classes/classes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_time_ago/get_time_ago.dart';
-import 'package:gosuto/data/network/network.dart';
 import 'package:gosuto/env/env.dart';
 import 'package:gosuto/utils/utils.dart';
 
@@ -73,9 +71,7 @@ class TransferInfoCard extends StatelessWidget {
     }
 
     return Container(
-      width: 400,
-      // height: 435,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: Theme.of(context).colorScheme.secondary),
@@ -90,8 +86,9 @@ class TransferInfoCard extends StatelessWidget {
         ],
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           SizedBox(
             width: 400,

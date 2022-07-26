@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
-import 'package:gosuto/models/models.dart';
 import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:toast/toast.dart';
 
 import '../../../../routes/routes.dart';
@@ -20,8 +19,6 @@ class WalletHomeTab extends GetView<HomeController> {
   final WalletHomeController _whController = Get.put(WalletHomeController());
   final RxString _selectedFilter = RxString(AppConstants.historyFilterItems[0]);
   final RxInt _currentSliderIdx = RxInt(0);
-
-  final PanelController _pc = PanelController();
 
   final EasyRefreshController _refreshController = EasyRefreshController(
     controlFinishRefresh: true,
@@ -45,71 +42,28 @@ class WalletHomeTab extends GetView<HomeController> {
     );
 
     return EasyRefresh(
-        controller: _refreshController,
-        header: const ClassicHeader(),
-        footer: const ClassicFooter(),
-        onRefresh: () async {
-          await AccountUtils.getBalance(
-              controller.selectedWallet?.value.publicKey ?? '', false);
-          await AccountUtils.getTotalStake(
-              controller.selectedWallet?.value.publicKey ?? '', false);
-          await AccountUtils.getTotalRewards(
-              controller.selectedWallet?.value.publicKey ?? '',
-              controller.selectedWallet?.value.isValidator ?? false,
-              false);
-          await controller.chooseWalletTab.fetchData();
+      controller: _refreshController,
+      header: const ClassicHeader(),
+      footer: const ClassicFooter(),
+      onRefresh: () async {
+        await AccountUtils.getBalance(
+            controller.selectedWallet?.value.publicKey ?? '', false);
+        await AccountUtils.getTotalStake(
+            controller.selectedWallet?.value.publicKey ?? '', false);
+        await AccountUtils.getTotalRewards(
+            controller.selectedWallet?.value.publicKey ?? '',
+            controller.selectedWallet?.value.isValidator ?? false,
+            false);
+        await controller.chooseWalletTab.fetchData();
 
-          _refreshController.finishRefresh();
-        },
-        child: Obx(
-          () => _buildContent(context),
-        ));
+        _refreshController.finishRefresh();
+      },
+      child: _buildContent(context),
+    );
   }
 
   Widget _buildContent(BuildContext context) {
-    final _wallet = controller.selectedWallet?.value;
-    return SlidingUpPanel(
-      minHeight: AppConstants.heightBottomView,
-      maxHeight: AppConstants.maxHeightSlidingUpPanel,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(30.0)),
-      controller: _pc,
-      color: Theme.of(context).colorScheme.secondaryContainer,
-      collapsed: Center(
-        child: Text('bottom_text_note'.tr,
-            maxLines: 2,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.subtitle2),
-      ),
-      header: Container(
-        width: MediaQuery.of(context).size.width,
-        color: Colors.transparent,
-        child: Center(
-          child: GestureDetector(
-            onTap: () => {_showHideBottomView(false)},
-            child: Container(
-              width: 155,
-              height: 8,
-              margin: const EdgeInsets.only(top: 12, bottom: 12),
-              decoration: BoxDecoration(
-                  color: const Color(0xFFC4C4C4).withOpacity(0.3),
-                  borderRadius: const BorderRadius.all(Radius.circular(30))),
-            ),
-          ),
-        ),
-      ),
-      isDraggable: _whController.selectedTransfer != null,
-      onPanelClosed: () => {_showHideBottomView(false)},
-      onPanelOpened: () => {_showHideBottomView(true)},
-      panel: Padding(
-        padding:
-            const EdgeInsets.only(top: 70, left: 52, right: 52, bottom: 60),
-        child: _whController.isShowBottom.value
-            ? TransferInfoCard(
-                deploy: _whController.selectedDeloy?.value,
-                wallet: _wallet!,
-              )
-            : Container(),
-      ),
+    return Scaffold(
       body: _listViewBuilder(context),
     );
   }
@@ -131,11 +85,6 @@ class WalletHomeTab extends GetView<HomeController> {
 
   void _updateBottom(int index) {
     _whController.switchTab(index);
-    if (_whController.currentTab.value != WalletHomeTabs.walletSettings) {
-      _pc.show();
-    } else {
-      _pc.hide();
-    }
   }
 
   Widget _buildViewItemList(
@@ -440,8 +389,23 @@ class WalletHomeTab extends GetView<HomeController> {
                   wallet: _wallet!,
                 ),
               ),
-              onTap: () => {
-                _onTapHistoryItem(_whController.transfers[index - 1], _wallet)
+              onTap: () async {
+                await _whController.getDeployInfo(
+                    _whController.transfers[index - 1].deployHash);
+
+                showCupertinoModalBottomSheet(
+                  context: context,
+                  expand: false,
+                  topRadius: const Radius.circular(30),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  builder: (context) {
+                    return TransferInfoCard(
+                      wallet: _wallet,
+                      deploy: _whController.selectedDeloy?.value,
+                    );
+                  },
+                );
+                // _onTapHistoryItem(_whController.transfers[index - 1], _wallet);
               },
             ),
             const SizedBox(height: 12),
@@ -971,31 +935,8 @@ class WalletHomeTab extends GetView<HomeController> {
     );
   }
 
-  void _showHideBottomView(bool isShow) {
-    _whController.isShowBottom(isShow);
-    if (isShow) {
-      _pc.open();
-    } else {
-      _pc.close();
-      _whController.selectedTransfer = null;
-    }
-  }
-
   void _changeFilter(value) {
     _selectedFilter(value);
-  }
-
-  void _onTapHistoryItem(TransferModel transfer, WalletModel wallet) async {
-    _showHideBottomView(true);
-    // _whController.selectedTransfer = transfer.obs;
-    // _whController.selectedTransfer?.refresh();
-    if (_whController.selectedTransfer == null) {
-      _whController.selectedTransfer = transfer.obs;
-    } else {
-      _whController.selectedTransfer!(transfer);
-    }
-
-    await _whController.getDeployInfo(transfer.deployHash);
   }
 
   List<DropdownMenuItem<String>> _buildDropDownMenuItems() {

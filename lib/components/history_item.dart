@@ -20,6 +20,19 @@ class HistoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var deployName = '';
+
+    if (wallet.publicKey.toLowerCase() ==
+        transfer.fromAccountPublicKey.toLowerCase()) {
+      if (transfer.toAccountPublicKey == null) {
+        deployName = 'contract_interaction'.tr;
+      } else {
+        deployName = 'sent'.tr;
+      }
+    } else {
+      deployName = 'received'.tr;
+    }
+
     final index = wallet.publicKey == transfer.fromAccountPublicKey ? 4 : 1;
 
     final amount =
@@ -37,11 +50,7 @@ class HistoryItem extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      index == 1
-                          ? 'received'.tr
-                          : (index == 2
-                              ? 'stake'.tr
-                              : (index == 3 ? 'swap'.tr : 'sent'.tr)),
+                      deployName,
                       style: Theme.of(context)
                           .textTheme
                           .headline4

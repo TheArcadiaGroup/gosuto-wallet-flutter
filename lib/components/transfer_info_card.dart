@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:casper_dart_sdk/classes/classes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,16 +25,12 @@ class TransferInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var deployName = '';
+    var actionName = '';
     var toAddress = '';
     var amount = 0.0;
     var cost = 0.0;
 
     if (deploy != null) {
-      deployName =
-          deploy?.callerPublicKey.toLowerCase() == wallet.publicKey.toString()
-              ? 'sent'.tr
-              : 'received'.tr;
-
       amount =
           CasperClient.fromWei(BigNumber.from(deploy?.amount ?? 0)).toDouble();
 
@@ -41,6 +39,7 @@ class TransferInfoCard extends StatelessWidget {
       var args = deploy?.args as Map;
 
       if (deploy?.executionTypeId == 1) {
+        deployName = 'contract_interaction'.tr;
         // Swap
         if (args['contract_hash_key'] != null) {
           toAddress = args['contract_hash_key']['parsed']['Hash']
@@ -49,18 +48,23 @@ class TransferInfoCard extends StatelessWidget {
         }
 
         if (args['contract_hash_key'] != null) {
-          deployName = args['deposit_entry_point_name']['parsed'];
+          actionName = args['deposit_entry_point_name']['parsed'];
         } else {
-          deployName = 'swap'.tr;
+          actionName = 'swap'.tr;
         }
       } else if (deploy?.executionTypeId == 2) {
+        deployName = 'contract_interaction'.tr;
         // Contract interaction
         toAddress = deploy?.contractHash ?? '';
 
         if (deploy?.entryPoint != null) {
-          deployName = deploy?.entryPoint?.name ?? '';
+          actionName = deploy?.entryPoint?.name ?? '';
         }
       } else if (deploy?.executionTypeId == 6) {
+        deployName =
+            deploy?.callerPublicKey.toLowerCase() == wallet.publicKey.toString()
+                ? 'sent'.tr
+                : 'received'.tr;
         // Transfers
         if (args['targetAccountHex'] != null) {
           toAddress = args['targetAccountHex']['parsed'];
@@ -112,7 +116,7 @@ class TransferInfoCard extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(
-                  width: 42,
+                  width: 90,
                   child: Text(
                     'to'.tr,
                     style: Theme.of(context).textTheme.headline4?.copyWith(
@@ -137,16 +141,17 @@ class TransferInfoCard extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(
-                    width: 42,
-                    child: Text(
-                      'from'.tr,
-                      style: Theme.of(context).textTheme.headline4?.copyWith(
-                          color: Theme.of(context)
-                              .textTheme
-                              .headline4
-                              ?.color
-                              ?.withAlpha(170)),
-                    )),
+                  width: 90,
+                  child: Text(
+                    'from'.tr,
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                        color: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.color
+                            ?.withAlpha(170)),
+                  ),
+                ),
                 Text(
                   Strings.displayHash(deploy?.callerPublicKey ?? ''),
                   style: Theme.of(context).textTheme.headline4?.copyWith(
@@ -158,32 +163,55 @@ class TransferInfoCard extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: Row(
               children: [
-                Text(
-                  'timestamp'.tr,
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                      color: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          ?.color
-                          ?.withAlpha(170)),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 5),
+                SizedBox(
+                  width: 90,
                   child: Text(
-                    GetTimeAgo.parse(
-                        DateTime.parse(deploy?.timestamp ??
-                                DateTime.now().toIso8601String())
-                            .toLocal(),
-                        pattern: 'LLL d, hh:mm:ss a'),
+                    'timestamp'.tr,
                     style: Theme.of(context).textTheme.headline4?.copyWith(
-                        fontWeight: FontWeight.normal,
-                        color: Theme.of(context).colorScheme.tertiaryContainer),
+                        color: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.color
+                            ?.withAlpha(170)),
                   ),
                 ),
+                Text(
+                  GetTimeAgo.parse(
+                      DateTime.parse(deploy?.timestamp ??
+                              DateTime.now().toIso8601String())
+                          .toLocal(),
+                      pattern: 'LLL d, hh:mm:ss a'),
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 90,
+                  child: Text(
+                    'action'.tr,
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                        color: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.color
+                            ?.withAlpha(170)),
+                  ),
+                ),
+                Text(
+                  actionName,
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
+                )
               ],
             ),
           ),
@@ -261,51 +289,53 @@ class TransferInfoCard extends StatelessWidget {
               color: Theme.of(context).colorScheme.onSecondary,
             ),
           ),
-          Row(
-            children: [
-              Text(
-                'cost'.tr,
-                style: Theme.of(context).textTheme.headline4?.copyWith(
-                    color: Theme.of(context)
-                        .textTheme
-                        .headline4
-                        ?.color
-                        ?.withAlpha(170)),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 90,
+                  child: Text(
+                    'cost'.tr,
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                        color: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.color
+                            ?.withAlpha(170)),
+                  ),
+                ),
+                Text(
                   '${NumberUtils.format(cost, 5)} CSPR',
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).colorScheme.tertiaryContainer),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 15),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
+            child: Row(
               children: [
-                Text('deploy_hash'.tr,
-                    style: Theme.of(context).textTheme.headline4?.copyWith(
-                          color: Theme.of(context)
-                              .textTheme
-                              .headline4
-                              ?.color
-                              ?.withAlpha(170),
-                        )),
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
+                SizedBox(
+                  width: 90,
                   child: Text(
-                    Strings.displayHash(deploy?.deployHash ?? ''),
+                    'deploy_hash'.tr,
                     style: Theme.of(context).textTheme.headline4?.copyWith(
-                        fontWeight: FontWeight.normal,
-                        color: Theme.of(context).colorScheme.tertiaryContainer),
+                        color: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.color
+                            ?.withAlpha(170)),
                   ),
-                )
+                ),
+                Text(
+                  Strings.displayHash(deploy?.deployHash ?? ''),
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
+                ),
               ],
             ),
           ),

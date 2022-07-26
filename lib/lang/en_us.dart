@@ -110,6 +110,8 @@ const Map<String, String> enUs = {
   'all': 'All',
   'received': 'Received',
   'sent': 'Sent',
+  'action': 'Action',
+  'contract_interaction': 'Contract Interaction',
   // 'swap': 'Swap',
   'staking': 'Staking',
   'bottom_text_note': 'Select an entry to\nview more info about it',

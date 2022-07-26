@@ -24,6 +24,8 @@ class WalletHomeTab extends GetView<HomeController> {
     controlFinishLoad: true,
   );
 
+  final RxBool _loading = RxBool(false);
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -382,38 +384,45 @@ class WalletHomeTab extends GetView<HomeController> {
         padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
         child: Column(
           children: [
-            GestureDetector(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(19),
+            Obx(
+              () => GestureDetector(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(19),
+                  ),
+                  child: HistoryItem(
+                    transfer: _whController.transfers[index - 1],
+                    wallet: _wallet!,
+                  ),
                 ),
-                child: HistoryItem(
-                  transfer: _whController.transfers[index - 1],
-                  wallet: _wallet!,
-                ),
+                onTap: _loading.value
+                    ? null
+                    : () async {
+                        EasyLoading.show();
+                        _loading(true);
+
+                        await _whController.getDeployInfo(
+                            _whController.transfers[index - 1].deployHash);
+
+                        showCupertinoModalBottomSheet(
+                          context: context,
+                          expand: false,
+                          topRadius: const Radius.circular(30),
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          builder: (context) {
+                            return TransferInfoCard(
+                              wallet: _wallet,
+                              deploy: _whController.selectedDeloy?.value,
+                            );
+                          },
+                        );
+
+                        _loading(false);
+                        EasyLoading.dismiss();
+                      },
               ),
-              onTap: () async {
-                EasyLoading.show();
-
-                await _whController.getDeployInfo(
-                    _whController.transfers[index - 1].deployHash);
-
-                showCupertinoModalBottomSheet(
-                  context: context,
-                  expand: false,
-                  topRadius: const Radius.circular(30),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  builder: (context) {
-                    return TransferInfoCard(
-                      wallet: _wallet,
-                      deploy: _whController.selectedDeloy?.value,
-                    );
-                  },
-                );
-
-                EasyLoading.dismiss();
-              },
             ),
             const SizedBox(height: 12),
             Divider(

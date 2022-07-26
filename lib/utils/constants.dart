@@ -20,10 +20,9 @@ class AppConstants {
 
   static final historyFilterItems = [
     'all'.tr,
-    'received'.tr,
     'sent'.tr,
-    'swap'.tr,
-    'staking'.tr,
+    'received'.tr,
+    'contract_interaction'.tr,
   ];
 
   static final TextStyle subTextStyle = TextStyle(

@@ -27,7 +27,12 @@ class HistoryItem extends StatelessWidget {
       if (transfer.toAccountPublicKey == null) {
         deployName = 'contract_interaction'.tr;
       } else {
-        deployName = 'sent'.tr;
+        if (wallet.publicKey.toLowerCase() ==
+            transfer.toAccountPublicKey?.toLowerCase()) {
+          deployName = 'swap'.tr;
+        } else {
+          deployName = 'sent'.tr;
+        }
       }
     } else {
       deployName = 'received'.tr;
@@ -39,7 +44,7 @@ class HistoryItem extends StatelessWidget {
         CasperClient.fromWei(BigNumber.from(transfer.amount)).toDouble();
 
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

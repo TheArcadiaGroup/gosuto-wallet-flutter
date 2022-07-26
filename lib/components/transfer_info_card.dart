@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:casper_dart_sdk/classes/classes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -25,7 +23,7 @@ class TransferInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var deployName = '';
-    var actionName = '';
+    var actionName = 'Transfer';
     var toAddress = '';
     var amount = 0.0;
     var cost = 0.0;
@@ -53,8 +51,8 @@ class TransferInfoCard extends StatelessWidget {
           actionName = 'swap'.tr;
         }
       } else if (deploy?.executionTypeId == 2) {
-        deployName = 'contract_interaction'.tr;
         // Contract interaction
+        deployName = 'contract_interaction'.tr;
         toAddress = deploy?.contractHash ?? '';
 
         if (deploy?.entryPoint != null) {
@@ -71,6 +69,9 @@ class TransferInfoCard extends StatelessWidget {
         } else if (args['target'] != null) {
           toAddress = args['target']['parsed'];
         }
+      }
+      if (actionName.contains('swap')) {
+        deployName = 'swap'.tr;
       }
     }
 

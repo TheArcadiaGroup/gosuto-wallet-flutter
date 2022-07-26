@@ -328,27 +328,25 @@ class WalletHomeTab extends GetView<HomeController> {
     // Filter row
     if (index == 0) {
       return Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('transfers'.tr, style: Theme.of(context).textTheme.headline1),
             SizedBox(
               height: 36,
-              width: 142,
+              width: 144,
               child: DropdownButtonHideUnderline(
                 child: Obx(
                   () => DropdownButton2(
+                    alignment: Alignment.centerLeft,
                     value: _selectedFilter.value,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline4
-                        ?.copyWith(fontWeight: FontWeight.normal),
+                    icon: const Icon(Icons.arrow_drop_down),
+                    iconSize: 15,
                     items: _buildDropDownMenuItems(),
-                    onChanged: _changeFilter,
+                    itemHeight: 40,
                     buttonHeight: 35,
                     buttonPadding: const EdgeInsets.only(left: 12),
-                    alignment: Alignment.centerLeft,
                     buttonDecoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
@@ -356,10 +354,18 @@ class WalletHomeTab extends GetView<HomeController> {
                       ),
                       color: Theme.of(context).colorScheme.secondary,
                     ),
+                    dropdownOverButton: true,
                     dropdownDecoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(24),
                     ),
-                    dropdownWidth: 142,
+                    dropdownWidth: 145,
+                    dropdownElevation: 1,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline4
+                        ?.copyWith(fontWeight: FontWeight.normal),
+                    onChanged: _changeFilter,
                   ),
                 ),
               ),
@@ -430,7 +436,7 @@ class WalletHomeTab extends GetView<HomeController> {
   Widget _buildSend(BuildContext context, int idx) {
     if (idx == 0) {
       return Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(25),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -471,7 +477,7 @@ class WalletHomeTab extends GetView<HomeController> {
       children: [
         CarouselSlider(
           options: CarouselOptions(
-              height: 250,
+              height: 200,
               aspectRatio: 1.0,
               enableInfiniteScroll: false,
               // enlargeCenterPage: true,
@@ -745,7 +751,7 @@ class WalletHomeTab extends GetView<HomeController> {
     TextEditingController _privateKeyController = TextEditingController(
         text: controller.selectedWallet?.value.privateKey.toString());
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(25),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -938,14 +944,33 @@ class WalletHomeTab extends GetView<HomeController> {
 
   void _changeFilter(value) {
     _selectedFilter(value);
+    var filter = value.toString().toLowerCase();
+    var backupTransfers = _whController.transfers;
+
+    switch (filter) {
+      case 'sent':
+        var filteredTransfers = _whController.transfers
+            .where((e) =>
+                e.fromAccountPublicKey.toLowerCase() ==
+                controller.selectedWallet?.value.publicKey.toLowerCase())
+            .toList();
+        _whController.transfers(filteredTransfers);
+        break;
+      case 'all':
+      default:
+        _whController.transfers.value = backupTransfers;
+        break;
+    }
   }
 
   List<DropdownMenuItem<String>> _buildDropDownMenuItems() {
-    return AppConstants.historyFilterItems.map((String items) {
-      return DropdownMenuItem(
-        value: items,
-        child: Text(items),
-      );
-    }).toList();
+    return AppConstants.historyFilterItems
+        .map((item) => DropdownMenuItem(
+            value: item,
+            child: Text(
+              item,
+              style: const TextStyle(fontSize: 12),
+            )))
+        .toList();
   }
 }

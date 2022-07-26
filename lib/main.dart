@@ -17,7 +17,7 @@ import 'app_binding.dart';
 import 'env/env.dart';
 import 'routes/app_pages.dart';
 
-Future<void> configLoading() async {
+Future<void> config() async {
   // BuildEnvironment.init(
   //     flavor: BuildFlavor.development,
   //     rpcUrl: 'https://testnet.casper-node.tor.us',
@@ -44,6 +44,16 @@ Future<void> configLoading() async {
   Timer.periodic(const Duration(minutes: 10), (Timer t) async {
     await AccountUtils.getAllBalances(false);
   });
+
+  var themeService = ThemeService();
+
+  EasyLoading.instance
+    ..indicatorSize = 25.0
+    ..backgroundColor = themeService.isDarkMode
+        ? AppTheme.darkTheme.colorScheme.onPrimary
+        : AppTheme.lightTheme.colorScheme.onPrimary
+    ..indicatorColor = AppTheme.darkTheme.colorScheme.background
+    ..indicatorType = EasyLoadingIndicatorType.fadingFour;
 }
 
 void main() async {
@@ -66,7 +76,7 @@ void main() async {
   await DBHelper.addSettings(
       SettingsModel(seedPhrase: '', password: '', useBiometricAuth: 0));
 
-  await configLoading();
+  await config();
 
   runApp(MyApp(
     initialRoute: initialRoute,

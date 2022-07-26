@@ -5,7 +5,6 @@ import 'package:gosuto/components/text_chip.dart';
 import 'package:gosuto/routes/routes.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
-import 'package:toast/toast.dart';
 import '../../components/button.dart';
 import '../../components/dialog.dart';
 import 'seed_phrase_controller.dart';
@@ -70,7 +69,6 @@ class SeedPhraseScreen extends GetView<SeedPhraseController> {
 
   @override
   Widget build(BuildContext context) {
-    ToastContext().init(context);
     SizeConfig().init(context);
 
     return Scaffold(

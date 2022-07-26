@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
@@ -32,11 +33,16 @@ class WalletHomeTab extends GetView<HomeController> {
 
     _whController.currentPage.value = 1;
     _whController.transfers.clear();
-    _whController.getTransfers(
-      controller.selectedWallet?.value.accountHash
-              .replaceAll('account-hash-', '') ??
-          '',
-    );
+
+    EasyLoading.show();
+
+    _whController
+        .getTransfers(
+          controller.selectedWallet?.value.accountHash
+                  .replaceAll('account-hash-', '') ??
+              '',
+        )
+        .then((value) => EasyLoading.dismiss());
 
     return EasyRefresh(
       controller: _refreshController,
@@ -105,14 +111,7 @@ class WalletHomeTab extends GetView<HomeController> {
 
     return Obx(
       () => ListView.builder(
-        padding: EdgeInsets.only(
-            top: 10,
-            left: 0,
-            right: 0,
-            bottom:
-                _whController.currentTab.value != WalletHomeTabs.walletSettings
-                    ? 2 * AppConstants.heightBottomView
-                    : AppConstants.heightBottomView + 20),
+        padding: const EdgeInsets.only(top: 10, left: 0),
         itemCount: _getItemCountListView(_whController.currentTab.value),
         itemBuilder: (context, index) {
           // Wallet Card & New Wallet button
@@ -278,12 +277,14 @@ class WalletHomeTab extends GetView<HomeController> {
                   width: 97,
                   child: ElevatedButton(
                     onPressed: () async {
+                      EasyLoading.show();
                       await _whController.getTransfers(
                         controller.selectedWallet?.value.accountHash
                                 .replaceAll('account-hash-', '') ??
                             '',
                         _whController.currentPage.value + 1,
                       );
+                      EasyLoading.dismiss();
                     },
                     child: Text(
                       'show_more'.tr,
@@ -387,6 +388,8 @@ class WalletHomeTab extends GetView<HomeController> {
                 ),
               ),
               onTap: () async {
+                EasyLoading.show();
+
                 await _whController.getDeployInfo(
                     _whController.transfers[index - 1].deployHash);
 
@@ -402,7 +405,8 @@ class WalletHomeTab extends GetView<HomeController> {
                     );
                   },
                 );
-                // _onTapHistoryItem(_whController.transfers[index - 1], _wallet);
+
+                EasyLoading.dismiss();
               },
             ),
             const SizedBox(height: 12),

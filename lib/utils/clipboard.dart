@@ -1,5 +1,5 @@
 import 'package:flutter/services.dart';
-import 'package:toast/toast.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import '../components/dialog.dart';
 
@@ -19,12 +19,10 @@ class AppClipboard {
       return;
     }
 
-    Toast.show(
+    EasyLoading.showToast(
       "Copied!",
-      duration: Toast.lengthLong,
-      gravity: Toast.bottom,
-      // backgroundColor: Theme.of(context).colorScheme.,
-      // textColor: Colors.white,
+      duration: const Duration(seconds: 3),
+      toastPosition: EasyLoadingToastPosition.bottom,
     );
   }
 }

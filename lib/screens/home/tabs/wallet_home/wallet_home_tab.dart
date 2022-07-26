@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
+import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:toast/toast.dart';
-
-import '../../../../routes/routes.dart';
 
 class WalletHomeTab extends GetView<HomeController> {
   WalletHomeTab({Key? key}) : super(key: key);
@@ -27,7 +25,6 @@ class WalletHomeTab extends GetView<HomeController> {
 
   @override
   Widget build(BuildContext context) {
-    ToastContext().init(context);
     SizeConfig().init(context);
 
     _whController.setting = controller.setting;

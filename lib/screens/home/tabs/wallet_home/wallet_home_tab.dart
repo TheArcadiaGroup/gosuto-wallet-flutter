@@ -65,6 +65,10 @@ class WalletHomeTab extends GetView<HomeController> {
             controller.selectedWallet?.value.isValidator ?? false,
             false);
         await controller.chooseWalletTab.fetchData();
+        await _whController.getTransfers(controller
+                .selectedWallet?.value.accountHash
+                .replaceAll('account-hash-', '') ??
+            '');
 
         _refreshController.finishRefresh();
       },
@@ -292,6 +296,8 @@ class WalletHomeTab extends GetView<HomeController> {
                             '',
                         _whController.currentPage.value + 1,
                       );
+                      _whController.backupTransfers
+                          .assignAll(_whController.transfers.toList());
                       EasyLoading.dismiss();
                     },
                     child: Text(

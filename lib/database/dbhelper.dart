@@ -52,7 +52,6 @@ class DBHelper {
   static Future<String> getPassword() async {
     try {
       var settings = await getSettings();
-      print(settings);
       if (settings != null) {
         return settings.password;
       }

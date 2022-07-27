@@ -60,7 +60,6 @@ Future<void> config() async {
 
 void main() async {
   await GetStorage.init();
-  print(await getApplicationDocumentsDirectory());
 
   await Hive.initFlutter();
   Hive

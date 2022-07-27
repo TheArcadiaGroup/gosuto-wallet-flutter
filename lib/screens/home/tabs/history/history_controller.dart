@@ -52,8 +52,6 @@ class HistoryController extends GetxController {
     if (transfers.isEmpty) {
       transfers(_transfers);
     } else {
-      print(page);
-      print(currentPage.value);
       if (page != currentPage.value) {
         transfers.addAll(_transfers);
       }

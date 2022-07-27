@@ -12,6 +12,7 @@ import 'package:gosuto/services/service.dart';
 import 'package:gosuto/themes/theme.dart';
 import 'package:gosuto/utils/utils.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:local_auth/local_auth.dart';
 import 'app_binding.dart';
 import 'env/env.dart';
@@ -41,6 +42,7 @@ Future<void> config() async {
     );
   }
 
+  // Get balance after every 10 mins
   Timer.periodic(const Duration(minutes: 10), (Timer t) async {
     await AccountUtils.getAllBalances(false);
   });
@@ -58,6 +60,7 @@ Future<void> config() async {
 
 void main() async {
   await GetStorage.init();
+  print(await getApplicationDocumentsDirectory());
 
   await Hive.initFlutter();
   Hive

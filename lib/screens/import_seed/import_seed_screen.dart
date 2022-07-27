@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/button.dart';
@@ -22,7 +23,9 @@ class ImportSeedScreen extends GetView<ImportSeedController> {
       controller.formKey.currentState?.save();
 
       // save wallet to db
+      EasyLoading.show();
       int walletId = await controller.createWallet();
+      EasyLoading.dismiss();
 
       if (walletId > 0) {
         Get.offAllNamed(Routes.home);

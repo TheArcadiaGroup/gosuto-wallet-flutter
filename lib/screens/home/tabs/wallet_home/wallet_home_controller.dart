@@ -29,6 +29,7 @@ class WalletHomeController extends GetxController
   var itemCount = 0.obs;
 
   RxList<TransferModel> transfers = RxList<TransferModel>();
+  RxList<TransferModel> backupTransfers = RxList<TransferModel>();
   RxList<String> seedPhrases = RxList<String>();
   Rx<SettingsModel>? setting;
   Rx<TransferModel>? selectedTransfer;

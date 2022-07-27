@@ -35,16 +35,21 @@ class WalletHomeTab extends GetView<HomeController> {
 
     _whController.currentPage.value = 1;
     _whController.transfers.clear();
+    _whController.backupTransfers.clear();
+    _selectedFilter(AppConstants.historyFilterItems[0]);
 
     EasyLoading.show();
 
     _whController
         .getTransfers(
-          controller.selectedWallet?.value.accountHash
-                  .replaceAll('account-hash-', '') ??
-              '',
-        )
-        .then((value) => EasyLoading.dismiss());
+      controller.selectedWallet?.value.accountHash
+              .replaceAll('account-hash-', '') ??
+          '',
+    )
+        .then((value) {
+      EasyLoading.dismiss();
+      _whController.backupTransfers.assignAll(_whController.transfers.toList());
+    });
 
     return EasyRefresh(
       controller: _refreshController,
@@ -266,7 +271,8 @@ class WalletHomeTab extends GetView<HomeController> {
                   _getItemCountListView(_whController.currentTab.value) - 1 &&
               _whController.currentTab.value == WalletHomeTabs.history) {
             if (_whController.currentPage.value <
-                _whController.pageCount.value) {
+                    _whController.pageCount.value &&
+                _selectedFilter.value == AppConstants.historyFilterItems[0]) {
               return Padding(
                 padding: EdgeInsets.only(
                   top: 20,
@@ -953,21 +959,49 @@ class WalletHomeTab extends GetView<HomeController> {
 
   void _changeFilter(value) {
     _selectedFilter(value);
+    var publicKey = controller.selectedWallet?.value.publicKey.toLowerCase();
     var filter = value.toString().toLowerCase();
-    var backupTransfers = _whController.transfers;
 
     switch (filter) {
       case 'sent':
-        var filteredTransfers = _whController.transfers
+        var filteredTransfers = _whController.backupTransfers
             .where((e) =>
-                e.fromAccountPublicKey.toLowerCase() ==
-                controller.selectedWallet?.value.publicKey.toLowerCase())
+                e.fromAccountPublicKey.toLowerCase() == publicKey &&
+                e.toAccountPublicKey != null &&
+                e.toAccountPublicKey?.toLowerCase() != publicKey)
             .toList();
-        _whController.transfers(filteredTransfers);
+        _whController.transfers.assignAll(filteredTransfers);
+        break;
+      case 'received':
+        var filteredTransfers = _whController.backupTransfers
+            .where((e) =>
+                e.fromAccountPublicKey.toLowerCase() != publicKey &&
+                e.toAccountPublicKey != null &&
+                e.toAccountPublicKey?.toLowerCase() == publicKey)
+            .toList();
+        _whController.transfers.assignAll(filteredTransfers);
+        break;
+      case 'swap':
+        var filteredTransfers = _whController.backupTransfers
+            .where((e) =>
+                e.fromAccountPublicKey.toLowerCase() == publicKey &&
+                e.toAccountPublicKey != null &&
+                e.toAccountPublicKey?.toLowerCase() == publicKey)
+            .toList();
+        _whController.transfers.assignAll(filteredTransfers);
+        break;
+      case 'contract interaction':
+        var filteredTransfers = _whController.backupTransfers
+            .where((e) =>
+                e.fromAccountPublicKey.toLowerCase() == publicKey &&
+                e.toAccountPublicKey == null)
+            .toList();
+        _whController.transfers.assignAll(filteredTransfers);
         break;
       case 'all':
       default:
-        _whController.transfers.value = backupTransfers;
+        _whController.transfers
+            .assignAll(_whController.backupTransfers.toList());
         break;
     }
   }

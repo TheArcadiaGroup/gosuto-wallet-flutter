@@ -21,20 +21,19 @@ class HistoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var deployName = '';
+    var publicKey = wallet.publicKey.toLowerCase();
 
-    if (wallet.publicKey.toLowerCase() ==
-        transfer.fromAccountPublicKey.toLowerCase()) {
+    if (publicKey == transfer.fromAccountPublicKey.toLowerCase()) {
       if (transfer.toAccountPublicKey == null) {
         deployName = 'contract_interaction'.tr;
       } else {
-        if (wallet.publicKey.toLowerCase() ==
-            transfer.toAccountPublicKey?.toLowerCase()) {
+        if (publicKey == transfer.toAccountPublicKey?.toLowerCase()) {
           deployName = 'swap'.tr;
         } else {
           deployName = 'sent'.tr;
         }
       }
-    } else {
+    } else if (publicKey == transfer.toAccountPublicKey?.toLowerCase()) {
       deployName = 'received'.tr;
     }
 

@@ -22,6 +22,7 @@ class AppConstants {
     'all'.tr,
     'sent'.tr,
     'received'.tr,
+    'swap'.tr,
     'contract_interaction'.tr,
   ];
 

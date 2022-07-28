@@ -4,31 +4,58 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:gosuto/models/models.dart';
+import 'package:gosuto/services/service.dart';
+import 'package:gosuto/themes/theme.dart';
 import 'package:gosuto/utils/utils.dart';
 
-class HistoryItem extends StatelessWidget {
+class HistoryItem extends StatefulWidget {
   const HistoryItem(
       {Key? key,
       required this.deploy,
       required this.wallet,
+      this.onTap,
+      this.disabled,
       this.subTitle = ''})
       : super(key: key);
 
   final String subTitle;
   final DeployModel deploy;
   final WalletModel wallet;
+  final bool? disabled;
+  final Function? onTap;
+
+  bool get _disabled => disabled == null ? false : disabled!;
+
+  @override
+  _HistoryItemState createState() => _HistoryItemState();
+}
+
+class _HistoryItemState extends State<HistoryItem> {
+  var isSelected = false;
+  var _containerColor = ThemeService().isDarkMode
+      ? AppTheme.darkTheme.colorScheme.secondaryContainer
+      : AppTheme.lightTheme.colorScheme.secondaryContainer;
+  var _titleColor = ThemeService().isDarkMode
+      ? AppTheme.darkTheme.textTheme.headline4?.color
+      : AppTheme.lightTheme.textTheme.headline4?.color;
+
+  @override
+  void initState() {
+    isSelected = false;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     var deployName = '';
-    var publicKey = wallet.publicKey.toLowerCase();
+    var publicKey = widget.wallet.publicKey.toLowerCase();
     var historyItemStyle = 0;
 
-    var amount = deploy.executionTypeId != 2
-        ? double.parse(CasperClient.fromWei(deploy.amount.toString()))
+    var amount = widget.deploy.executionTypeId != 2
+        ? double.parse(CasperClient.fromWei(widget.deploy.amount.toString()))
         : 0.0;
 
-    switch (deploy.executionTypeId) {
+    switch (widget.deploy.executionTypeId) {
       case 1:
         // WASM Deploy
         historyItemStyle = 1;
@@ -38,10 +65,11 @@ class HistoryItem extends StatelessWidget {
         // Contract interaction
         deployName = 'contract_interaction'.tr;
 
-        if (deploy.entryPoint?.name == 'delegate' ||
-            deploy.entryPoint?.name == 'undelegate') {
+        if (widget.deploy.entryPoint?.name == 'delegate' ||
+            widget.deploy.entryPoint?.name == 'undelegate') {
           historyItemStyle = 3;
-          amount = double.parse(CasperClient.fromWei(deploy.amount.toString()));
+          amount = double.parse(
+              CasperClient.fromWei(widget.deploy.amount.toString()));
         }
         break;
       case 6:
@@ -49,111 +77,138 @@ class HistoryItem extends StatelessWidget {
         // Transfer
         deployName = 'transfer'.tr;
 
-        if (deploy.callerPublicKey.toLowerCase() == publicKey) {
+        if (widget.deploy.callerPublicKey.toLowerCase() == publicKey) {
           historyItemStyle = 3;
           deployName = 'sent'.tr;
         }
         break;
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+    return InkWell(
+      splashColor: Colors.red,
+      onTap: () {
+        if (!widget._disabled && widget.onTap != null) {
+          widget.onTap!();
+        }
+
+        setState(() {
+          _containerColor = isSelected
+              ? const Color(0xFF725DFF)
+              : Theme.of(context).colorScheme.secondaryContainer;
+
+          _titleColor = isSelected
+              ? Colors.white
+              : Theme.of(context).textTheme.headline4?.color;
+        });
+      },
+      // onTap: widget._disabled ? null : widget.onTap as void Function()?,
+      child: Container(
+        decoration: BoxDecoration(
+          color: _containerColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (deploy.errorMessage != null)
-                      SvgPicture.asset('assets/svgs/ic-failed.svg'),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: deploy.errorMessage == null ? 0 : 8),
-                      child: Text(
-                        deployName,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline4
-                            ?.copyWith(fontSize: 12),
-                      ),
+                    Row(
+                      children: [
+                        if (widget.deploy.errorMessage != null)
+                          SvgPicture.asset('assets/svgs/ic-failed.svg'),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: widget.deploy.errorMessage == null ? 0 : 8),
+                          child: Text(
+                            deployName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline4
+                                ?.copyWith(fontSize: 12, color: _titleColor),
+                          ),
+                        ),
+                        const SizedBox(width: 3),
+                        Text(
+                          widget.subTitle,
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(fontSize: 10),
+                        )
+                      ],
                     ),
-                    const SizedBox(width: 3),
+                    const SizedBox(height: 5),
                     Text(
-                      subTitle,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1
-                          ?.copyWith(fontSize: 10),
+                      GetTimeAgo.parse(
+                          DateTime.parse(widget.deploy.timestamp).toLocal(),
+                          pattern: 'LLL d, hh:mm:ss a'),
+                      overflow: TextOverflow.clip,
+                      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                          fontSize: 11, fontWeight: FontWeight.normal),
                     )
                   ],
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  GetTimeAgo.parse(DateTime.parse(deploy.timestamp).toLocal(),
-                      pattern: 'LLL d, hh:mm:ss a'),
-                  overflow: TextOverflow.clip,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1
-                      ?.copyWith(fontSize: 11, fontWeight: FontWeight.normal),
-                )
-              ],
-            ),
-          ),
-          if (historyItemStyle == 0)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text('-',
-                    style: Theme.of(context).textTheme.headline4?.copyWith(
-                        color:
-                            Theme.of(context).colorScheme.tertiaryContainer)),
-              ],
-            ),
-          if (historyItemStyle == 1 || historyItemStyle == 3)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text('-${NumberUtils.format(amount)} CSPR',
-                    style: Theme.of(context).textTheme.headline5),
-                const SizedBox(height: 5),
-                Text(
-                  NumberUtils.formatCurrency(amount * (deploy.rate ?? 0)),
-                  style: Theme.of(context).textTheme.headline5,
-                )
-              ],
-            ),
-          // if (index == 3)
-          // Padding(
-          //   padding: const EdgeInsets.all(8.0),
-          //   child: SvgPicture.asset(
-          //     'assets/svgs/ic-swap-3.svg',
-          //     color: Theme.of(context).colorScheme.tertiaryContainer,
-          //     width: 23,
-          //   ),
-          // ),
-          if (historyItemStyle == 4)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  '+${NumberUtils.format(amount)} CSPR',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline3
-                      ?.copyWith(fontSize: 13),
+              ),
+              if (historyItemStyle == 0)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('-',
+                        style: Theme.of(context).textTheme.headline4?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .tertiaryContainer)),
+                  ],
                 ),
-                const SizedBox(height: 5),
-                Text(
-                  NumberUtils.formatCurrency(amount * (deploy.rate ?? 0)),
-                  style: Theme.of(context).textTheme.headline3,
-                )
-              ],
-            ),
-        ],
+              if (historyItemStyle == 1 || historyItemStyle == 3)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text('-${NumberUtils.format(amount)} CSPR',
+                        style: Theme.of(context).textTheme.headline5),
+                    const SizedBox(height: 5),
+                    Text(
+                      NumberUtils.formatCurrency(
+                          amount * (widget.deploy.rate ?? 0)),
+                      style: Theme.of(context).textTheme.headline5,
+                    )
+                  ],
+                ),
+              // if (index == 3)
+              // Padding(
+              //   padding: const EdgeInsets.all(8.0),
+              //   child: SvgPicture.asset(
+              //     'assets/svgs/ic-swap-3.svg',
+              //     color: Theme.of(context).colorScheme.tertiaryContainer,
+              //     width: 23,
+              //   ),
+              // ),
+              if (historyItemStyle == 4)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '+${NumberUtils.format(amount)} CSPR',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3
+                          ?.copyWith(fontSize: 13),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      NumberUtils.formatCurrency(
+                          amount * (widget.deploy.rate ?? 0)),
+                      style: Theme.of(context).textTheme.headline3,
+                    )
+                  ],
+                ),
+            ],
+          ),
+        ),
       ),
     );
   }

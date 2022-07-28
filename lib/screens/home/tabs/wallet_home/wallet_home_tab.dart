@@ -386,51 +386,93 @@ class WalletHomeTab extends GetView<HomeController> {
     final _wallet = controller.selectedWallet?.value;
 
     if (_whController.deploys.isNotEmpty) {
+      // return Padding(
+      //   padding: const EdgeInsets.symmetric(horizontal: 6),
+      //   child: Column(
+      //     children: [
+      //       Obx(
+      //         () => InkWell(
+      //           splashColor: const Color(0xFF725DFF).withAlpha(50),
+      //           focusColor: const Color(0xFF725DFF),
+      //           highlightColor: const Color(0xFF725DFF),
+      //           borderRadius: BorderRadius.circular(15),
+      //           child: Padding(
+      //             padding:
+      //                 const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
+      //             child: HistoryItem(
+      //               deploy: _whController.deploys[index - 1],
+      //               wallet: _wallet!,
+      //             ),
+      //           ),
+      //           onTap: _loading.value
+      //               ? null
+      //               : () async {
+      //                   EasyLoading.show();
+      //                   _loading(true);
+
+      //                   await _whController.getDeployInfo(
+      //                       _whController.deploys[index - 1].deployHash);
+
+      //                   showCupertinoModalBottomSheet(
+      //                     context: context,
+      //                     expand: false,
+      //                     topRadius: const Radius.circular(30),
+      //                     backgroundColor:
+      //                         Theme.of(context).colorScheme.primary,
+      //                     builder: (context) {
+      //                       return TransferInfoCard(
+      //                         wallet: _wallet,
+      //                         deploy: _whController.selectedDeloy?.value,
+      //                       );
+      //                     },
+      //                   );
+
+      //                   _loading(false);
+      //                   EasyLoading.dismiss();
+      //                 },
+      //         ),
+      //       ),
+      //       Divider(
+      //         height: 1,
+      //         color: Colors.black.withOpacity(0.1),
+      //       ),
+      //     ],
+      //   ),
+      // );
       return Padding(
-        padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 6),
         child: Column(
           children: [
             Obx(
-              () => GestureDetector(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(19),
-                  ),
-                  child: HistoryItem(
-                    deploy: _whController.deploys[index - 1],
-                    wallet: _wallet!,
-                  ),
-                ),
-                onTap: _loading.value
-                    ? null
-                    : () async {
-                        EasyLoading.show();
-                        _loading(true);
+              () => HistoryItem(
+                deploy: _whController.deploys[index - 1],
+                wallet: _wallet!,
+                disabled: _loading.value,
+                onTap: () async {
+                  EasyLoading.show();
+                  _loading(true);
 
-                        await _whController.getDeployInfo(
-                            _whController.deploys[index - 1].deployHash);
+                  await _whController.getDeployInfo(
+                      _whController.deploys[index - 1].deployHash);
 
-                        showCupertinoModalBottomSheet(
-                          context: context,
-                          expand: false,
-                          topRadius: const Radius.circular(30),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.primary,
-                          builder: (context) {
-                            return TransferInfoCard(
-                              wallet: _wallet,
-                              deploy: _whController.selectedDeloy?.value,
-                            );
-                          },
-                        );
+                  showCupertinoModalBottomSheet(
+                    context: context,
+                    expand: false,
+                    topRadius: const Radius.circular(30),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    builder: (context) {
+                      return TransferInfoCard(
+                        wallet: _wallet,
+                        deploy: _whController.selectedDeloy?.value,
+                      );
+                    },
+                  );
 
-                        _loading(false);
-                        EasyLoading.dismiss();
-                      },
+                  _loading(false);
+                  EasyLoading.dismiss();
+                },
               ),
             ),
-            const SizedBox(height: 12),
             Divider(
               height: 1,
               color: Colors.black.withOpacity(0.1),

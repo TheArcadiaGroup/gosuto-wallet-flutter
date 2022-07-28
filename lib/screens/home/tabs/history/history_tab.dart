@@ -155,6 +155,10 @@ class HistoryTab extends GetView<HomeController> {
                     child: HistoryItem(
                       deploy: _hController.deploys[index - 2],
                       wallet: _wallet!,
+                      onTap: () => {
+                        _onTapHistoryItem(
+                            _hController.deploys[index - 2], _wallet)
+                      },
                     ),
                   ),
                   onTap: () => {

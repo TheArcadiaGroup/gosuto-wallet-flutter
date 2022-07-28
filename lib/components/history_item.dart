@@ -15,34 +15,74 @@ class HistoryItem extends StatefulWidget {
       required this.wallet,
       this.onTap,
       this.disabled,
+      this.isSelected,
       this.subTitle = ''})
       : super(key: key);
 
-  final String subTitle;
   final DeployModel deploy;
   final WalletModel wallet;
+  final String subTitle;
   final bool? disabled;
+  final bool? isSelected;
   final Function? onTap;
 
   bool get _disabled => disabled == null ? false : disabled!;
+  bool get _isSelected => isSelected == null ? false : isSelected!;
 
   @override
   _HistoryItemState createState() => _HistoryItemState();
 }
 
 class _HistoryItemState extends State<HistoryItem> {
-  var isSelected = false;
   var _containerColor = ThemeService().isDarkMode
       ? AppTheme.darkTheme.colorScheme.secondaryContainer
       : AppTheme.lightTheme.colorScheme.secondaryContainer;
   var _titleColor = ThemeService().isDarkMode
       ? AppTheme.darkTheme.textTheme.headline4?.color
       : AppTheme.lightTheme.textTheme.headline4?.color;
+  var _dateColor = ThemeService().isDarkMode
+      ? AppTheme.darkTheme.textTheme.subtitle1?.color
+      : AppTheme.lightTheme.textTheme.subtitle1?.color;
+  var _sendColor = ThemeService().isDarkMode
+      ? AppTheme.darkTheme.textTheme.headline5?.color
+      : AppTheme.lightTheme.textTheme.headline5?.color;
+  var _receivedColor = ThemeService().isDarkMode
+      ? AppTheme.darkTheme.textTheme.headline3?.color
+      : AppTheme.lightTheme.textTheme.headline3?.color;
 
   @override
-  void initState() {
-    isSelected = false;
-    super.initState();
+  void didUpdateWidget(covariant HistoryItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    _containerColor = widget._isSelected
+        ? const Color(0xFF725DFF)
+        : ThemeService().isDarkMode
+            ? AppTheme.darkTheme.colorScheme.secondaryContainer
+            : AppTheme.lightTheme.colorScheme.secondaryContainer;
+
+    _titleColor = widget._isSelected
+        ? Colors.white
+        : ThemeService().isDarkMode
+            ? AppTheme.darkTheme.textTheme.headline4?.color
+            : AppTheme.lightTheme.textTheme.headline4?.color;
+
+    _dateColor = widget._isSelected
+        ? Colors.white
+        : ThemeService().isDarkMode
+            ? AppTheme.darkTheme.textTheme.subtitle1?.color
+            : AppTheme.lightTheme.textTheme.subtitle1?.color;
+
+    _sendColor = widget._isSelected
+        ? Colors.white
+        : ThemeService().isDarkMode
+            ? AppTheme.darkTheme.textTheme.headline5?.color
+            : AppTheme.lightTheme.textTheme.headline5?.color;
+
+    _receivedColor = widget._isSelected
+        ? Colors.white
+        : ThemeService().isDarkMode
+            ? AppTheme.darkTheme.textTheme.headline3?.color
+            : AppTheme.lightTheme.textTheme.headline3?.color;
   }
 
   @override
@@ -92,13 +132,19 @@ class _HistoryItemState extends State<HistoryItem> {
         }
 
         setState(() {
-          _containerColor = isSelected
+          _containerColor = !widget._isSelected
               ? const Color(0xFF725DFF)
               : Theme.of(context).colorScheme.secondaryContainer;
 
-          _titleColor = isSelected
+          _titleColor = !widget._isSelected
               ? Colors.white
               : Theme.of(context).textTheme.headline4?.color;
+
+          _dateColor = !widget._isSelected
+              ? Colors.white
+              : ThemeService().isDarkMode
+                  ? AppTheme.darkTheme.textTheme.subtitle1?.color
+                  : AppTheme.lightTheme.textTheme.subtitle1?.color;
         });
       },
       // onTap: widget._disabled ? null : widget.onTap as void Function()?,
@@ -148,7 +194,9 @@ class _HistoryItemState extends State<HistoryItem> {
                           pattern: 'LLL d, hh:mm:ss a'),
                       overflow: TextOverflow.clip,
                       style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                          fontSize: 11, fontWeight: FontWeight.normal),
+                          fontSize: 11,
+                          fontWeight: FontWeight.normal,
+                          color: _dateColor),
                     )
                   ],
                 ),
@@ -159,9 +207,11 @@ class _HistoryItemState extends State<HistoryItem> {
                   children: [
                     Text('-',
                         style: Theme.of(context).textTheme.headline4?.copyWith(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .tertiaryContainer)),
+                            color: widget._isSelected
+                                ? Colors.white
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .tertiaryContainer)),
                   ],
                 ),
               if (historyItemStyle == 1 || historyItemStyle == 3)
@@ -169,12 +219,18 @@ class _HistoryItemState extends State<HistoryItem> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text('-${NumberUtils.format(amount)} CSPR',
-                        style: Theme.of(context).textTheme.headline5),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5
+                            ?.copyWith(color: _sendColor)),
                     const SizedBox(height: 5),
                     Text(
                       NumberUtils.formatCurrency(
                           amount * (widget.deploy.rate ?? 0)),
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5
+                          ?.copyWith(color: _sendColor),
                     )
                   ],
                 ),
@@ -196,13 +252,16 @@ class _HistoryItemState extends State<HistoryItem> {
                       style: Theme.of(context)
                           .textTheme
                           .headline3
-                          ?.copyWith(fontSize: 13),
+                          ?.copyWith(fontSize: 13, color: _receivedColor),
                     ),
                     const SizedBox(height: 5),
                     Text(
                       NumberUtils.formatCurrency(
                           amount * (widget.deploy.rate ?? 0)),
-                      style: Theme.of(context).textTheme.headline3,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline3
+                          ?.copyWith(color: _receivedColor),
                     )
                   ],
                 ),

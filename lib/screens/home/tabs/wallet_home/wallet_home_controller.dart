@@ -33,8 +33,8 @@ class WalletHomeController extends GetxController
   RxList<DeployModel> backupDeploys = RxList<DeployModel>();
   RxList<String> seedPhrases = RxList<String>();
   Rx<SettingsModel>? setting;
-  Rx<TransferModel>? selectedTransfer;
   Rx<DeployModel>? selectedDeloy;
+  Rx<int> selectedIndex = Rx(-1);
 
   @override
   void onInit() {

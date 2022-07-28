@@ -58,7 +58,7 @@ dependencies:
   file_picker: ^4.5.1
   flutter_launcher_icons: ^0.9.2
   casper_dart_sdk:
-    git: https://github.com/faustino-luis/casper-dart-sdk.git
+    git: https://github.com/TheArcadiaGroup/casper-dart-sdk.git
   intl: ^0.17.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0

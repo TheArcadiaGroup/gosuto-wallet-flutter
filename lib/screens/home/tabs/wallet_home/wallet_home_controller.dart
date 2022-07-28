@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,8 +29,8 @@ class WalletHomeController extends GetxController
   var pageCount = 1.obs;
   var itemCount = 0.obs;
 
-  RxList<TransferModel> transfers = RxList<TransferModel>();
-  RxList<TransferModel> backupTransfers = RxList<TransferModel>();
+  RxList<DeployModel> deploys = RxList<DeployModel>();
+  RxList<DeployModel> backupDeploys = RxList<DeployModel>();
   RxList<String> seedPhrases = RxList<String>();
   Rx<SettingsModel>? setting;
   Rx<TransferModel>? selectedTransfer;
@@ -71,29 +72,25 @@ class WalletHomeController extends GetxController
     await DBHelper.updateWallet(publicKey: wallet.publicKey);
   }
 
-  Future<void> getTransfers(
-    String accountHash, [
+  Future<void> getAccountDeploys(
+    String publicKey, [
     int page = 1,
     int limit = 10,
-    String orderDirection = 'DESC',
-    int withExtendedInfo = 1,
   ]) async {
     if (page <= pageCount.value) {
-      final response = await apiClient.accountTransfers(
-          accountHash, page, limit, orderDirection, withExtendedInfo);
+      final response = await apiClient.accountDeploys(publicKey, page, limit);
       List<dynamic> data = response.data;
 
       pageCount(response.pageCount ?? 1);
       itemCount(response.itemCount ?? 0);
 
-      final _transfers =
-          data.map((val) => TransferModel.fromJson(val)).toList();
-      if (transfers.isEmpty) {
-        transfers(_transfers);
+      final _deploys = data.map((val) => DeployModel.fromJson(val)).toList();
+      if (deploys.isEmpty) {
+        deploys(_deploys);
       } else {
         if (currentPage.value < page) {
           // Load more
-          transfers.addAll(_transfers);
+          deploys.addAll(_deploys);
           currentPage(page);
         }
       }
@@ -136,15 +133,66 @@ class WalletHomeController extends GetxController
 
   Future<void> getDeployInfo(String deployHash) async {
     final deploy = await apiClient.deployInfo(deployHash);
+    var isSwapDeploy = deploy.entryPoint?.name.contains('swap') ?? false;
 
-    var response = await apiClient.deployTransfers(deployHash);
-    List<dynamic> data = response.data;
+    if (deploy.errorMessage == null &&
+        deploy.executionTypeId == 2 &&
+        isSwapDeploy) {
+      var path = deploy.args['path']['parsed'] as List<dynamic>;
 
-    var amount = data[0]['amount'] ?? '0.0';
-    deploy.amount = amount;
+      // Get raw data from chain
+      var casperClient =
+          CasperClient(env?.rpcUrl ?? 'https://casper-node.tor.us');
+      var result = await casperClient.getDeploy(deployHash);
+      var transforms = result
+          .values.first.executionResults[0].result.success?.effect?.transforms;
+      var urefList = transforms != null
+          ? transforms.where((element) =>
+              element['key'].contains('uref-') && element['transform'] is Map)
+          : List<Map<String, dynamic>>.empty();
 
-    var currencyAmount = data[0]['currency_amount'] ?? '0.0';
-    deploy.currencyCost = currencyAmount;
+      if (urefList.isNotEmpty) {
+        for (var element in urefList.toList()) {
+          try {
+            var parsedList =
+                element['transform']['WriteCLValue']['parsed'] as List<dynamic>;
+            var contractPackageHash = parsedList
+                .where((element) => element['key'] == 'contract_package_hash')
+                .toList();
+            var pairHash = contractPackageHash[0]['value'];
+
+            var amount0In = parsedList
+                .where((element) => element['key'] == 'amount0In')
+                .toList();
+            var amount0Out = parsedList
+                .where((element) => element['key'] == 'amount0Out')
+                .toList();
+            var amount1In = parsedList
+                .where((element) => element['key'] == 'amount1In')
+                .toList();
+            var amount1Out = parsedList
+                .where((element) => element['key'] == 'amount1Out')
+                .toList();
+
+            var response = await apiClient.getPairInfo(pairHash) as Map;
+            if (response.containsKey('data')) {
+              var pair = PairModel.fromJson(response['data']);
+
+              if (pair.token0.contractHash == path[0].substring(5)) {
+                pair.amount0In = amount0In[0]['value'];
+                pair.amount1Out = amount1Out[0]['value'];
+              } else {
+                pair.amount1In = amount1In[0]['value'];
+                pair.amount0Out = amount0Out[0]['value'];
+              }
+              deploy.pair = pair;
+            }
+          } catch (e) {
+            deploy.pair = null;
+          }
+        }
+      }
+    }
 
     if (selectedDeloy == null) {
       selectedDeloy = deploy.obs;

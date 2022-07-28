@@ -66,4 +66,7 @@ abstract class ApiClient {
 
   @GET(APIConstants.accountsInfo)
   Future<dynamic> accountsInfo(@Path('accountHash') String accountHash);
+
+  @GET(APIConstants.uniswapV2Pairs)
+  Future<dynamic> getPairInfo(@Path('pairHash') String pairHash);
 }

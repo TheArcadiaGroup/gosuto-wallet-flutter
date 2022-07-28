@@ -7,7 +7,7 @@ import '../../../../models/models.dart';
 class HistoryController extends GetxController {
   var isShowBottom = false.obs;
 
-  RxList<TransferModel> transfers = RxList<TransferModel>();
+  RxList<DeployModel> deploys = RxList<DeployModel>();
   late ApiClient apiClient;
 
   var currentPage = 1.obs;
@@ -33,7 +33,7 @@ class HistoryController extends GetxController {
 
   @override
   void onClose() {
-    transfers.clear();
+    deploys.clear();
     super.dispose();
   }
 
@@ -41,19 +41,16 @@ class HistoryController extends GetxController {
     String accountHash, [
     int page = 1,
     int limit = 10,
-    String orderDirection = 'DESC',
-    int withExtendedInfo = 1,
   ]) async {
-    final response = await apiClient.accountTransfers(
-        accountHash, page, limit, orderDirection, withExtendedInfo);
+    final response = await apiClient.accountDeploys(accountHash, page, limit);
     List<dynamic> data = response.data;
-    final _transfers = data.map((val) => TransferModel.fromJson(val)).toList();
+    final _deploys = data.map((val) => DeployModel.fromJson(val)).toList();
 
-    if (transfers.isEmpty) {
-      transfers(_transfers);
+    if (deploys.isEmpty) {
+      deploys(_deploys);
     } else {
       if (page != currentPage.value) {
-        transfers.addAll(_transfers);
+        deploys.addAll(_deploys);
       }
     }
   }

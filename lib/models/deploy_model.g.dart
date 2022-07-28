@@ -52,7 +52,7 @@ DeployModel _$DeployModelFromJson(Map<String, dynamic> json) => DeployModel(
       contractPackageHash: json['contract_package_hash'] as String?,
       cost: json['cost'] as String,
       paymentAmount: json['payment_amount'] as String,
-      errorMssage: json['error_message'] as String?,
+      errorMessage: json['error_message'] as String?,
       timestamp: json['timestamp'] as String,
       status: json['status'] as String,
       amount: json['amount'] as String?,
@@ -66,6 +66,9 @@ DeployModel _$DeployModelFromJson(Map<String, dynamic> json) => DeployModel(
       currencyCost: (json['currency_cost'] as num?)?.toDouble(),
       rate: (json['rate'] as num?)?.toDouble(),
       currentCurrencyCost: (json['current_currency_cost'] as num?)?.toDouble(),
+      pair: json['pair'] == null
+          ? null
+          : PairModel.fromJson(json['pair'] as Map<String, dynamic>),
     )..args = json['args'];
 
 Map<String, dynamic> _$DeployModelToJson(DeployModel instance) =>
@@ -78,7 +81,7 @@ Map<String, dynamic> _$DeployModelToJson(DeployModel instance) =>
       'contract_package_hash': instance.contractPackageHash,
       'cost': instance.cost,
       'payment_amount': instance.paymentAmount,
-      'error_message': instance.errorMssage,
+      'error_message': instance.errorMessage,
       'timestamp': instance.timestamp,
       'status': instance.status,
       'amount': instance.amount,
@@ -88,4 +91,5 @@ Map<String, dynamic> _$DeployModelToJson(DeployModel instance) =>
       'rate': instance.rate,
       'current_currency_cost': instance.currentCurrencyCost,
       'args': instance.args,
+      'pair': instance.pair,
     };

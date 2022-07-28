@@ -9,38 +9,52 @@ import 'package:gosuto/utils/utils.dart';
 class HistoryItem extends StatelessWidget {
   const HistoryItem(
       {Key? key,
-      required this.transfer,
+      required this.deploy,
       required this.wallet,
       this.subTitle = ''})
       : super(key: key);
 
   final String subTitle;
-  final TransferModel transfer;
+  final DeployModel deploy;
   final WalletModel wallet;
 
   @override
   Widget build(BuildContext context) {
     var deployName = '';
     var publicKey = wallet.publicKey.toLowerCase();
+    var historyItemStyle = 0;
 
-    if (publicKey == transfer.fromAccountPublicKey.toLowerCase()) {
-      if (transfer.toAccountPublicKey == null) {
+    var amount = deploy.executionTypeId != 2
+        ? double.parse(CasperClient.fromWei(deploy.amount.toString()))
+        : 0.0;
+
+    switch (deploy.executionTypeId) {
+      case 1:
+        // WASM Deploy
+        historyItemStyle = 1;
+        deployName = 'wasm'.tr;
+        break;
+      case 2:
+        // Contract interaction
         deployName = 'contract_interaction'.tr;
-      } else {
-        if (publicKey == transfer.toAccountPublicKey?.toLowerCase()) {
-          deployName = 'swap'.tr;
-        } else {
+
+        if (deploy.entryPoint?.name == 'delegate' ||
+            deploy.entryPoint?.name == 'undelegate') {
+          historyItemStyle = 3;
+          amount = double.parse(CasperClient.fromWei(deploy.amount.toString()));
+        }
+        break;
+      case 6:
+      default:
+        // Transfer
+        deployName = 'transfer'.tr;
+
+        if (deploy.callerPublicKey.toLowerCase() == publicKey) {
+          historyItemStyle = 3;
           deployName = 'sent'.tr;
         }
-      }
-    } else if (publicKey == transfer.toAccountPublicKey?.toLowerCase()) {
-      deployName = 'received'.tr;
+        break;
     }
-
-    final index = wallet.publicKey == transfer.fromAccountPublicKey ? 4 : 1;
-
-    final amount =
-        CasperClient.fromWei(BigNumber.from(transfer.amount)).toDouble();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
@@ -72,7 +86,7 @@ class HistoryItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  GetTimeAgo.parse(DateTime.parse(transfer.timestamp).toLocal(),
+                  GetTimeAgo.parse(DateTime.parse(deploy.timestamp).toLocal(),
                       pattern: 'LLL d, hh:mm:ss a'),
                   overflow: TextOverflow.clip,
                   style: Theme.of(context)
@@ -83,35 +97,39 @@ class HistoryItem extends StatelessWidget {
               ],
             ),
           ),
-          (index == 1
-              ? Container()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      '-${NumberUtils.format(amount)} CSPR',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5
-                          ?.copyWith(fontSize: 13),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      NumberUtils.formatCurrency(transfer.currencyAmount),
-                      style: Theme.of(context).textTheme.headline5,
-                    )
-                  ],
-                )),
-          if (index == 3)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SvgPicture.asset(
-                'assets/svgs/ic-swap-3.svg',
-                color: Theme.of(context).colorScheme.tertiaryContainer,
-                width: 23,
-              ),
+          if (historyItemStyle == 0)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('-',
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                        color:
+                            Theme.of(context).colorScheme.tertiaryContainer)),
+              ],
             ),
-          if (index == 1 || index == 3)
+          if (historyItemStyle == 1 || historyItemStyle == 3)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text('-${NumberUtils.format(amount)} CSPR',
+                    style: Theme.of(context).textTheme.headline5),
+                const SizedBox(height: 5),
+                Text(
+                  NumberUtils.formatCurrency(amount * (deploy.rate ?? 0)),
+                  style: Theme.of(context).textTheme.headline5,
+                )
+              ],
+            ),
+          // if (index == 3)
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: SvgPicture.asset(
+          //     'assets/svgs/ic-swap-3.svg',
+          //     color: Theme.of(context).colorScheme.tertiaryContainer,
+          //     width: 23,
+          //   ),
+          // ),
+          if (historyItemStyle == 4)
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -124,7 +142,7 @@ class HistoryItem extends StatelessWidget {
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  NumberUtils.formatCurrency(transfer.currencyAmount),
+                  NumberUtils.formatCurrency(amount * (deploy.rate ?? 0)),
                   style: Theme.of(context).textTheme.headline3,
                 )
               ],

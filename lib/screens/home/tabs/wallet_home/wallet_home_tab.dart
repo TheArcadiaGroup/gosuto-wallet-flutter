@@ -34,21 +34,19 @@ class WalletHomeTab extends GetView<HomeController> {
     _whController.getSeedPhrase();
 
     _whController.currentPage.value = 1;
-    _whController.transfers.clear();
-    _whController.backupTransfers.clear();
+    _whController.deploys.clear();
+    _whController.backupDeploys.clear();
     _selectedFilter(AppConstants.historyFilterItems[0]);
 
     EasyLoading.show();
 
     _whController
-        .getTransfers(
-      controller.selectedWallet?.value.accountHash
-              .replaceAll('account-hash-', '') ??
-          '',
+        .getAccountDeploys(
+      controller.selectedWallet?.value.publicKey ?? '',
     )
         .then((value) {
       EasyLoading.dismiss();
-      _whController.backupTransfers.assignAll(_whController.transfers.toList());
+      _whController.backupDeploys.assignAll(_whController.deploys.toList());
     });
 
     return EasyRefresh(
@@ -65,10 +63,8 @@ class WalletHomeTab extends GetView<HomeController> {
             controller.selectedWallet?.value.isValidator ?? false,
             false);
         await controller.chooseWalletTab.fetchData();
-        await _whController.getTransfers(controller
-                .selectedWallet?.value.accountHash
-                .replaceAll('account-hash-', '') ??
-            '');
+        await _whController.getAccountDeploys(
+            controller.selectedWallet?.value.publicKey ?? '');
 
         _refreshController.finishRefresh();
       },
@@ -85,7 +81,7 @@ class WalletHomeTab extends GetView<HomeController> {
   int _getItemCountListView(WalletHomeTabs tab) {
     switch (tab) {
       case WalletHomeTabs.history:
-        return _whController.transfers.length + 5;
+        return _whController.deploys.length + 5;
       case WalletHomeTabs.send:
         return 5;
       case WalletHomeTabs.stake:
@@ -290,14 +286,12 @@ class WalletHomeTab extends GetView<HomeController> {
                   child: ElevatedButton(
                     onPressed: () async {
                       EasyLoading.show();
-                      await _whController.getTransfers(
-                        controller.selectedWallet?.value.accountHash
-                                .replaceAll('account-hash-', '') ??
-                            '',
+                      await _whController.getAccountDeploys(
+                        controller.selectedWallet?.value.publicKey ?? '',
                         _whController.currentPage.value + 1,
                       );
-                      _whController.backupTransfers
-                          .assignAll(_whController.transfers.toList());
+                      _whController.backupDeploys
+                          .assignAll(_whController.deploys.toList());
                       EasyLoading.dismiss();
                     },
                     child: Text(
@@ -346,7 +340,7 @@ class WalletHomeTab extends GetView<HomeController> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('transfers'.tr, style: Theme.of(context).textTheme.headline1),
+            Text('deploys'.tr, style: Theme.of(context).textTheme.headline1),
             SizedBox(
               height: 36,
               width: 144,
@@ -391,7 +385,7 @@ class WalletHomeTab extends GetView<HomeController> {
 
     final _wallet = controller.selectedWallet?.value;
 
-    if (_whController.transfers.isNotEmpty) {
+    if (_whController.deploys.isNotEmpty) {
       return Padding(
         padding: const EdgeInsets.only(top: 12.0, left: 16, right: 16),
         child: Column(
@@ -404,7 +398,7 @@ class WalletHomeTab extends GetView<HomeController> {
                     borderRadius: BorderRadius.circular(19),
                   ),
                   child: HistoryItem(
-                    transfer: _whController.transfers[index - 1],
+                    deploy: _whController.deploys[index - 1],
                     wallet: _wallet!,
                   ),
                 ),
@@ -415,7 +409,7 @@ class WalletHomeTab extends GetView<HomeController> {
                         _loading(true);
 
                         await _whController.getDeployInfo(
-                            _whController.transfers[index - 1].deployHash);
+                            _whController.deploys[index - 1].deployHash);
 
                         showCupertinoModalBottomSheet(
                           context: context,
@@ -969,45 +963,44 @@ class WalletHomeTab extends GetView<HomeController> {
     var filter = value.toString().toLowerCase();
 
     switch (filter) {
-      case 'sent':
-        var filteredTransfers = _whController.backupTransfers
-            .where((e) =>
-                e.fromAccountPublicKey.toLowerCase() == publicKey &&
-                e.toAccountPublicKey != null &&
-                e.toAccountPublicKey?.toLowerCase() != publicKey)
-            .toList();
-        _whController.transfers.assignAll(filteredTransfers);
-        break;
-      case 'received':
-        var filteredTransfers = _whController.backupTransfers
-            .where((e) =>
-                e.fromAccountPublicKey.toLowerCase() != publicKey &&
-                e.toAccountPublicKey != null &&
-                e.toAccountPublicKey?.toLowerCase() == publicKey)
-            .toList();
-        _whController.transfers.assignAll(filteredTransfers);
-        break;
-      case 'swap':
-        var filteredTransfers = _whController.backupTransfers
-            .where((e) =>
-                e.fromAccountPublicKey.toLowerCase() == publicKey &&
-                e.toAccountPublicKey != null &&
-                e.toAccountPublicKey?.toLowerCase() == publicKey)
-            .toList();
-        _whController.transfers.assignAll(filteredTransfers);
-        break;
-      case 'contract interaction':
-        var filteredTransfers = _whController.backupTransfers
-            .where((e) =>
-                e.fromAccountPublicKey.toLowerCase() == publicKey &&
-                e.toAccountPublicKey == null)
-            .toList();
-        _whController.transfers.assignAll(filteredTransfers);
-        break;
+      // case 'sent':
+      //   var filteredTransfers = _whController.backupDeploys
+      //       .where((e) =>
+      //           e.callerPublicKey.toLowerCase() == publicKey &&
+      //           e.toAccountPublicKey != null &&
+      //           e.toAccountPublicKey?.toLowerCase() != publicKey)
+      //       .toList();
+      //   _whController.deploys.assignAll(filteredTransfers);
+      //   break;
+      // case 'received':
+      //   var filteredTransfers = _whController.backupDeploys
+      //       .where((e) =>
+      //           e.fromAccountPublicKey.toLowerCase() != publicKey &&
+      //           e.toAccountPublicKey != null &&
+      //           e.toAccountPublicKey?.toLowerCase() == publicKey)
+      //       .toList();
+      //   _whController.deploys.assignAll(filteredTransfers);
+      //   break;
+      // case 'swap':
+      //   var filteredTransfers = _whController.backupDeploys
+      //       .where((e) =>
+      //           e.fromAccountPublicKey.toLowerCase() == publicKey &&
+      //           e.toAccountPublicKey != null &&
+      //           e.toAccountPublicKey?.toLowerCase() == publicKey)
+      //       .toList();
+      //   _whController.deploys.assignAll(filteredTransfers);
+      //   break;
+      // case 'contract interaction':
+      //   var filteredTransfers = _whController.backupDeploys
+      //       .where((e) =>
+      //           e.fromAccountPublicKey.toLowerCase() == publicKey &&
+      //           e.toAccountPublicKey == null)
+      //       .toList();
+      //   _whController.deploys.assignAll(filteredTransfers);
+      //   break;
       case 'all':
       default:
-        _whController.transfers
-            .assignAll(_whController.backupTransfers.toList());
+        _whController.deploys.assignAll(_whController.backupDeploys.toList());
         break;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:gosuto/models/models.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'deploy_model.g.dart';
@@ -94,7 +95,7 @@ class DeployModel {
   String paymentAmount;
 
   @JsonKey(name: 'error_message')
-  String? errorMssage;
+  String? errorMessage;
 
   @JsonKey(name: 'timestamp')
   String timestamp;
@@ -122,6 +123,8 @@ class DeployModel {
 
   dynamic args;
 
+  PairModel? pair;
+
   DeployModel({
     required this.deployHash,
     required this.blockHash,
@@ -131,7 +134,7 @@ class DeployModel {
     this.contractPackageHash,
     required this.cost,
     required this.paymentAmount,
-    this.errorMssage,
+    this.errorMessage,
     required this.timestamp,
     required this.status,
     this.amount,
@@ -140,6 +143,7 @@ class DeployModel {
     required this.currencyCost,
     required this.rate,
     required this.currentCurrencyCost,
+    this.pair,
   });
 
   factory DeployModel.fromJson(Map<String, dynamic> json) =>

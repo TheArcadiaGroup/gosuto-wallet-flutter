@@ -26,7 +26,8 @@ class AccountUtils {
             CasperClient(env?.rpcUrl ?? 'https://casper-node.tor.us');
         var clPublicKey = CLPublicKey.fromHex(publicKey);
         var balance = await casperClient.balanceOfByPublicKey(clPublicKey);
-        var balanceDouble = CasperClient.fromWei(balance).toDouble();
+        var balanceDouble =
+            double.parse(CasperClient.fromWei(balance.toString()));
 
         await DBHelper.updateWallet(
             publicKey: publicKey, balance: balanceDouble);
@@ -48,7 +49,7 @@ class AccountUtils {
 
   static Future<double> getTotalStake(
       String publicKey, bool loadFromCache) async {
-    var totalStake = zeroBN;
+    var totalStake = BigNumber.ZERO;
     var apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
 
     try {
@@ -81,7 +82,8 @@ class AccountUtils {
           }
         }
 
-        var totalStakeDouble = CasperClient.fromWei(totalStake).toDouble();
+        var totalStakeDouble =
+            double.parse(CasperClient.fromWei(totalStake.toString()));
         await DBHelper.updateWallet(
             publicKey: publicKey, totalStake: totalStakeDouble);
         return totalStakeDouble;
@@ -102,7 +104,7 @@ class AccountUtils {
 
   static Future<double> getTotalRewards(
       String publicKey, bool isValidator, bool loadFromCache) async {
-    var totalRewards = zeroBN;
+    var totalRewards = BigNumber.ZERO;
     var apiClient = ApiClient(Get.find(), baseUrl: env?.baseUrl ?? '');
 
     try {
@@ -116,7 +118,8 @@ class AccountUtils {
         if (response['data'] != '') {
           totalRewards = BigNumber.from(response['data']);
         }
-        var totalRewardsDouble = CasperClient.fromWei(totalRewards).toDouble();
+        var totalRewardsDouble =
+            double.parse(CasperClient.fromWei(totalRewards.toString()));
         await DBHelper.updateWallet(
             publicKey: publicKey, totalRewards: totalRewardsDouble);
         return totalRewardsDouble;

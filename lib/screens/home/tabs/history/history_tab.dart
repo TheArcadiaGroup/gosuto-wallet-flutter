@@ -34,7 +34,7 @@ class HistoryTab extends GetView<HomeController> {
       () => ListView.builder(
         padding: const EdgeInsets.only(
             top: 10, left: 0, right: 0, bottom: AppConstants.heightBottomView),
-        itemCount: _hController.transfers.length + 3,
+        itemCount: _hController.deploys.length + 3,
         itemBuilder: (context, index) {
           if (index == 0) {
             return Padding(
@@ -101,7 +101,7 @@ class HistoryTab extends GetView<HomeController> {
             );
           }
 
-          if (index == _hController.transfers.length + 2) {
+          if (index == _hController.deploys.length + 2) {
             return Padding(
               padding: EdgeInsets.only(
                 top: 37,
@@ -153,13 +153,12 @@ class HistoryTab extends GetView<HomeController> {
                       borderRadius: BorderRadius.circular(19),
                     ),
                     child: HistoryItem(
-                      transfer: _hController.transfers[index - 2],
+                      deploy: _hController.deploys[index - 2],
                       wallet: _wallet!,
                     ),
                   ),
                   onTap: () => {
-                    _onTapHistoryItem(
-                        _hController.transfers[index - 2], _wallet)
+                    _onTapHistoryItem(_hController.deploys[index - 2], _wallet)
                   },
                 ),
                 const SizedBox(height: 12),
@@ -255,13 +254,13 @@ class HistoryTab extends GetView<HomeController> {
         ));
   }
 
-  void _onTapHistoryItem(TransferModel transfer, WalletModel wallet) {
+  void _onTapHistoryItem(DeployModel transfer, WalletModel wallet) {
     _showHideBottomView(true);
-    // _hController.selectedTransfer = transfer.obs;
-    if (_hController.selectedTransfer == null) {
-      _hController.selectedTransfer = transfer.obs;
-    } else {
-      _hController.selectedTransfer!(transfer);
-    }
+    // // _hController.selectedTransfer = transfer.obs;
+    // if (_hController.selectedTransfer == null) {
+    //   _hController.selectedTransfer = transfer.obs;
+    // } else {
+    //   _hController.selectedTransfer!(transfer);
+    // }
   }
 }

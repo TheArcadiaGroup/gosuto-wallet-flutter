@@ -20,4 +20,6 @@ class APIConstants {
   static const totalRewards = '{type}/{publicKey}/total-rewards';
 
   static const accountsInfo = 'accounts-info/{accountHash}/';
+
+  static const uniswapV2Pairs = 'uniswap-v2-pairs/{pairHash}';
 }

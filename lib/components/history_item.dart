@@ -1,6 +1,6 @@
 import 'package:casper_dart_sdk/casper_dart_sdk.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:gosuto/models/models.dart';
@@ -67,12 +67,18 @@ class HistoryItem extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      deployName,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          ?.copyWith(fontSize: 12),
+                    if (deploy.errorMessage != null)
+                      SvgPicture.asset('assets/svgs/ic-failed.svg'),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: deploy.errorMessage == null ? 0 : 8),
+                      child: Text(
+                        deployName,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.copyWith(fontSize: 12),
+                      ),
                     ),
                     const SizedBox(width: 3),
                     Text(

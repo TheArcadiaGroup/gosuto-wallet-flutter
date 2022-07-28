@@ -1,5 +1,6 @@
 import 'package:casper_dart_sdk/classes/classes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:gosuto/env/env.dart';
@@ -358,6 +359,36 @@ class TransferInfoCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).colorScheme.tertiaryContainer),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 95,
+                  child: Text(
+                    'status'.tr,
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                        color: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.color
+                            ?.withAlpha(170)),
+                  ),
+                ),
+                SvgPicture.asset(
+                    'assets/svgs/ic-${deploy?.errorMessage == null ? 'success' : 'failed'}.svg'),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8),
+                  child: Text(
+                    deploy?.errorMessage == null ? 'success'.tr : 'failed'.tr,
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                        fontWeight: FontWeight.normal,
+                        color: Theme.of(context).colorScheme.tertiaryContainer),
+                  ),
                 ),
               ],
             ),

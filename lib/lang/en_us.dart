@@ -151,4 +151,5 @@ const Map<String, String> enUs = {
       'Enter wallet password to\ncopy private key',
   'password': 'Password',
   'wallet_key_copied': 'Wallet Key Copied',
+  'fetch_deploy_details_error': 'Could not fetch deploy details',
 };

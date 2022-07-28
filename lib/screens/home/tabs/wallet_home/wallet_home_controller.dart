@@ -132,72 +132,76 @@ class WalletHomeController extends GetxController
   }
 
   Future<void> getDeployInfo(String deployHash) async {
-    final deploy = await apiClient.deployInfo(deployHash);
-    var isSwapDeploy = deploy.entryPoint?.name.contains('swap') ?? false;
+    try {
+      final deploy = await apiClient.deployInfo(deployHash);
+      var isSwapDeploy = deploy.entryPoint?.name.contains('swap') ?? false;
 
-    if (deploy.errorMessage == null &&
-        deploy.executionTypeId == 2 &&
-        isSwapDeploy) {
-      var path = deploy.args['path']['parsed'] as List<dynamic>;
+      if (deploy.errorMessage == null &&
+          deploy.executionTypeId == 2 &&
+          isSwapDeploy) {
+        var path = deploy.args['path']['parsed'] as List<dynamic>;
 
-      // Get raw data from chain
-      var casperClient =
-          CasperClient(env?.rpcUrl ?? 'https://casper-node.tor.us');
-      var result = await casperClient.getDeploy(deployHash);
-      var transforms = result
-          .values.first.executionResults[0].result.success?.effect?.transforms;
-      var urefList = transforms != null
-          ? transforms.where((element) =>
-              element['key'].contains('uref-') && element['transform'] is Map)
-          : List<Map<String, dynamic>>.empty();
+        // Get raw data from chain
+        var casperClient =
+            CasperClient(env?.rpcUrl ?? 'https://casper-node.tor.us');
+        var result = await casperClient.getDeploy(deployHash);
+        var transforms = result.values.first.executionResults[0].result.success
+            ?.effect?.transforms;
+        var urefList = transforms != null
+            ? transforms.where((element) =>
+                element['key'].contains('uref-') && element['transform'] is Map)
+            : List<Map<String, dynamic>>.empty();
 
-      if (urefList.isNotEmpty) {
-        for (var element in urefList.toList()) {
-          try {
-            var parsedList =
-                element['transform']['WriteCLValue']['parsed'] as List<dynamic>;
-            var contractPackageHash = parsedList
-                .where((element) => element['key'] == 'contract_package_hash')
-                .toList();
-            var pairHash = contractPackageHash[0]['value'];
+        if (urefList.isNotEmpty) {
+          for (var element in urefList.toList()) {
+            try {
+              var parsedList = element['transform']['WriteCLValue']['parsed']
+                  as List<dynamic>;
+              var contractPackageHash = parsedList
+                  .where((element) => element['key'] == 'contract_package_hash')
+                  .toList();
+              var pairHash = contractPackageHash[0]['value'];
 
-            var amount0In = parsedList
-                .where((element) => element['key'] == 'amount0In')
-                .toList();
-            var amount0Out = parsedList
-                .where((element) => element['key'] == 'amount0Out')
-                .toList();
-            var amount1In = parsedList
-                .where((element) => element['key'] == 'amount1In')
-                .toList();
-            var amount1Out = parsedList
-                .where((element) => element['key'] == 'amount1Out')
-                .toList();
+              var amount0In = parsedList
+                  .where((element) => element['key'] == 'amount0In')
+                  .toList();
+              var amount0Out = parsedList
+                  .where((element) => element['key'] == 'amount0Out')
+                  .toList();
+              var amount1In = parsedList
+                  .where((element) => element['key'] == 'amount1In')
+                  .toList();
+              var amount1Out = parsedList
+                  .where((element) => element['key'] == 'amount1Out')
+                  .toList();
 
-            var response = await apiClient.getPairInfo(pairHash) as Map;
-            if (response.containsKey('data')) {
-              var pair = PairModel.fromJson(response['data']);
+              var response = await apiClient.getPairInfo(pairHash) as Map;
+              if (response.containsKey('data')) {
+                var pair = PairModel.fromJson(response['data']);
 
-              if (pair.token0.contractHash == path[0].substring(5)) {
-                pair.amount0In = amount0In[0]['value'];
-                pair.amount1Out = amount1Out[0]['value'];
-              } else {
-                pair.amount1In = amount1In[0]['value'];
-                pair.amount0Out = amount0Out[0]['value'];
+                if (pair.token0.contractHash == path[0].substring(5)) {
+                  pair.amount0In = amount0In[0]['value'];
+                  pair.amount1Out = amount1Out[0]['value'];
+                } else {
+                  pair.amount1In = amount1In[0]['value'];
+                  pair.amount0Out = amount0Out[0]['value'];
+                }
+                deploy.pair = pair;
               }
-              deploy.pair = pair;
+            } catch (e) {
+              deploy.pair = null;
             }
-          } catch (e) {
-            deploy.pair = null;
           }
         }
       }
-    }
 
-    if (selectedDeloy == null) {
-      selectedDeloy = deploy.obs;
-    } else {
-      selectedDeloy!(deploy);
+      if (selectedDeloy == null) {
+        selectedDeloy = deploy.obs;
+      } else {
+        selectedDeloy!(deploy);
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

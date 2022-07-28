@@ -397,28 +397,32 @@ class WalletHomeTab extends GetView<HomeController> {
                 disabled: _loading.value,
                 isSelected: index - 1 == _whController.selectedIndex.value,
                 onTap: () async {
-                  _whController.selectedIndex(index - 1);
-                  EasyLoading.show();
-                  _loading(true);
+                  try {
+                    _whController.selectedIndex(index - 1);
+                    EasyLoading.show();
+                    _loading(true);
 
-                  await _whController.getDeployInfo(
-                      _whController.deploys[index - 1].deployHash);
+                    await _whController.getDeployInfo(
+                        _whController.deploys[index - 1].deployHash);
 
-                  showCupertinoModalBottomSheet(
-                    context: context,
-                    expand: false,
-                    topRadius: const Radius.circular(30),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    builder: (context) {
-                      return TransferInfoCard(
-                        wallet: _wallet,
-                        deploy: _whController.selectedDeloy?.value,
-                      );
-                    },
-                  );
-
-                  _loading(false);
-                  EasyLoading.dismiss();
+                    showCupertinoModalBottomSheet(
+                      context: context,
+                      expand: false,
+                      topRadius: const Radius.circular(30),
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      builder: (context) {
+                        return TransferInfoCard(
+                          wallet: _wallet,
+                          deploy: _whController.selectedDeloy?.value,
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    EasyLoading.showToast('fetch_deploy_details_error'.tr);
+                  } finally {
+                    _loading(false);
+                    EasyLoading.dismiss();
+                  }
                 },
               ),
             ),

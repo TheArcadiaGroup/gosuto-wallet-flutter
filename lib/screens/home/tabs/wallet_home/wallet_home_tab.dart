@@ -38,7 +38,7 @@ class WalletHomeTab extends GetView<HomeController> {
     _whController.backupDeploys.clear();
     _selectedFilter(AppConstants.historyFilterItems[0]);
 
-    EasyLoading.show();
+    EasyLoading.show(status: 'Fetching deploys...');
 
     _whController
         .getAccountDeploys(
@@ -958,15 +958,13 @@ class WalletHomeTab extends GetView<HomeController> {
     var filter = value.toString().toLowerCase();
 
     switch (filter) {
-      // case 'sent':
-      //   var filteredTransfers = _whController.backupDeploys
-      //       .where((e) =>
-      //           e.callerPublicKey.toLowerCase() == publicKey &&
-      //           e.toAccountPublicKey != null &&
-      //           e.toAccountPublicKey?.toLowerCase() != publicKey)
-      //       .toList();
-      //   _whController.deploys.assignAll(filteredTransfers);
-      //   break;
+      case 'sent':
+        var filteredDeploys = _whController.backupDeploys
+            .where((e) => e.executionTypeId == 6)
+            .toList();
+        print(filteredDeploys.length);
+        _whController.deploys.assignAll(filteredDeploys);
+        break;
       // case 'received':
       //   var filteredTransfers = _whController.backupDeploys
       //       .where((e) =>

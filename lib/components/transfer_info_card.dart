@@ -152,7 +152,7 @@ class TransferInfoCard extends StatelessWidget {
                 SizedBox(
                   width: 95,
                   child: Text(
-                    'to'.tr,
+                    'deploy_hash'.tr,
                     style: Theme.of(context).textTheme.headline4?.copyWith(
                         color: Theme.of(context)
                             .textTheme
@@ -162,11 +162,40 @@ class TransferInfoCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  Strings.displayHash(toAddress),
+                  Strings.displayHash(deploy?.deployHash ?? ''),
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).colorScheme.tertiaryContainer),
-                )
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 95,
+                  child: Text(
+                    'timestamp'.tr,
+                    style: Theme.of(context).textTheme.headline4?.copyWith(
+                        color: Theme.of(context)
+                            .textTheme
+                            .headline4
+                            ?.color
+                            ?.withAlpha(170)),
+                  ),
+                ),
+                Text(
+                  GetTimeAgo.parse(
+                      DateTime.parse(deploy?.timestamp ??
+                              DateTime.now().toIso8601String())
+                          .toLocal(),
+                      pattern: 'LLL d, hh:mm:ss a'),
+                  style: Theme.of(context).textTheme.headline4?.copyWith(
+                      fontWeight: FontWeight.normal,
+                      color: Theme.of(context).colorScheme.tertiaryContainer),
+                ),
               ],
             ),
           ),
@@ -202,7 +231,7 @@ class TransferInfoCard extends StatelessWidget {
                 SizedBox(
                   width: 95,
                   child: Text(
-                    'timestamp'.tr,
+                    'to'.tr,
                     style: Theme.of(context).textTheme.headline4?.copyWith(
                         color: Theme.of(context)
                             .textTheme
@@ -212,15 +241,11 @@ class TransferInfoCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  GetTimeAgo.parse(
-                      DateTime.parse(deploy?.timestamp ??
-                              DateTime.now().toIso8601String())
-                          .toLocal(),
-                      pattern: 'LLL d, hh:mm:ss a'),
+                  Strings.displayHash(toAddress),
                   style: Theme.of(context).textTheme.headline4?.copyWith(
                       fontWeight: FontWeight.normal,
                       color: Theme.of(context).colorScheme.tertiaryContainer),
-                ),
+                )
               ],
             ),
           ),
@@ -389,31 +414,6 @@ class TransferInfoCard extends StatelessWidget {
                         fontWeight: FontWeight.normal,
                         color: Theme.of(context).colorScheme.tertiaryContainer),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 15),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 95,
-                  child: Text(
-                    'deploy_hash'.tr,
-                    style: Theme.of(context).textTheme.headline4?.copyWith(
-                        color: Theme.of(context)
-                            .textTheme
-                            .headline4
-                            ?.color
-                            ?.withAlpha(170)),
-                  ),
-                ),
-                Text(
-                  Strings.displayHash(deploy?.deployHash ?? ''),
-                  style: Theme.of(context).textTheme.headline4?.copyWith(
-                      fontWeight: FontWeight.normal,
-                      color: Theme.of(context).colorScheme.tertiaryContainer),
                 ),
               ],
             ),

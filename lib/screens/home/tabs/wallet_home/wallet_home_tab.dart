@@ -1,22 +1,19 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/screens/home/home.dart';
+import 'package:gosuto/screens/home/tabs/wallet_home/components/history_subtab.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class WalletHomeTab extends GetView<HomeController> {
   WalletHomeTab({Key? key}) : super(key: key);
 
   final WalletHomeController _whController = Get.put(WalletHomeController());
-  final RxString _selectedFilter = RxString(AppConstants.historyFilterItems[0]);
   final RxInt _currentSliderIdx = RxInt(0);
 
   final EasyRefreshController _refreshController = EasyRefreshController(
@@ -24,30 +21,12 @@ class WalletHomeTab extends GetView<HomeController> {
     controlFinishLoad: true,
   );
 
-  final RxBool _loading = RxBool(false);
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
     _whController.setting = controller.setting;
     _whController.getSeedPhrase();
-
-    _whController.currentPage.value = 1;
-    _whController.deploys.clear();
-    _whController.backupDeploys.clear();
-    _selectedFilter(AppConstants.historyFilterItems[0]);
-
-    EasyLoading.show();
-
-    _whController
-        .getAccountDeploys(
-      controller.selectedWallet?.value.publicKey ?? '',
-    )
-        .then((value) {
-      EasyLoading.dismiss();
-      _whController.backupDeploys.assignAll(_whController.deploys.toList());
-    });
 
     return EasyRefresh(
       controller: _refreshController,
@@ -81,7 +60,7 @@ class WalletHomeTab extends GetView<HomeController> {
   int _getItemCountListView(WalletHomeTabs tab) {
     switch (tab) {
       case WalletHomeTabs.history:
-        return _whController.deploys.length + 5;
+        return 4;
       case WalletHomeTabs.send:
         return 5;
       case WalletHomeTabs.stake:
@@ -114,8 +93,6 @@ class WalletHomeTab extends GetView<HomeController> {
   }
 
   Widget _listViewBuilder(BuildContext context) {
-    double horizontalPadding = (MediaQuery.of(context).size.width - 97) / 2;
-
     return Obx(
       () => ListView.builder(
         padding: const EdgeInsets.only(top: 10, left: 0),
@@ -266,65 +243,6 @@ class WalletHomeTab extends GetView<HomeController> {
             );
           }
 
-          //  ShowMore button for History tab
-          if (index ==
-                  _getItemCountListView(_whController.currentTab.value) - 1 &&
-              _whController.currentTab.value == WalletHomeTabs.history) {
-            if (_whController.currentPage.value <
-                    _whController.pageCount.value &&
-                _selectedFilter.value == AppConstants.historyFilterItems[0]) {
-              return Padding(
-                padding: EdgeInsets.only(
-                  top: 20,
-                  bottom: 34,
-                  left: horizontalPadding,
-                  right: horizontalPadding,
-                ),
-                child: SizedBox(
-                  height: 40,
-                  width: 97,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      EasyLoading.show();
-                      await _whController.getAccountDeploys(
-                        controller.selectedWallet?.value.publicKey ?? '',
-                        _whController.currentPage.value + 1,
-                      );
-                      _whController.backupDeploys
-                          .assignAll(_whController.deploys.toList());
-                      EasyLoading.dismiss();
-                    },
-                    child: Text(
-                      'show_more'.tr,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline4
-                          ?.copyWith(fontSize: 12),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      primary: Theme.of(context).colorScheme.primary,
-                      elevation: 0.0,
-                      side: BorderSide(
-                          width: 2.0,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withAlpha(100)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(20),
-                child: Container(),
-              );
-            }
-          }
-
           return _buildViewItemList(
               _whController.currentTab.value, context, index - 3);
         },
@@ -333,105 +251,11 @@ class WalletHomeTab extends GetView<HomeController> {
   }
 
   Widget _buildHistory(BuildContext context, int index) {
-    // Filter row
-    if (index == 0) {
-      return Padding(
-        padding: const EdgeInsets.all(18),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('deploys'.tr, style: Theme.of(context).textTheme.headline1),
-            SizedBox(
-              height: 36,
-              width: 144,
-              child: DropdownButtonHideUnderline(
-                child: Obx(
-                  () => DropdownButton2(
-                    alignment: Alignment.centerLeft,
-                    value: _selectedFilter.value,
-                    icon: const Icon(Icons.arrow_drop_down),
-                    iconSize: 15,
-                    items: _buildDropDownMenuItems(),
-                    itemHeight: 40,
-                    buttonHeight: 35,
-                    buttonPadding: const EdgeInsets.only(left: 12),
-                    buttonDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: Theme.of(context).colorScheme.onSecondary,
-                      ),
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    dropdownOverButton: true,
-                    dropdownDecoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    dropdownWidth: 145,
-                    dropdownElevation: 1,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline4
-                        ?.copyWith(fontWeight: FontWeight.normal),
-                    onChanged: _changeFilter,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
     final _wallet = controller.selectedWallet?.value;
 
-    if (_whController.deploys.isNotEmpty) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 6),
-        child: Column(
-          children: [
-            Obx(
-              () => HistoryItem(
-                deploy: _whController.deploys[index - 1],
-                wallet: _wallet!,
-                disabled: _loading.value,
-                isSelected: index - 1 == _whController.selectedIndex.value,
-                onTap: () async {
-                  try {
-                    _whController.selectedIndex(index - 1);
-                    EasyLoading.show();
-                    _loading(true);
-
-                    await _whController.getDeployInfo(
-                        _whController.deploys[index - 1].deployHash);
-
-                    showCupertinoModalBottomSheet(
-                      context: context,
-                      expand: false,
-                      topRadius: const Radius.circular(30),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      builder: (context) {
-                        return TransferInfoCard(
-                          wallet: _wallet,
-                          deploy: _whController.selectedDeloy?.value,
-                        );
-                      },
-                    );
-                  } catch (e) {
-                    EasyLoading.showToast('fetch_deploy_details_error'.tr);
-                  } finally {
-                    _loading(false);
-                    EasyLoading.dismiss();
-                  }
-                },
-              ),
-            ),
-            Divider(
-              height: 1,
-              color: Colors.black.withOpacity(0.1),
-            ),
-          ],
-        ),
+    if (_wallet != null) {
+      return HistorySubTab(
+        wallet: _wallet,
       );
     }
 
@@ -952,66 +776,5 @@ class WalletHomeTab extends GetView<HomeController> {
         ],
       ),
     );
-  }
-
-  void _changeFilter(value) {
-    _selectedFilter(value);
-    var filter = value.toString().toLowerCase();
-
-    switch (filter) {
-      case 'sent':
-        var filteredDeploys = _whController.backupDeploys
-            .where((e) => e.executionTypeId == 6)
-            .toList();
-        _whController.deploys.assignAll(filteredDeploys);
-        break;
-      // case 'received':
-      //   var filteredTransfers = _whController.backupDeploys
-      //       .where((e) =>
-      //           e.fromAccountPublicKey.toLowerCase() != publicKey &&
-      //           e.toAccountPublicKey != null &&
-      //           e.toAccountPublicKey?.toLowerCase() == publicKey)
-      //       .toList();
-      //   _whController.deploys.assignAll(filteredTransfers);
-      //   break;
-      case 'swap':
-        var filteredTransfers = _whController.backupDeploys.where((e) {
-          if (e.executionTypeId == 1) {
-            var args = e.args as Map<dynamic, dynamic>;
-            if (args.containsKey('deposit_entry_point_name')) {
-              return args['deposit_entry_point_name']['parsed']
-                  .toString()
-                  .contains('swap');
-            }
-          }
-          if (e.executionTypeId == 2 && e.entryPoint != null) {
-            return e.entryPoint?.name.contains('swap') ?? false;
-          }
-          return false;
-        }).toList();
-        _whController.deploys.assignAll(filteredTransfers);
-        break;
-      case 'contract interaction':
-        var filteredTransfers = _whController.backupDeploys
-            .where((e) => e.executionTypeId == 2 || e.executionTypeId == 1)
-            .toList();
-        _whController.deploys.assignAll(filteredTransfers);
-        break;
-      case 'all':
-      default:
-        _whController.deploys.assignAll(_whController.backupDeploys.toList());
-        break;
-    }
-  }
-
-  List<DropdownMenuItem<String>> _buildDropDownMenuItems() {
-    return AppConstants.historyFilterItems
-        .map((item) => DropdownMenuItem(
-            value: item,
-            child: Text(
-              item,
-              style: const TextStyle(fontSize: 12),
-            )))
-        .toList();
   }
 }

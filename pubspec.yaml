@@ -38,7 +38,7 @@ dependencies:
   get: ^4.6.1
   flutter_easyloading: ^3.0.3
   get_storage: ^2.0.3
-  image_picker: ^0.8.4+10
+  image_picker: ^0.8.5+1
   flutter_switch: ^0.3.2
   dropdown_button2: ^1.1.1
   charts_flutter: ^0.12.0

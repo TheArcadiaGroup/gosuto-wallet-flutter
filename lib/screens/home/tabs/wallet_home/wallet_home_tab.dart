@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/screens/home/home.dart';
-import 'package:gosuto/screens/home/tabs/wallet_home/components/history_subtab.dart';
+import 'package:gosuto/screens/home/tabs/wallet_home/components/history_list.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
@@ -254,7 +254,7 @@ class WalletHomeTab extends GetView<HomeController> {
     final _wallet = controller.selectedWallet?.value;
 
     if (_wallet != null) {
-      return HistorySubTab(
+      return HistoryList(
         wallet: _wallet,
       );
     }

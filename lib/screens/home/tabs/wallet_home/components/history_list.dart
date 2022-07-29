@@ -8,8 +8,8 @@ import 'package:gosuto/screens/home/tabs/tabs.dart';
 import 'package:gosuto/utils/constants.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class HistorySubTab extends GetView<WalletHomeController> {
-  HistorySubTab({Key? key, required this.wallet}) : super(key: key);
+class HistoryList extends GetView<WalletHomeController> {
+  HistoryList({Key? key, required this.wallet}) : super(key: key);
 
   final WalletModel wallet;
   final WalletHomeController _whController = Get.put(WalletHomeController());

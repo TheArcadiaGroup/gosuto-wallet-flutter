@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +6,7 @@ import 'package:gosuto/components/components.dart';
 import 'package:gosuto/routes/app_pages.dart';
 import 'package:gosuto/screens/home/home.dart';
 import 'package:gosuto/screens/home/tabs/wallet_home/components/history_list.dart';
+import 'package:gosuto/screens/home/tabs/wallet_home/components/token_list.dart';
 import 'package:gosuto/services/service.dart';
 import 'package:gosuto/utils/utils.dart';
 
@@ -14,7 +14,6 @@ class WalletHomeTab extends GetView<HomeController> {
   WalletHomeTab({Key? key}) : super(key: key);
 
   final WalletHomeController _whController = Get.put(WalletHomeController());
-  final RxInt _currentSliderIdx = RxInt(0);
 
   final EasyRefreshController _refreshController = EasyRefreshController(
     controlFinishRefresh: true,
@@ -62,7 +61,7 @@ class WalletHomeTab extends GetView<HomeController> {
       case WalletHomeTabs.history:
         return 4;
       case WalletHomeTabs.send:
-        return 5;
+        return 4;
       case WalletHomeTabs.stake:
         return 9;
       case WalletHomeTabs.walletSettings:
@@ -78,17 +77,22 @@ class WalletHomeTab extends GetView<HomeController> {
 
   Widget _buildViewItemList(
       WalletHomeTabs tab, BuildContext context, int index) {
+    final _wallet = controller.selectedWallet?.value;
     switch (tab) {
       case WalletHomeTabs.history:
-        return _buildHistory(context, index);
+        return _wallet == null
+            ? Container()
+            : HistoryList(
+                wallet: _wallet,
+              );
       case WalletHomeTabs.send:
-        return _buildSend(context, index);
+        return _wallet == null ? Container() : TokenList(wallet: _wallet);
       case WalletHomeTabs.stake:
         return _buildStake(context, index);
       case WalletHomeTabs.walletSettings:
         return _buildWalletSettings(context, index);
       case WalletHomeTabs.swap:
-        return _buildSend(context, index);
+        return Container();
     }
   }
 
@@ -250,112 +254,9 @@ class WalletHomeTab extends GetView<HomeController> {
     );
   }
 
-  Widget _buildHistory(BuildContext context, int index) {
-    final _wallet = controller.selectedWallet?.value;
-
-    if (_wallet != null) {
-      return HistoryList(
-        wallet: _wallet,
-      );
-    }
-
-    return Container();
-  }
-
   Widget _buildItemsSlider(
       BuildContext context, double widthItem, double heightItem) {
     return SliderItem(width: widthItem, height: heightItem);
-  }
-
-  Widget _buildSend(BuildContext context, int idx) {
-    // Add token row
-    if (idx == 0) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 18, bottom: 10, right: 18),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('tokens_in_this_wallet'.tr,
-                style: Theme.of(context).textTheme.headline1),
-            SizedBox(
-              height: 36,
-              child: ElevatedButton.icon(
-                icon: Image.asset('assets/images/ic-add-no-bg.png'),
-                onPressed: () {},
-                label: Text('add_token'.tr,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline2
-                        ?.copyWith(color: Colors.white, fontSize: 12)),
-                style: ElevatedButton.styleFrom(
-                  primary: Theme.of(context).colorScheme.background,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    double widthItem = MediaQuery.of(context).size.width / 2;
-    double heightItem = 125;
-
-    final _sliderList = [
-      _buildItemsSlider(context, widthItem, heightItem),
-      _buildItemsSlider(context, widthItem, heightItem),
-      _buildItemsSlider(context, widthItem, heightItem)
-    ];
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: Column(
-        children: [
-          CarouselSlider(
-            options: CarouselOptions(
-                height: 260,
-                aspectRatio: 1.0,
-                enableInfiniteScroll: false,
-                viewportFraction: 1,
-                onPageChanged: (index, reason) {
-                  _currentSliderIdx(index);
-                }),
-            items: _sliderList,
-          ),
-          Obx(
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: _sliderList.asMap().entries.map((entry) {
-                return _currentSliderIdx.value == entry.key
-                    ? Container(
-                        width: 8,
-                        height: 4,
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 2.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(2),
-                          shape: BoxShape.rectangle,
-                          color: Theme.of(context).colorScheme.background,
-                        ),
-                      )
-                    : Container(
-                        width: 4.0,
-                        height: 4.0,
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 2.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(2),
-                          shape: BoxShape.rectangle,
-                          color: const Color(0xFFC4C4C4).withOpacity(0.35),
-                        ),
-                      );
-              }).toList(),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget _buildStake(BuildContext context, int index) {

@@ -444,9 +444,10 @@ class WalletHomeTab extends GetView<HomeController> {
   }
 
   Widget _buildSend(BuildContext context, int idx) {
+    // Add token row
     if (idx == 0) {
       return Padding(
-        padding: const EdgeInsets.all(25),
+        padding: const EdgeInsets.only(left: 18, bottom: 10, right: 18),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -483,52 +484,53 @@ class WalletHomeTab extends GetView<HomeController> {
       _buildItemsSlider(context, widthItem, heightItem)
     ];
 
-    return Column(
-      children: [
-        CarouselSlider(
-          options: CarouselOptions(
-              height: 200,
-              aspectRatio: 1.0,
-              enableInfiniteScroll: false,
-              // enlargeCenterPage: true,
-              // scrollDirection: Axis.vertical,
-              viewportFraction: 1,
-              onPageChanged: (index, reason) {
-                _currentSliderIdx(index);
-              }),
-          items: _sliderList,
-        ),
-        Obx(
-          () => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: _sliderList.asMap().entries.map((entry) {
-              return _currentSliderIdx.value == entry.key
-                  ? Container(
-                      width: 8,
-                      height: 4,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        shape: BoxShape.rectangle,
-                        color: Theme.of(context).colorScheme.background,
-                      ),
-                    )
-                  : Container(
-                      width: 4.0,
-                      height: 4.0,
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 2.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(2),
-                        shape: BoxShape.rectangle,
-                        color: const Color(0xFFC4C4C4).withOpacity(0.35),
-                      ),
-                    );
-            }).toList(),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        children: [
+          CarouselSlider(
+            options: CarouselOptions(
+                height: 260,
+                aspectRatio: 1.0,
+                enableInfiniteScroll: false,
+                viewportFraction: 1,
+                onPageChanged: (index, reason) {
+                  _currentSliderIdx(index);
+                }),
+            items: _sliderList,
           ),
-        ),
-      ],
+          Obx(
+            () => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: _sliderList.asMap().entries.map((entry) {
+                return _currentSliderIdx.value == entry.key
+                    ? Container(
+                        width: 8,
+                        height: 4,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 2.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          shape: BoxShape.rectangle,
+                          color: Theme.of(context).colorScheme.background,
+                        ),
+                      )
+                    : Container(
+                        width: 4.0,
+                        height: 4.0,
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 2.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          shape: BoxShape.rectangle,
+                          color: const Color(0xFFC4C4C4).withOpacity(0.35),
+                        ),
+                      );
+              }).toList(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -9,8 +9,7 @@ class SliderItem extends StatelessWidget {
       required this.height,
       this.paddingHorizontal = 10,
       this.paddingVertical = 10,
-        this.centerPadding = 5
-      })
+      this.centerPadding = 5})
       : super(key: key);
 
   final double width;
@@ -21,23 +20,26 @@ class SliderItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildItem(context, true, true),
-            _buildItem(context, false, false),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildItem(context, true, true),
-            _buildItem(context, false, false),
-          ],
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildItem(context, true, true),
+              _buildItem(context, false, false),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildItem(context, true, true),
+              _buildItem(context, false, false),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -121,7 +123,9 @@ class SliderItem extends StatelessWidget {
                       children: [
                         WidgetSpan(
                           alignment: PlaceholderAlignment.middle,
-                          child: isGrowing ? SvgPicture.asset('assets/svgs/ic-up.svg') : SvgPicture.asset('assets/svgs/ic-down.svg'),
+                          child: isGrowing
+                              ? SvgPicture.asset('assets/svgs/ic-up.svg')
+                              : SvgPicture.asset('assets/svgs/ic-down.svg'),
                         ),
                         TextSpan(
                           text: isGrowing ? " +15%" : " -15%",

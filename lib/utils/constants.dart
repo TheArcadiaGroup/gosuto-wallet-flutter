@@ -21,7 +21,7 @@ class AppConstants {
   static final historyFilterItems = [
     'all'.tr,
     'sent'.tr,
-    'received'.tr,
+    // 'received'.tr,
     'swap'.tr,
     'contract_interaction'.tr,
   ];

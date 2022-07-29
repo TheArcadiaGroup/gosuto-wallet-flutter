@@ -134,11 +134,14 @@ class WalletHomeController extends GetxController
   Future<void> getDeployInfo(String deployHash) async {
     try {
       final deploy = await apiClient.deployInfo(deployHash);
-      var isSwapDeploy = deploy.entryPoint?.name.contains('swap') ?? false;
 
-      if (deploy.errorMessage == null &&
-          deploy.executionTypeId == 2 &&
-          isSwapDeploy) {
+      var args = deploy.args as Map<dynamic, dynamic>;
+      var isSwapDeploy = deploy.executionTypeId != 6 &&
+          ((deploy.entryPoint?.name.contains('swap') ?? false) ||
+              (args.containsKey('deposit_entry_point_name') &&
+                  args['deposit_entry_point_name']['parsed'].contains('swap')));
+
+      if (deploy.errorMessage == null && isSwapDeploy) {
         var path = deploy.args['path']['parsed'] as List<dynamic>;
 
         // Get raw data from chain
@@ -157,36 +160,43 @@ class WalletHomeController extends GetxController
             try {
               var parsedList = element['transform']['WriteCLValue']['parsed']
                   as List<dynamic>;
-              var contractPackageHash = parsedList
-                  .where((element) => element['key'] == 'contract_package_hash')
-                  .toList();
-              var pairHash = contractPackageHash[0]['value'];
 
-              var amount0In = parsedList
-                  .where((element) => element['key'] == 'amount0In')
-                  .toList();
-              var amount0Out = parsedList
-                  .where((element) => element['key'] == 'amount0Out')
-                  .toList();
-              var amount1In = parsedList
-                  .where((element) => element['key'] == 'amount1In')
-                  .toList();
-              var amount1Out = parsedList
-                  .where((element) => element['key'] == 'amount1Out')
-                  .toList();
+              var eventType = parsedList.where((element) =>
+                  element['key'] == 'event_type' && element['value'] == 'swap');
 
-              var response = await apiClient.getPairInfo(pairHash) as Map;
-              if (response.containsKey('data')) {
-                var pair = PairModel.fromJson(response['data']);
+              if (eventType.isNotEmpty) {
+                var contractPackageHash = parsedList
+                    .where(
+                        (element) => element['key'] == 'contract_package_hash')
+                    .toList();
+                var pairHash = contractPackageHash[0]['value'];
 
-                if (pair.token0.contractHash == path[0].substring(5)) {
-                  pair.amount0In = amount0In[0]['value'];
-                  pair.amount1Out = amount1Out[0]['value'];
-                } else {
-                  pair.amount1In = amount1In[0]['value'];
-                  pair.amount0Out = amount0Out[0]['value'];
+                var amount0In = parsedList
+                    .where((element) => element['key'] == 'amount0In')
+                    .toList();
+                var amount0Out = parsedList
+                    .where((element) => element['key'] == 'amount0Out')
+                    .toList();
+                var amount1In = parsedList
+                    .where((element) => element['key'] == 'amount1In')
+                    .toList();
+                var amount1Out = parsedList
+                    .where((element) => element['key'] == 'amount1Out')
+                    .toList();
+
+                var response = await apiClient.getPairInfo(pairHash) as Map;
+                if (response.containsKey('data')) {
+                  var pair = PairModel.fromJson(response['data']);
+
+                  if (pair.token0.contractHash == path[0].substring(5)) {
+                    pair.amount0In = amount0In[0]['value'];
+                    pair.amount1Out = amount1Out[0]['value'];
+                  } else {
+                    pair.amount1In = amount1In[0]['value'];
+                    pair.amount0Out = amount0Out[0]['value'];
+                  }
+                  deploy.pair = pair;
                 }
-                deploy.pair = pair;
               }
             } catch (e) {
               deploy.pair = null;

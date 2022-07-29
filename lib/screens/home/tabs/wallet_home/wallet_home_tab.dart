@@ -38,7 +38,7 @@ class WalletHomeTab extends GetView<HomeController> {
     _whController.backupDeploys.clear();
     _selectedFilter(AppConstants.historyFilterItems[0]);
 
-    EasyLoading.show(status: 'Fetching deploys...');
+    EasyLoading.show();
 
     _whController
         .getAccountDeploys(
@@ -954,7 +954,6 @@ class WalletHomeTab extends GetView<HomeController> {
 
   void _changeFilter(value) {
     _selectedFilter(value);
-    var publicKey = controller.selectedWallet?.value.publicKey.toLowerCase();
     var filter = value.toString().toLowerCase();
 
     switch (filter) {
@@ -962,7 +961,6 @@ class WalletHomeTab extends GetView<HomeController> {
         var filteredDeploys = _whController.backupDeploys
             .where((e) => e.executionTypeId == 6)
             .toList();
-        print(filteredDeploys.length);
         _whController.deploys.assignAll(filteredDeploys);
         break;
       // case 'received':
@@ -974,23 +972,29 @@ class WalletHomeTab extends GetView<HomeController> {
       //       .toList();
       //   _whController.deploys.assignAll(filteredTransfers);
       //   break;
-      // case 'swap':
-      //   var filteredTransfers = _whController.backupDeploys
-      //       .where((e) =>
-      //           e.fromAccountPublicKey.toLowerCase() == publicKey &&
-      //           e.toAccountPublicKey != null &&
-      //           e.toAccountPublicKey?.toLowerCase() == publicKey)
-      //       .toList();
-      //   _whController.deploys.assignAll(filteredTransfers);
-      //   break;
-      // case 'contract interaction':
-      //   var filteredTransfers = _whController.backupDeploys
-      //       .where((e) =>
-      //           e.fromAccountPublicKey.toLowerCase() == publicKey &&
-      //           e.toAccountPublicKey == null)
-      //       .toList();
-      //   _whController.deploys.assignAll(filteredTransfers);
-      //   break;
+      case 'swap':
+        var filteredTransfers = _whController.backupDeploys.where((e) {
+          if (e.executionTypeId == 1) {
+            var args = e.args as Map<dynamic, dynamic>;
+            if (args.containsKey('deposit_entry_point_name')) {
+              return args['deposit_entry_point_name']['parsed']
+                  .toString()
+                  .contains('swap');
+            }
+          }
+          if (e.executionTypeId == 2 && e.entryPoint != null) {
+            return e.entryPoint?.name.contains('swap') ?? false;
+          }
+          return false;
+        }).toList();
+        _whController.deploys.assignAll(filteredTransfers);
+        break;
+      case 'contract interaction':
+        var filteredTransfers = _whController.backupDeploys
+            .where((e) => e.executionTypeId == 2 || e.executionTypeId == 1)
+            .toList();
+        _whController.deploys.assignAll(filteredTransfers);
+        break;
       case 'all':
       default:
         _whController.deploys.assignAll(_whController.backupDeploys.toList());

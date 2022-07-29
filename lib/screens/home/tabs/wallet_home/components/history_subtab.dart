@@ -1,9 +1,7 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:gosuto/components/components.dart';
 import 'package:gosuto/models/wallet_model.dart';
 import 'package:gosuto/screens/home/tabs/tabs.dart';
@@ -223,7 +221,7 @@ class HistorySubTab extends GetView<WalletHomeController> {
                       onPressed: () async {
                         EasyLoading.show();
                         await _whController.getAccountDeploys(
-                          wallet.publicKey ?? '',
+                          wallet.publicKey,
                           _whController.currentPage.value + 1,
                         );
                         _whController.backupDeploys
